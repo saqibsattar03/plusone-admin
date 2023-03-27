@@ -3,11 +3,12 @@
     :loader="loadData"
     :headers="headers"
     title="Merchants"
-    :allow-add="false"
+    :allow-add="userScopes.includes('merchants:new') && true"
     @done="$router.back()"
+    @add-new="addNew"
     :delete-handler="null"
-    :edit-handler="null"
-    :view-handler="userScopes.includes('users:view') ? view : null"
+    :edit-handler="userScopes.includes('merchants:edit') ? edit : null"
+    :view-handler="userScopes.includes('merchants:view') ? view : null"
   >
     <template #firstname="{ item }">
       {{ item.firstname }} {{ item.surname }}
@@ -47,13 +48,13 @@ export default {
   }),
 
   methods: {
-    // addNew() {
-    //   this.$router.push('/user');
-    // },
+    addNew() {
+      this.$router.push('/merchant');
+    },
 
-    // edit(item) {
-    //   this.$router.push(`/user?id=${item._id}`);
-    // },
+    edit(item) {
+      this.$router.push(`/merchant?id=${item._id}`);
+    },
 
     view(item) {
       this.$router.push(`/merchant-details?id=${item._id}`);

@@ -17,29 +17,15 @@
         >
 
         <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Name : </b>{{ user.firstname }} {{ user.surname }}
+              <b>Name : </b>{{ merchant.name }}
             </v-card-text>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Status : </b>{{ user.status }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="4">
-            <v-card-text class="p10">
-              <b>Email : </b>{{ user.email }}
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-card-text class="p10">
-              <b>Created At : </b>{{ formatDate(user.createdAt) }}
+              <b>Status : </b>{{ merchant.status }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -49,38 +35,15 @@
 </template>
 <script>
 import dayjs from 'dayjs';
-import { UsersService } from '../../services/user-service';
+import { MerchantsService } from '../../services/merchant-service';
 import { getFullPath } from '../../utils/local';
 
 export default {
   data() {
     return {
       dataLoading: true,
-      user: {},
-      users_service: new UsersService(),
-
-      headers: [
-        {
-          text: 'Mind Feels',
-          value: 'my_mind_feels',
-          sortable: true
-        },
-        {
-          text: 'Body Feels',
-          value: 'my_body_feels',
-          sortable: true
-        },
-        {
-          text: 'Spirit Feels',
-          value: 'my_spirit_feels',
-          sortable: true
-        },
-        {
-          text: 'Date',
-          value: 'date',
-          sortable: true
-        }
-      ]
+      merchant: {},
+      merchants_service: new MerchantsService()
     };
   },
   methods: {
@@ -89,10 +52,12 @@ export default {
       return dayjs(date).format('D MMM YYYY - hh:mm A');
     },
 
-    async loadUser() {
+    async loadMerchant() {
       try {
         this.dataLoading = true;
-        this.user = await this.users_service.fetchOne(this.$route.query.id);
+        this.merchant = await this.merchants_service.fetchOne(
+          this.$route.query.id
+        );
       } catch (e) {
         console.log(e);
       }
@@ -100,7 +65,7 @@ export default {
     }
   },
   async mounted() {
-    await this.loadUser();
+    await this.loadMerchant();
   }
 };
 </script>

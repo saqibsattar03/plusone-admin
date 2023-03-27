@@ -3,7 +3,6 @@ import UserShow from './UserShow';
 import UserForm from './UserForm.vue';
 import { getUserScopes } from '../../utils/local';
 
-
 export const usersRoutes = [
   getUserScopes()?.includes('users:view')
     ? {

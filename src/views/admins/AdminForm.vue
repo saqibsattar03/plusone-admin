@@ -134,6 +134,8 @@ export default {
         id: 'merchants',
         name: 'Merchants',
         children: [
+          { id: 'merchants:new', name: 'Create Merchants' },
+          { id: 'merchants:edit', name: 'Edit Merchants' },
           { id: 'merchants:view', name: 'View Merchants' },
           { id: 'merchants:delete', name: 'Delete Merchants' }
         ]
