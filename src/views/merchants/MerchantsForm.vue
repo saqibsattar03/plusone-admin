@@ -27,6 +27,22 @@
     ></v-file-input>
 
     <v-text-field
+      v-model="merchant.firstName"
+      :rules="[required('First Name must be provided')]"
+      class="span-2"
+      label="First Name"
+      outlined
+    />
+
+    <v-text-field
+      v-model="merchant.surName"
+      :rules="[required('Surname must be provided')]"
+      class="span-2"
+      label="Surname"
+      outlined
+    />
+
+    <v-text-field
       v-model="merchant.username"
       :rules="[required('Username must be provided')]"
       class="span-2"
@@ -72,13 +88,27 @@
       outlined
     />
 
-    <v-text-field
+    <v-textarea
       v-model="merchant.description"
       :rules="[required('Description Number must be provided')]"
       class="span-2"
       label="Description"
       outlined
     />
+
+    <!-- <gmap-map
+      class="span-2"
+      :center="center"
+      :zoom="zoom"
+      @click="onMapClick"
+      @loaded="onMapLoaded"
+      ref="map"
+    >
+    </gmap-map> -->
+
+    <!-- <button v-if="mapReady" @click="getSelectedLocation">
+      Get Selected Location
+    </button> -->
 
     <v-combobox
       v-model="merchant.tags"
@@ -182,6 +212,10 @@ export default {
     loading: false,
     users_service: new UsersService(),
     upload_image_service: new UploadImageService(),
+    // center: { lat: 0, lng: 0 },
+    // zoom: 10,
+    // mapReady: false,
+
     // only for edit
     disabled: false,
 
@@ -194,6 +228,8 @@ export default {
 
     merchant: {
       role: 'MERCHANT',
+      firstName: '',
+      surName: '',
       username: '',
       email: '',
       password: '',
@@ -228,6 +264,24 @@ export default {
   methods: {
     required,
     email,
+
+    // onMapClick(event) {
+    //   this.center = {
+    //     lat: event.latLng.lat(),
+    //     lng: event.latLng.lng()
+    //   };
+    // },
+    // onMapLoaded() {
+    //   this.mapReady = true;
+    // },
+    // getSelectedLocation() {
+    //   const latLng = this.$refs.map.getCenter();
+    //   const selectedLocation = {
+    //     lat: latLng.lat(),
+    //     lng: latLng.lng()
+    //   };
+    //   console.log(selectedLocation); // Do something with the selected location
+    // },
 
     async loadUser() {
       if (!this.$route.query.id) return;
@@ -303,51 +357,61 @@ export default {
             });
 
             this.merchant.profileImage = response.data;
-          }
-
-          if (this.menu.length > 0) {
-            const formData = new FormData();
-            this.menu.forEach((image) => {
-              formData.append('media', image);
-            });
-
-            console.log(formData, 'form data');
-
-            const response = await this.$axios.post(
-              '/multiple-files',
-              formData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              }
-            );
-
-            this.merchant.menu = response.data;
+            console.log(this.merchant.profileImage, 'profileImage');
           }
 
           if (this.media.length > 0) {
-            const formData = new FormData();
-            this.media.forEach((image) => {
-              formData.append('media', image);
-            });
+            await Promise.all(
+              this.media.map(async (image, i) => {
+                console.log(i, 'index');
+                const formData = new FormData();
+                formData.append('media', image);
 
-            const response = await this.$axios.post(
-              '/multiple-files',
-              formData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              }
+                const response = await this.$axios.post(
+                  '/single-file',
+                  formData,
+                  {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  }
+                );
+
+                this.merchant.media.push(response.data);
+              })
             );
-
-            this.merchant.media = response.data;
           }
 
+          if (this.menu.length > 0) {
+            await Promise.all(
+              this.menu.map(async (image) => {
+                const formData = new FormData();
+                formData.append('media', image);
+
+                const response = await this.$axios.post(
+                  '/single-file',
+                  formData,
+                  {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  }
+                );
+
+                this.merchant.menu.push(response.data);
+              })
+            );
+          }
+
+          if (this.merchant && this.merchant.status === true) {
+            this.merchant.status = 'ACTIVE';
+          } else {
+            this.merchant.status = 'PENDING';
+          }
           console.log(this.merchant);
-          // await this.users_service.create(this.user);
-          // return true;
+
+          await this.users_service.create(this.user);
+          return true;
         } catch (e) {
           context.reportError({
             title: 'Error while creating User',
