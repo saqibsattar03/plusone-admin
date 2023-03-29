@@ -6,11 +6,11 @@ export class MerchantsService {
   }
 
   async fetchOne(id) {
-    return (await axios.get('/persons/single/' + id)).data;
+    return (await axios.get('/restaurant/profile?restaurantId=' + id)).data;
   }
 
   async create(user) {
-    return (await axios.post('/persons/sign-up', user)).data;
+    return (await axios.post('/restaurant/create', user)).data;
   }
 
   async update(user) {

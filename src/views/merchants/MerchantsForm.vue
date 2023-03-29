@@ -10,7 +10,7 @@
     </p>
 
     <v-img
-      v-if="profileImageObjectURL"
+      v-if="merchant.profileImage || profileImageObjectURL"
       contain
       max-height="300"
       class="span-2 mb-4"
@@ -27,7 +27,8 @@
     ></v-file-input>
 
     <v-text-field
-      v-model="merchant.firstName"
+      v-if="!isEdit"
+      v-model="merchant.firstname"
       :rules="[required('First Name must be provided')]"
       class="span-2"
       label="First Name"
@@ -35,7 +36,8 @@
     />
 
     <v-text-field
-      v-model="merchant.surName"
+      v-if="!isEdit"
+      v-model="merchant.surname"
       :rules="[required('Surname must be provided')]"
       class="span-2"
       label="Surname"
@@ -43,6 +45,7 @@
     />
 
     <v-text-field
+      v-if="!isEdit"
       v-model="merchant.username"
       :rules="[required('Username must be provided')]"
       class="span-2"
@@ -51,6 +54,7 @@
     />
 
     <v-text-field
+      v-if="!isEdit"
       v-model="merchant.email"
       :rules="[
         required('Email must be provided'),
@@ -63,6 +67,7 @@
     />
 
     <v-text-field
+      v-if="!isEdit"
       v-model="merchant.password"
       :rules="[required('Password must be provided')]"
       class="span-2"
@@ -73,9 +78,9 @@
 
     <v-text-field
       v-model="merchant.restaurantName"
-      :rules="[required('Full name must be provided')]"
+      :rules="[required('Restaurant name must be provided')]"
       class="span-2"
-      label="Full Name"
+      label="Restaurant Name"
       outlined
     />
 
@@ -112,7 +117,7 @@
 
     <v-combobox
       v-model="merchant.tags"
-      :items="['Tag 1', 'Tag 2', 'Tag 3']"
+      :items="tags"
       :rules="[required('Tags must be provided')]"
       class="span-2"
       label="Tags"
@@ -125,7 +130,7 @@
 
     <v-select
       v-model="merchant.dietaryRestrictions"
-      :items="['Dietary 1', 'Dietary 2', 'Dietary 3']"
+      :items="dietaryRestrictions"
       :rules="[required('Dietary Restrictions must be provided')]"
       class="span-2"
       label="Dietary Restrictions"
@@ -135,7 +140,7 @@
 
     <v-select
       v-model="merchant.culinaryOptions"
-      :items="['Culinary 1', 'Culinary 2', 'Culinary 3']"
+      :items="culinaryOptions"
       :rules="[required('Culinary Options must be provided')]"
       class="span-2"
       label="Culinary Options"
@@ -158,7 +163,7 @@
     </v-row>
 
     <v-carousel
-      v-if="media.length > 0"
+      v-if="media.length > 0 && !isEdit"
       height="300"
       class="span-2 mb-4"
       hide-delimiters
@@ -174,6 +179,7 @@
     </v-carousel>
 
     <v-file-input
+      v-if="!isEdit"
       v-model="media"
       accept="image/*"
       :rules="[required('Images must be provided')]"
@@ -192,13 +198,13 @@
       multiple
     ></v-file-input>
 
-    <loading-dialog v-model="loading" message="Fetching User Data" />
+    <loading-dialog v-model="loading" message="Fetching Merchant Data" />
   </SimpleForm>
 </template>
 
 <script>
 import SimpleForm from '../../components/Form';
-import { UsersService } from '@/services/user-service';
+import { MerchantsService } from '../../services/merchant-service';
 import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email } from '@/utils/validators';
@@ -210,7 +216,7 @@ export default {
   data: () => ({
     isEdit: false,
     loading: false,
-    users_service: new UsersService(),
+    merchantsService: new MerchantsService(),
     upload_image_service: new UploadImageService(),
     // center: { lat: 0, lng: 0 },
     // zoom: 10,
@@ -222,16 +228,43 @@ export default {
     profileImage: null,
     menu: null,
     media: [],
-    tags: [],
-    dietaryRestrictions: [],
-    culinaryOtions: [],
+    tags: ['Halal', 'Late Night'],
+    dietaryRestrictions: [
+      'Vegan',
+      'Vegetarian',
+      'Halal',
+      'Kosher',
+      'Gluten Free',
+      'Dairy free',
+      'Keto',
+      'Pescatarian',
+      'Paleo'
+    ],
+    culinaryOptions: [
+      'Italian',
+      'Mexican',
+      'Japanese',
+      'Chinese',
+      'Indian',
+      'Thai',
+      'Turkish',
+      'Indonesian',
+      'American',
+      'Korean',
+      'Greek',
+      'Lebanese',
+      'French',
+      'Caribbean',
+      'Vietnamese'
+    ],
 
     merchant: {
       role: 'MERCHANT',
-      firstName: '',
-      surName: '',
       username: '',
+      firstname: '',
+      surname: '',
       email: '',
+      status: '',
       password: '',
       profileImage: '',
       restaurantName: '',
@@ -240,21 +273,24 @@ export default {
       tags: [],
       dietaryRestrictions: [],
       culinaryOptions: [],
-      status: false,
       isSponsored: false,
       menu: [],
-      media: []
+      media: [],
+      location: {
+        type: 'Point',
+        coordinates: [29, 40]
+      }
     }
   }),
 
   mounted() {
-    this.loadUser();
+    this.loadMerchant();
   },
 
   computed: {
-    profileImageObjectURL() {
-      return this.profileImage ? URL.createObjectURL(this.profileImage) : '';
-    },
+    // profileImageObjectURL() {
+    //   return this.profileImage ? URL.createObjectURL(this.profileImage) : '';
+    // },
 
     mediaObjectURL() {
       return this.media.map((image) => URL.createObjectURL(image));
@@ -283,68 +319,43 @@ export default {
     //   console.log(selectedLocation); // Do something with the selected location
     // },
 
-    async loadUser() {
+    async loadMerchant() {
       if (!this.$route.query.id) return;
       this.isEdit = true;
       this.loading = true;
-      this.user = await this.users_service.fetchOne(this.$route.query.id);
+      this.merchant = await this.merchantsService.fetchOne(
+        this.$route.query.id
+      );
+
+      await this.$axios
+        .get(`/singe-file?file=${this.merchant.profileImage}`)
+        .then((response) => {
+          console.log(response.data);
+          this.merchant.profileImage = response.data;
+        });
+
       this.loading = false;
     },
     async submit(context) {
       if (this.isEdit) {
-        context.changeLoadingMessage('Updating User');
+        context.changeLoadingMessage('Updating Merchant');
 
         try {
           this.users_service.update(this.user);
           return true;
         } catch (e) {
           context.reportError({
-            title: 'Error while updating User',
+            title: 'Error while updating Merchant',
             description: e.response
               ? e.response.data.message
               : 'Something went wrong!'
           });
           return false;
         }
-
-        // if (!this.password.old) {
-        //   try {
-        //     this.users_service.update(this.user);
-        //     return true;
-        //   } catch (e) {
-        //     context.reportError({
-        //       title: 'Error while updating User',
-        //       description: e.response
-        //         ? e.response.data.message
-        //         : 'Something went wrong!'
-        //     });
-        //     return false;
-        //   }
-        // } else {
-        //   try {
-        //     await this.$axios
-        //       .patch(`/persons/update-password/${this.$route.query.id}`, {
-        //         oldPassword: this.password.old,
-        //         newPassword: this.password.new
-        //       })
-        //       .then(() => {
-        //         this.users_service.update(this.user);
-        //       });
-        //     return true;
-        //   } catch (e) {
-        //     context.reportError({
-        //       title: 'Error while updating User',
-        //       description: e.response
-        //         ? e.response.data.message
-        //         : 'Something went wrong!'
-        //     });
-        //     return false;
-        //   }
-        // }
       } else {
-        context.changeLoadingMessage('Creating User');
+        context.changeLoadingMessage('Creating Merchant');
         try {
-          // creating user
+          // creating merchant
 
           if (this.profileImage) {
             const formData = new FormData();
@@ -357,7 +368,6 @@ export default {
             });
 
             this.merchant.profileImage = response.data;
-            console.log(this.merchant.profileImage, 'profileImage');
           }
 
           if (this.media.length > 0) {
@@ -403,18 +413,21 @@ export default {
             );
           }
 
-          if (this.merchant && this.merchant.status === true) {
+          if (
+            this.merchant &&
+            this.merchant.status &&
+            this.merchant.status === true
+          ) {
             this.merchant.status = 'ACTIVE';
           } else {
             this.merchant.status = 'PENDING';
           }
-          console.log(this.merchant);
 
-          await this.users_service.create(this.user);
+          await this.merchantsService.create(this.merchant);
           return true;
         } catch (e) {
           context.reportError({
-            title: 'Error while creating User',
+            title: 'Error while creating Merchant',
             description: e.response
               ? e.response.data.message
               : 'Something went wrong!'

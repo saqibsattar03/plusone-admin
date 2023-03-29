@@ -299,29 +299,37 @@ export default {
         this.loading = false;
       } catch (e) {
         this.loading = false;
-        if (e.response.status === 401) {
-          this.errorValue = {
-            title: 'Error while loading data',
-            description:
-              e?.response?.data?.error ??
-              'Your authentication timing is expired, Please try to login again'
-          };
-          this.error = true;
+        this.errorValue = {
+          title: 'Error while loading data',
+          description:
+            e?.response?.data?.error ??
+            'Some error occured, Please try again later'
+        };
+        this.error = true;
 
-          localStorage.clear();
+        // if (e.response.status === 401) {
+        //   this.errorValue = {
+        //     title: 'Error while loading data',
+        //     description:
+        //       e?.response?.data?.error ??
+        //       'Your authentication timing is expired, Please try to login again'
+        //   };
+        //   this.error = true;
 
-          setTimeout(() => {
-            window.location.reload();
-          }, 10000);
-        } else {
-          this.errorValue = {
-            title: 'Error while loading data',
-            description:
-              e?.response?.data?.error ??
-              'Some error occured, Please try again later'
-          };
-          this.error = true;
-        }
+        //   localStorage.clear();
+
+        //   setTimeout(() => {
+        //     window.location.reload();
+        //   }, 10000);
+        // } else {
+        //   this.errorValue = {
+        //     title: 'Error while loading data',
+        //     description:
+        //       e?.response?.data?.error ??
+        //       'Some error occured, Please try again later'
+        //   };
+        //   this.error = true;
+        // }
       }
     },
 

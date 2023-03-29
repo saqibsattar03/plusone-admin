@@ -19,15 +19,15 @@
     </template>
 
     <template #restaurantCode="{ item }">
-      {{ item.restaurantData[0].uniqueCode }}
+      {{ item.restaurantData[0] && item.restaurantData[0].uniqueCode }}
     </template>
 
     <template #isSponsored="{ item }">
-      {{ item.restaurantData[0].isSponsored }}
+      {{ item.restaurantData[0] && item.restaurantData[0].isSponsored }}
     </template>
 
     <template #phoneNumber="{ item }">
-      {{ item.restaurantData[0].phoneNumber }}
+      {{ item.restaurantData[0] && item.restaurantData[0].phoneNumber }}
     </template>
   </data-table>
 </template>
@@ -84,7 +84,7 @@ export default {
     },
 
     edit(item) {
-      this.$router.push(`/merchant?id=${item._id}`);
+      this.$router.push(`/merchant?id=${item.restaurantData[0]._id}`);
     },
 
     view(item) {
@@ -101,26 +101,33 @@ export default {
 
       await Promise.all(
         this.merchants.map(async (merchant) => {
-          const axiosWithoutToken = this.$axios.create({
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          await axiosWithoutToken
-            .get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${merchant.restaurantData[0].location.coordinates[1]},${merchant.restaurantData[0].location.coordinates[0]}&key=${this.apiKey}`
-            )
-            .then((response) => {
-              if (response.data.results.length > 0) {
-                const locationName = response.data.results[0].formatted_address;
-                Vue.set(merchant, 'locationName', locationName);
-              } else {
-                return 'Location not found';
+          if (
+            merchant.restaurantData[0] &&
+            merchant.restaurantData[0].location.coordinates[1] &&
+            merchant.restaurantData[0].location.coordinates[0]
+          ) {
+            const axiosWithoutToken = this.$axios.create({
+              headers: {
+                'Content-Type': 'application/json'
               }
-            })
-            .catch((error) => {
-              console.log(error, 'error');
             });
+            await axiosWithoutToken
+              .get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${merchant.restaurantData[0].location.coordinates[1]},${merchant.restaurantData[0].location.coordinates[0]}&key=${this.apiKey}`
+              )
+              .then((response) => {
+                if (response.data.results.length > 0) {
+                  const locationName =
+                    response.data.results[0].formatted_address;
+                  Vue.set(merchant, 'locationName', locationName);
+                } else {
+                  return 'Location not found';
+                }
+              })
+              .catch((error) => {
+                console.log(error, 'error');
+              });
+          }
         })
       );
 
