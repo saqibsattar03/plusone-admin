@@ -58,6 +58,7 @@ export default {
         this.merchant = await this.merchants_service.fetchOne(
           this.$route.query.id
         );
+        console.log(this.merchant);
       } catch (e) {
         console.log(e);
       }

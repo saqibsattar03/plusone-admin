@@ -14,7 +14,8 @@ export class MerchantsService {
   }
 
   async update(user) {
-    return (await axios.patch('/persons/update/' + user._id, user)).data;
+    return (await axios.patch('/restaurant?restaurantId=' + user._id, user))
+      .data;
   }
 
   async delete(user) {

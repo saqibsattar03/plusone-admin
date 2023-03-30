@@ -100,8 +100,12 @@ export default {
             console.log(e);
             this.error = true;
             this.errorVal = {
-              title: 'Error while signing in',
-              description: 'Email or Password incorrect!'
+              title: e.response.data.error
+                ? e.response.data.error
+                : 'Error while signing in',
+              description: e.response.data.message
+                ? e.response.data.message
+                : 'Email or Password incorrect!'
             };
             this.loading = false;
           });

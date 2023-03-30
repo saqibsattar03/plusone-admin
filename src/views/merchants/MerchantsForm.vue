@@ -10,11 +10,21 @@
     </p>
 
     <v-img
-      v-if="merchant.profileImage || profileImageObjectURL"
+      v-if="profileImageObjectURL && !isEdit"
       contain
       max-height="300"
       class="span-2 mb-4"
       :src="profileImageObjectURL"
+    ></v-img>
+
+    <v-img
+      v-if="merchant.profileImage && isEdit"
+      contain
+      max-height="300"
+      class="span-2 mb-4"
+      :src="
+        profileImageObjectURL ? profileImageObjectURL : merchant.profileImage
+      "
     ></v-img>
 
     <v-file-input
@@ -22,9 +32,15 @@
       accept="image/*"
       :rules="[required('Profile Image must be provided')]"
       class="span-2"
-      label="Profile Image"
+      :placeholder="isEdit ? 'Update Profile Image' : 'Add Profile Image'"
       outlined
-    ></v-file-input>
+    >
+      <template v-slot:selection="{ index, text }">
+        <v-chip v-if="index < 2" color="primary" dark label small>
+          {{ text }}
+        </v-chip>
+      </template>
+    </v-file-input>
 
     <v-text-field
       v-if="!isEdit"
@@ -178,8 +194,23 @@
       ></v-carousel-item>
     </v-carousel>
 
+    <v-carousel
+      v-if="merchant.media.length > 0 && isEdit"
+      height="300"
+      class="span-2 mb-4"
+      hide-delimiters
+      show-arrows-on-hover
+    >
+      <v-carousel-item
+        contain
+        v-for="(image, index) in merchant.media"
+        :key="index"
+        :src="image"
+        style="object-fit: cover"
+      ></v-carousel-item>
+    </v-carousel>
+
     <v-file-input
-      v-if="!isEdit"
       v-model="media"
       accept="image/*"
       :rules="[required('Images must be provided')]"
@@ -187,7 +218,13 @@
       label="Images"
       outlined
       multiple
-    ></v-file-input>
+    >
+      <template v-slot:selection="{ index, text }">
+        <v-chip v-if="index < 2" color="primary" dark label small>
+          {{ text }}
+        </v-chip>
+      </template>
+    </v-file-input>
 
     <v-file-input
       v-model="menu"
@@ -196,7 +233,13 @@
       label="Menu File"
       outlined
       multiple
-    ></v-file-input>
+    >
+      <template v-slot:selection="{ index, text }">
+        <v-chip v-if="index < 2" color="primary" dark label small>
+          {{ text }}
+        </v-chip>
+      </template>
+    </v-file-input>
 
     <loading-dialog v-model="loading" message="Fetching Merchant Data" />
   </SimpleForm>
@@ -225,8 +268,12 @@ export default {
     // only for edit
     disabled: false,
 
+    oldProfileImage: null,
+    oldMenu: [],
+    oldMedia: [],
+
     profileImage: null,
-    menu: null,
+    menu: [],
     media: [],
     tags: ['Halal', 'Late Night'],
     dietaryRestrictions: [
@@ -288,9 +335,9 @@ export default {
   },
 
   computed: {
-    // profileImageObjectURL() {
-    //   return this.profileImage ? URL.createObjectURL(this.profileImage) : '';
-    // },
+    profileImageObjectURL() {
+      return this.profileImage ? URL.createObjectURL(this.profileImage) : '';
+    },
 
     mediaObjectURL() {
       return this.media.map((image) => URL.createObjectURL(image));
@@ -327,12 +374,40 @@ export default {
         this.$route.query.id
       );
 
+      this.oldProfileImage = this.merchant.profileImage;
+      this.oldMenu = this.merchant.menu;
+      this.oldMedia = this.merchant.media;
+
+      this.merchant.media = [];
+      this.merchant.menu = [];
+
       await this.$axios
         .get(`/singe-file?file=${this.merchant.profileImage}`)
         .then((response) => {
-          console.log(response.data);
           this.merchant.profileImage = response.data;
         });
+
+      await Promise.all(
+        this.oldMenu.map(async (menu) => {
+          await this.$axios.get(`/singe-file?file=${menu}`).then((response) => {
+            menu = response.data;
+            this.merchant.menu.push(menu);
+          });
+        })
+      );
+
+      await Promise.all(
+        this.oldMedia.map(async (media) => {
+          await this.$axios
+            .get(`/singe-file?file=${media}`)
+            .then((response) => {
+              media = response.data;
+              this.merchant.media.push(media);
+            });
+        })
+      );
+
+      console.log(this.merchant, 'merchant');
 
       this.loading = false;
     },
@@ -341,7 +416,103 @@ export default {
         context.changeLoadingMessage('Updating Merchant');
 
         try {
-          this.users_service.update(this.user);
+          // updating merchant
+          if (this.profileImage) {
+            const formData = new FormData();
+            formData.append('media', this.profileImage);
+
+            const response = await this.$axios.post('/single-file', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+
+            this.merchant.profileImage = response.data;
+          }
+
+          if (this.menu.length > 0) {
+            this.merchant.menu = [];
+
+            await Promise.all(
+              this.menu.map(async (menu) => {
+                const formData = new FormData();
+                formData.append('media', menu);
+
+                const response = await this.$axios.post(
+                  '/single-file',
+                  formData,
+                  {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  }
+                );
+
+                this.merchant.menu.push(response.data);
+              })
+            );
+          }
+
+          if (this.media.length > 0) {
+            this.merchant.media = [];
+
+            await Promise.all(
+              this.media.map(async (media) => {
+                const formData = new FormData();
+                formData.append('media', media);
+
+                const response = await this.$axios.post(
+                  '/single-file',
+                  formData,
+                  {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  }
+                );
+
+                this.merchant.media.push(response.data);
+              })
+            );
+          }
+
+          // if (this.oldProfileImage) {
+          //   try {
+          //     await this.$axios.delete(
+          //       `/remove-file?media=${this.oldProfileImage}`
+          //     );
+          //   } catch (e) {
+          //     console.log(e.response);
+          //   }
+          // }
+
+          // if (this.oldMenu.length > 0) {
+          //   try {
+          //     await Promise.all(
+          //       this.oldMenu.map(async (menu) => {
+          //         await this.$axios.delete(`/remove-file?media=${menu}`);
+          //       })
+          //     );
+          //   } catch (e) {
+          //     console.log(e.response);
+          //   }
+          // }
+
+          // if (this.oldMedia.length > 0) {
+          //   try {
+          //     await Promise.all(
+          //       this.oldMedia.map(async (media) => {
+          //         await this.$axios.delete(`/remove-file?media=${media}`);
+          //       })
+          //     );
+          //   } catch (e) {
+          //     console.log(e.response);
+          //   }
+          // }
+
+          console.log(this.merchant, 'merchant');
+
+          this.merchantsService.update(this.merchant);
           return true;
         } catch (e) {
           context.reportError({
