@@ -140,6 +140,7 @@ export default {
           { id: 'merchants:delete', name: 'Delete Merchants' }
         ]
       }
+
       // {
       //   id: 'events',
       //   name: 'Events',

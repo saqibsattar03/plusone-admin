@@ -34,13 +34,33 @@ export default {
 
     headers: [
       {
-        text: 'Name',
+        text: 'First Name',
         value: 'firstname',
+        sortable: true
+      },
+      {
+        text: 'Surname',
+        value: 'surname',
         sortable: true
       },
       {
         text: 'Email',
         value: 'email',
+        sortable: true
+      },
+      {
+        text: 'Status',
+        value: 'status',
+        sortable: true
+      },
+      {
+        text: 'Account Type',
+        value: 'accountType',
+        sortable: true
+      },
+      {
+        text: 'Account Holder Type',
+        value: 'accountHolderType',
         sortable: true
       }
     ]

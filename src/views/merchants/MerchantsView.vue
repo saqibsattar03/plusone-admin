@@ -9,13 +9,20 @@
     :delete-handler="null"
     :edit-handler="userScopes.includes('merchants:edit') ? edit : null"
     :view-handler="userScopes.includes('merchants:view') ? view : null"
+    :voucher-handler="voucherView"
   >
-    <template #firstname="{ item }">
-      {{ item.firstname }} {{ item.surname }}
+    <template #restaurantName="{ item }">
+      {{ item.restaurantData[0] && item.restaurantData[0].restaurantName }}
     </template>
 
     <template #locationName="{ item }">
-      {{ item.locationName }}
+      {{
+        item.locationName
+          ? item.locationName.length > 30
+            ? `${item.locationName.substr(0, 30)}...`
+            : `${item.locationName.substr(0, 30)}`
+          : ''
+      }}
     </template>
 
     <template #restaurantCode="{ item }">
@@ -53,7 +60,7 @@ export default {
     headers: [
       {
         text: 'Merchant Name',
-        value: 'firstname',
+        value: 'restaurantName',
         sortable: true
       },
       {
@@ -88,7 +95,11 @@ export default {
     },
 
     view(item) {
-      this.$router.push(`/merchant-details?id=${item._id}`);
+      this.$router.push(`/merchant-details?id=${item.restaurantData[0]._id}`);
+    },
+
+    voucherView(item) {
+      this.$router.push(`/vouchers?restaurantId=${item.restaurantData[0]._id}`);
     },
 
     async deleteUser(item) {

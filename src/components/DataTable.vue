@@ -96,7 +96,7 @@
             <slot :name="elem.value" :item="item">{{ item[elem.value] }}</slot>
           </td>
           <td
-            v-if="viewHandler || editHandler || deleteHandler"
+            v-if="viewHandler || editHandler || deleteHandler || voucherHandler"
             :style="`max-width: calc(100% / ${headersValue.length})`"
             class="py-2"
           >
@@ -105,6 +105,16 @@
               style="gap: 8px"
             >
               <slot name="extra-actions" :item="item" />
+              <v-btn
+                dark
+                v-if="voucherHandler"
+                class="text--white"
+                small
+                @click="voucherHandler(item)"
+                color="primary"
+              >
+                Vouchers
+              </v-btn>
               <v-btn
                 dark
                 v-if="viewHandler"
@@ -150,13 +160,24 @@
             </div>
           </td>
           <td
-            v-if="viewHandler || editHandler || deleteHandler"
+            v-if="viewHandler || editHandler || deleteHandler || voucherHandler"
             class="v-data-table__mobile-row text-end"
             style="text-align: right"
           >
             <div class="v-data-table__mobile-row__header">Action</div>
             <div class="v-data-table__mobile-row__cell d-flex flex-column">
               <slot name="extra-actions" :item="item" />
+              <v-btn
+                class="my-1"
+                dark
+                v-if="voucherHandler"
+                small
+                @click="voucherHandler(item)"
+                color="primary"
+              >
+                Vouchers
+              </v-btn>
+
               <v-btn
                 class="my-1"
                 dark
@@ -256,6 +277,11 @@ export default {
       default: null
     },
 
+    voucherHandler: {
+      type: Function,
+      default: null
+    },
+
     hasElevation: {
       type: Boolean,
       default: true
@@ -270,7 +296,12 @@ export default {
 
   mounted() {
     this.headersValue = [...this.headers];
-    if (this.editHandler || this.deleteHandler || this.viewHandler) {
+    if (
+      this.editHandler ||
+      this.deleteHandler ||
+      this.viewHandler ||
+      this.voucherHandler
+    ) {
       this.headersValue.push({
         text: 'Actions',
         align: 'right',

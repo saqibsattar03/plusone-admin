@@ -171,7 +171,7 @@ export default {
         {
           to: '/merchants',
           title: 'Merchants',
-          icon: 'mdi-account-group',
+          icon: 'mdi-store',
           isVisible: this.userScopes?.includes('merchants:view')
         }
       ];

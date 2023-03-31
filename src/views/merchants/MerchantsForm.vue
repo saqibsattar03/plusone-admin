@@ -30,7 +30,7 @@
     <v-file-input
       v-model="profileImage"
       accept="image/*"
-      :rules="[required('Profile Image must be provided')]"
+      :rules="!isEdit ? [required(`Profile Image must be provided`)] : []"
       class="span-2"
       :placeholder="isEdit ? 'Update Profile Image' : 'Add Profile Image'"
       outlined
@@ -117,19 +117,7 @@
       outlined
     />
 
-    <!-- <gmap-map
-      class="span-2"
-      :center="center"
-      :zoom="zoom"
-      @click="onMapClick"
-      @loaded="onMapLoaded"
-      ref="map"
-    >
-    </gmap-map> -->
-
-    <!-- <button v-if="mapReady" @click="getSelectedLocation">
-      Get Selected Location
-    </button> -->
+    <div class="span-2 mb-8" id="map" style="height: 200px"></div>
 
     <v-combobox
       v-model="merchant.tags"
@@ -213,7 +201,7 @@
     <v-file-input
       v-model="media"
       accept="image/*"
-      :rules="[required('Images must be provided')]"
+      :rules="!isEdit ? [required(`Images must be provided`)] : []"
       class="span-2"
       label="Images"
       outlined
@@ -228,7 +216,7 @@
 
     <v-file-input
       v-model="menu"
-      :rules="[required('Menu File must be provided')]"
+      :rules="!isEdit ? [required(`Menu File must be provided`)] : []"
       class="span-2"
       label="Menu File"
       outlined
@@ -252,6 +240,11 @@ import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email } from '@/utils/validators';
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
 export default {
   name: 'Form',
   components: { LoadingDialog, SimpleForm },
@@ -261,9 +254,10 @@ export default {
     loading: false,
     merchantsService: new MerchantsService(),
     upload_image_service: new UploadImageService(),
-    // center: { lat: 0, lng: 0 },
-    // zoom: 10,
-    // mapReady: false,
+    latitude: 10,
+    longitude: 10,
+    zoomLevel: 5,
+    marker: null,
 
     // only for edit
     disabled: false,
@@ -332,6 +326,24 @@ export default {
 
   mounted() {
     this.loadMerchant();
+
+    this.map = L.map('map').setView(
+      [this.latitude, this.longitude],
+      this.zoomLevel
+    );
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(
+      this.map
+    );
+
+    this.map.on('click', (e) => {
+      if (!this.marker) {
+        this.marker = L.marker(e.latlng).addTo(this.map);
+      } else {
+        this.marker.setLatLng(e.latlng);
+      }
+      this.latitude = e.latlng.lat;
+      this.longitude = e.latlng.lng;
+    });
   },
 
   computed: {
@@ -340,7 +352,9 @@ export default {
     },
 
     mediaObjectURL() {
-      return this.media.map((image) => URL.createObjectURL(image));
+      return this.media.length > 0
+        ? this.media.map((image) => URL.createObjectURL(image))
+        : [];
     }
   },
 
@@ -406,8 +420,6 @@ export default {
             });
         })
       );
-
-      console.log(this.merchant, 'merchant');
 
       this.loading = false;
     },
@@ -509,8 +521,6 @@ export default {
           //     console.log(e.response);
           //   }
           // }
-
-          console.log(this.merchant, 'merchant');
 
           this.merchantsService.update(this.merchant);
           return true;
