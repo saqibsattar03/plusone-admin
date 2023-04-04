@@ -137,6 +137,7 @@ export default {
 
     voucher: {
       restaurantId: '',
+      voucherId: '',
       voucherObject: {
         title: '',
         voucherImage: '',
@@ -171,16 +172,30 @@ export default {
       if (!this.$route.query.restaurantId) return;
       this.isEdit = true;
       this.loading = true;
-      this.voucher = await this.merchantsService.fetchOneVoucher({
+      let voucher = await this.merchantsService.fetchOneVoucher({
         restaurantId: this.$route.query.restaurantId,
         voucherId: this.$route.query.voucherId
       });
 
+      this.voucher = {
+        restaurantId: this.$route.query.restaurantId,
+        voucherId: this.$route.query.voucherId,
+        voucherObject: {
+          title: voucher[0].voucherObject.title,
+          voucherImage: voucher[0].voucherObject.voucherImage,
+          voucherPreference: voucher[0].voucherObject.voucherPreference,
+          voucherType: voucher[0].voucherObject.voucherType,
+          discount: voucher[0].voucherObject.discount,
+          description: voucher[0].voucherObject.description,
+          estimatedSavings: voucher[0].voucherObject.estimatedSavings,
+          estimatedCost: voucher[0].voucherObject.estimatedCost
+        }
+      };
+
       this.oldVoucherImage = this.voucher.voucherObject.voucherImage;
 
-      console.log(this.voucher);
       await this.$axios
-        .get(`/singe-file?file=${this.voucher.voucherObject.voucherImage}`)
+        .get(`/singe-file?file=${this.oldVoucherImage}`)
         .then((response) => {
           this.voucher.voucherObject.voucherImage = response.data;
         });
@@ -193,7 +208,7 @@ export default {
 
         try {
           // updating Voucher Image
-          if (this.profileImage) {
+          if (this.voucherImage) {
             const formData = new FormData();
             formData.append('media', this.voucherImage);
 
@@ -206,15 +221,15 @@ export default {
             this.voucher.voucherObject.voucherImage = response.data;
           }
 
-          // if (this.oldProfileImage) {
-          //   try {
-          //     await this.$axios.delete(
-          //       `/remove-file?media=${this.oldProfileImage}`
-          //     );
-          //   } catch (e) {
-          //     console.log(e.response);
-          //   }
-          // }
+          if (this.oldVoucherImage) {
+            try {
+              await this.$axios.delete(
+                `/remove-file?media=${this.oldVoucherImage}`
+              );
+            } catch (e) {
+              console.log(e.response);
+            }
+          }
 
           this.merchantsService.updateVoucher(this.voucher);
           return true;

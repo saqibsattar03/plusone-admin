@@ -5,14 +5,7 @@ import router from './router';
 import axios from 'axios';
 import './assets/style.sass';
 import './assets/style.css';
-// import * as VueGoogleMaps from 'vue2-google-maps';
-
-// Vue.use(VueGoogleMaps, {
-//   load: {
-//     key: 'AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA',
-//     libraries: 'places'
-//   }
-// });
+import 'leaflet/dist/leaflet.css';
 
 Vue.config.productionTip = false;
 

@@ -84,8 +84,10 @@ export default {
 
       const voucher = await this.merchants_service.fetchAllVoucher(id);
       this.voucher = voucher;
-      const filterData = Object.values(voucher.voucherObject);
-      return filterData;
+      if (this.voucher) {
+        const filterData = Object.values(voucher.voucherObject);
+        return filterData;
+      }
     }
   }
 };

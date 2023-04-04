@@ -109,6 +109,9 @@ export default {
     async loadData() {
       const merchants = await this.merchants_service.fetchAll();
       this.merchants = merchants;
+      this.merchants = this.merchants.filter(
+        (merchant) => merchant.restaurantData.length > 0
+      );
 
       await Promise.all(
         this.merchants.map(async (merchant) => {

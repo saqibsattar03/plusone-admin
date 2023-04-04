@@ -117,7 +117,18 @@
       outlined
     />
 
-    <div class="span-2 mb-8" id="map" style="height: 200px"></div>
+    <l-map
+      style="height: 200px; margin-bottom: 20px"
+      class="span-2"
+      ref="map"
+      :zoom="zoom"
+      :center="center"
+      @update:center="centerUpdate"
+      @update:zoom="zoomUpdate"
+    >
+      <l-tile-layer :url="url"></l-tile-layer>
+      <l-marker :lat-lng="marker"></l-marker>
+    </l-map>
 
     <v-combobox
       v-model="merchant.tags"
@@ -240,24 +251,23 @@ import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email } from '@/utils/validators';
 
-import L from 'leaflet';
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 export default {
   name: 'Form',
-  components: { LoadingDialog, SimpleForm },
+  components: { LoadingDialog, SimpleForm, LMap, LTileLayer, LMarker },
 
   data: () => ({
     isEdit: false,
     loading: false,
     merchantsService: new MerchantsService(),
     upload_image_service: new UploadImageService(),
-    latitude: 10,
-    longitude: 10,
-    zoomLevel: 5,
-    marker: null,
+
+    zoom: 13,
+    center: [51.505, -0.09],
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    marker: [51.505, -0.09],
 
     // only for edit
     disabled: false,
@@ -326,24 +336,7 @@ export default {
 
   mounted() {
     this.loadMerchant();
-
-    this.map = L.map('map').setView(
-      [this.latitude, this.longitude],
-      this.zoomLevel
-    );
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(
-      this.map
-    );
-
-    this.map.on('click', (e) => {
-      if (!this.marker) {
-        this.marker = L.marker(e.latlng).addTo(this.map);
-      } else {
-        this.marker.setLatLng(e.latlng);
-      }
-      this.latitude = e.latlng.lat;
-      this.longitude = e.latlng.lng;
-    });
+    this.getUserLocation();
   },
 
   computed: {
@@ -362,23 +355,25 @@ export default {
     required,
     email,
 
-    // onMapClick(event) {
-    //   this.center = {
-    //     lat: event.latLng.lat(),
-    //     lng: event.latLng.lng()
-    //   };
-    // },
-    // onMapLoaded() {
-    //   this.mapReady = true;
-    // },
-    // getSelectedLocation() {
-    //   const latLng = this.$refs.map.getCenter();
-    //   const selectedLocation = {
-    //     lat: latLng.lat(),
-    //     lng: latLng.lng()
-    //   };
-    //   console.log(selectedLocation); // Do something with the selected location
-    // },
+    async getUserLocation() {
+      try {
+        const position = await new Promise((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject)
+        );
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        this.center = [lat, lng];
+        this.marker = [lat, lng];
+      } catch (error) {
+        console.error('Error getting user location:', error);
+      }
+    },
+    centerUpdate(newCenter) {
+      this.marker = newCenter;
+    },
+    zoomUpdate(newZoom) {
+      this.zoom = newZoom;
+    },
 
     async loadMerchant() {
       if (!this.$route.query.id) return;
@@ -387,6 +382,8 @@ export default {
       this.merchant = await this.merchantsService.fetchOne(
         this.$route.query.id
       );
+
+      this.center = this.merchant.location.coordinates;
 
       this.oldProfileImage = this.merchant.profileImage;
       this.oldMenu = this.merchant.menu;
@@ -603,6 +600,8 @@ export default {
           } else {
             this.merchant.status = 'PENDING';
           }
+
+          this.merchant.location.coordinates = this.center;
 
           await this.merchantsService.create(this.merchant);
           return true;

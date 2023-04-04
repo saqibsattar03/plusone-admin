@@ -10,8 +10,11 @@ export class MerchantsService {
   }
 
   async fetchOneVoucher(id) {
-    return (await axios.get('/voucher/all-by-restaurant?restaurantId=' + id))
-      .data;
+    return (
+      await axios.get(
+        `/voucher/single?voucherId=${id.voucherId}&restaurantId=${id.restaurantId}`
+      )
+    ).data;
   }
 
   async fetchAllVoucher(id) {
@@ -34,10 +37,7 @@ export class MerchantsService {
 
   async updateVoucher(voucher) {
     return (
-      await axios.patch(
-        '/restaurant?restaurantId=' + voucher.restaurantId,
-        voucher
-      )
+      await axios.patch('/voucher?voucherId=' + voucher.voucherId, voucher)
     ).data;
   }
 
