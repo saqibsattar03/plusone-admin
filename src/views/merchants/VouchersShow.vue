@@ -12,20 +12,63 @@
       </v-overlay>
 
       <div v-else>
+        <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
+          <v-btn color="primary" @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+            Back</v-btn
+          >
+        </v-row>
+
         <v-card-title class="p10" style="color: #020819"
-          >Merchant Details</v-card-title
+          >Voucher Details</v-card-title
         >
 
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Resturant Name : </b>{{ merchant.restaurantName }}
+              <b>Title : </b>{{ voucher[0].voucherObject.title }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Contact Number : </b>{{ merchant.phoneNumber }}
+              <b>Type : </b>{{ voucher[0].voucherObject.voucherType }}
+            </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row class="pa-0" no-gutters>
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Voucher Preference : </b
+              >{{ voucher[0].voucherObject.voucherPreference }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Discount : </b
+              >{{
+                voucher[0].voucherObject.discount
+                  ? voucher[0].voucherObject.discount
+                  : 'N/A'
+              }}
+            </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row class="pa-0" no-gutters>
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Estimated Cost: </b
+              >{{ voucher[0].voucherObject.estimatedCost }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Estimated Savings : </b
+              >{{ voucher[0].voucherObject.estimatedSavings }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -33,80 +76,7 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12">
             <v-card-text class="p10">
-              <b>Description : </b>{{ merchant.description }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Voucher Count : </b>{{ merchant.voucherCount }}
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Unique Code : </b>{{ merchant.uniqueCode }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0 my-5" no-gutters>
-          <v-carousel
-            v-if="media.length > 0"
-            height="300"
-            class="span-2 mb-4"
-            hide-delimiters
-            show-arrows-on-hover
-          >
-            <v-carousel-item
-              contain
-              v-for="(image, index) in media"
-              :key="index"
-              :src="image"
-              style="object-fit: cover"
-            ></v-carousel-item>
-          </v-carousel>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Tags : </b
-              ><span v-for="tag in merchant.tags" :key="tag">{{
-                tag + ', '
-              }}</span>
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Dietary Restrictions : </b>
-              <span
-                v-for="dietary in merchant.dietaryRestrictions"
-                :key="dietary"
-                >{{ dietary + ', ' }}</span
-              >
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Culinary Options : </b
-              ><span
-                v-for="culinary in merchant.culinaryOptions"
-                :key="culinary"
-                >{{ culinary + ', ' }}</span
-              >
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Sponsored : </b>{{ merchant.isSponsored }}
+              <b>Description : </b>{{ voucher[0].voucherObject.description }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -123,10 +93,8 @@ export default {
   data() {
     return {
       dataLoading: true,
-      merchant: {},
-      merchants_service: new MerchantsService(),
-
-      media: []
+      voucher: {},
+      merchants_service: new MerchantsService()
     };
   },
   methods: {
@@ -135,23 +103,18 @@ export default {
       return dayjs(date).format('D MMM YYYY - hh:mm A');
     },
 
-    async loadMerchant() {
+    async loadVoucher() {
       try {
         this.dataLoading = true;
-        this.merchant = await this.merchants_service.fetchOne(
-          this.$route.query.id
-        );
 
-        await Promise.all(
-          this.merchant.media.map(async (media) => {
-            await this.$axios
-              .get(`/singe-file?file=${media}`)
-              .then((response) => {
-                media = response.data;
-                this.media.push(media);
-              });
-          })
-        );
+        let voucher = await this.merchants_service.fetchOneVoucher({
+          restaurantId: this.$route.query.restaurantId,
+          voucherId: this.$route.query.voucherId
+        });
+
+        this.voucher = voucher;
+
+        console.log(this.voucher, 'this.voucher');
       } catch (e) {
         console.log(e);
       }
@@ -159,7 +122,7 @@ export default {
     }
   },
   async mounted() {
-    await this.loadMerchant();
+    await this.loadVoucher();
   }
 };
 </script>

@@ -5,6 +5,13 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
+    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
+      <v-btn color="primary" @click="$router.go(-1)">
+        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+        Back</v-btn
+      >
+    </v-row>
+
     <p class="span-2 form__title">
       {{ isEdit ? 'Update Voucher' : 'Add New Voucher' }}
     </p>
@@ -17,19 +24,8 @@
       :src="VoucherImageObjectURL"
     ></v-img>
 
-    <v-img
-      v-if="voucher.voucherObject.voucherImage && isEdit"
-      contain
-      max-height="300"
-      class="span-2 mb-4"
-      :src="
-        VoucherImageObjectURL
-          ? VoucherImageObjectURL
-          : voucher.voucherObject.voucherImage
-      "
-    ></v-img>
-
     <v-file-input
+      v-if="!isEdit"
       v-model="voucherImage"
       accept="image/*"
       :rules="!isEdit ? [required(`Voucher Image must be provided`)] : []"
@@ -45,6 +41,7 @@
     </v-file-input>
 
     <v-select
+      v-if="!isEdit"
       v-model="voucher.voucherObject.voucherPreference"
       :rules="[required('Voucher Preference must be provided')]"
       class="span-2"
@@ -54,6 +51,7 @@
     />
 
     <v-select
+      v-if="!isEdit"
       v-model="voucher.voucherObject.voucherType"
       :rules="[required('Voucher Type must be provided')]"
       class="span-2"
@@ -63,6 +61,7 @@
     />
 
     <v-text-field
+      v-if="voucher.voucherObject.voucherType === 'DISCOUNTED'"
       v-model="voucher.voucherObject.discount"
       :rules="[required('Discount must be provided')]"
       class="span-2"
@@ -72,6 +71,7 @@
     />
 
     <v-text-field
+      v-if="!isEdit"
       v-model="voucher.voucherObject.title"
       :rules="[required('Title must be provided')]"
       class="span-2"
@@ -181,9 +181,6 @@ export default {
         restaurantId: this.$route.query.restaurantId,
         voucherId: this.$route.query.voucherId,
         voucherObject: {
-          title: voucher[0].voucherObject.title,
-          voucherImage: voucher[0].voucherObject.voucherImage,
-          voucherPreference: voucher[0].voucherObject.voucherPreference,
           voucherType: voucher[0].voucherObject.voucherType,
           discount: voucher[0].voucherObject.discount,
           description: voucher[0].voucherObject.description,
@@ -192,14 +189,6 @@ export default {
         }
       };
 
-      this.oldVoucherImage = this.voucher.voucherObject.voucherImage;
-
-      await this.$axios
-        .get(`/singe-file?file=${this.oldVoucherImage}`)
-        .then((response) => {
-          this.voucher.voucherObject.voucherImage = response.data;
-        });
-
       this.loading = false;
     },
     async submit(context) {
@@ -207,30 +196,7 @@ export default {
         context.changeLoadingMessage('Updating Voucher');
 
         try {
-          // updating Voucher Image
-          if (this.voucherImage) {
-            const formData = new FormData();
-            formData.append('media', this.voucherImage);
-
-            const response = await this.$axios.post('/single-file', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-
-            this.voucher.voucherObject.voucherImage = response.data;
-          }
-
-          if (this.oldVoucherImage) {
-            try {
-              await this.$axios.delete(
-                `/remove-file?media=${this.oldVoucherImage}`
-              );
-            } catch (e) {
-              console.log(e.response);
-            }
-          }
-
+          // updating Voucher
           this.merchantsService.updateVoucher(this.voucher);
           return true;
         } catch (e) {

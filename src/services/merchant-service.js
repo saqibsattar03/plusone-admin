@@ -41,6 +41,10 @@ export class MerchantsService {
     ).data;
   }
 
+  async disableVoucher(voucher) {
+    return (await axios.patch('/voucher/disable', voucher)).data;
+  }
+
   async delete(user) {
     return (await axios.delete('/persons/' + user._id)).data;
   }

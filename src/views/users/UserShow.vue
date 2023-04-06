@@ -12,9 +12,19 @@
       </v-overlay>
 
       <div v-else>
-        <v-card-title class="p10" style="color: #020819"
-          >User Details</v-card-title
+        <v-row
+          class="pa-0 d-flex align-center justify-space-between"
+          no-gutters
         >
+          <v-card-title class="p10" style="color: #020819"
+            >User Details</v-card-title
+          >
+
+          <v-btn color="primary" @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+            Back</v-btn
+          >
+        </v-row>
 
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">

@@ -5,6 +5,13 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
+    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
+      <v-btn color="primary" @click="$router.go(-1)">
+        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+        Back</v-btn
+      >
+    </v-row>
+
     <p class="span-2 form__title">
       {{ isEdit ? 'Update Admin' : 'Add New Admin' }}
     </p>

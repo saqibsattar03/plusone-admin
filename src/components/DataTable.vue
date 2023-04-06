@@ -7,6 +7,16 @@
       } justify-start align-start`"
       :style="$vuetify.breakpoint.width > 800 ? '' : 'gap: 10px'"
     >
+      <v-btn
+        :class="[$vuetify.breakpoint.width > 800 ? 'mr-2' : '']"
+        :style="[$vuetify.breakpoint.width < 800 ? { width: 100 + '%' } : '']"
+        color="primary"
+        elevation="0"
+        v-if="allowBack"
+        @click="$router.go(-1)"
+      >
+        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp; Back
+      </v-btn>
       <span class="data-table__header">{{ title }}</span>
       <v-spacer v-if="$vuetify.breakpoint.width > 800" />
 
@@ -96,7 +106,13 @@
             <slot :name="elem.value" :item="item">{{ item[elem.value] }}</slot>
           </td>
           <td
-            v-if="viewHandler || editHandler || deleteHandler || voucherHandler"
+            v-if="
+              viewHandler ||
+              editHandler ||
+              deleteHandler ||
+              disableHandler ||
+              voucherHandler
+            "
             :style="`max-width: calc(100% / ${headersValue.length})`"
             class="py-2"
           >
@@ -105,6 +121,7 @@
               style="gap: 8px"
             >
               <slot name="extra-actions" :item="item" />
+
               <v-btn
                 dark
                 v-if="voucherHandler"
@@ -141,6 +158,16 @@
                 color="red"
                 >Delete</v-btn
               >
+              <v-btn
+                dark
+                v-if="disableHandler"
+                class="text--white"
+                small
+                @click="disableHandler(item)"
+                color="red"
+              >
+                Disable
+              </v-btn>
             </div>
           </td>
         </tr>
@@ -160,13 +187,20 @@
             </div>
           </td>
           <td
-            v-if="viewHandler || editHandler || deleteHandler || voucherHandler"
+            v-if="
+              viewHandler ||
+              editHandler ||
+              deleteHandler ||
+              disableHandler ||
+              voucherHandler
+            "
             class="v-data-table__mobile-row text-end"
             style="text-align: right"
           >
             <div class="v-data-table__mobile-row__header">Action</div>
             <div class="v-data-table__mobile-row__cell d-flex flex-column">
               <slot name="extra-actions" :item="item" />
+
               <v-btn
                 class="my-1"
                 dark
@@ -208,6 +242,16 @@
               >
                 Delete
               </v-btn>
+              <v-btn
+                class="my-1"
+                dark
+                v-if="disableHandler"
+                small
+                @click="disableHandler(item)"
+                color="red"
+              >
+                Disable
+              </v-btn>
             </div>
           </td>
         </tr>
@@ -247,6 +291,11 @@ export default {
       default: false
     },
 
+    allowBack: {
+      type: Boolean,
+      default: false
+    },
+
     title: {
       type: String,
       default: null
@@ -282,6 +331,11 @@ export default {
       default: null
     },
 
+    disableHandler: {
+      type: Function,
+      default: null
+    },
+
     hasElevation: {
       type: Boolean,
       default: true
@@ -300,6 +354,7 @@ export default {
       this.editHandler ||
       this.deleteHandler ||
       this.viewHandler ||
+      this.disableHandler ||
       this.voucherHandler
     ) {
       this.headersValue.push({

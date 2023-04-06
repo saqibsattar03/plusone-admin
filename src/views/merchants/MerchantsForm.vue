@@ -5,6 +5,13 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
+    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
+      <v-btn color="primary" @click="$router.go(-1)">
+        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+        Back</v-btn
+      >
+    </v-row>
+
     <p class="span-2 form__title">
       {{ isEdit ? 'Update Merchant' : 'Add New Merchant' }}
     </p>
@@ -118,7 +125,7 @@
     />
 
     <l-map
-      style="height: 200px; margin-bottom: 20px"
+      style="height: 250px; margin-bottom: 40px; z-index: 1"
       class="span-2"
       ref="map"
       :zoom="zoom"
@@ -232,6 +239,7 @@
       label="Menu File"
       outlined
       multiple
+      accept=".jpg,.jpeg,.png"
     >
       <template v-slot:selection="{ index, text }">
         <v-chip v-if="index < 2" color="primary" dark label small>
@@ -329,14 +337,13 @@ export default {
       media: [],
       location: {
         type: 'Point',
-        coordinates: [29, 40]
+        coordinates: []
       }
     }
   }),
 
   mounted() {
     this.loadMerchant();
-    this.getUserLocation();
   },
 
   computed: {
@@ -376,14 +383,25 @@ export default {
     },
 
     async loadMerchant() {
-      if (!this.$route.query.id) return;
+      if (!this.$route.query.id) {
+        this.getUserLocation();
+        return;
+      }
       this.isEdit = true;
       this.loading = true;
       this.merchant = await this.merchantsService.fetchOne(
         this.$route.query.id
       );
 
-      this.center = this.merchant.location.coordinates;
+      this.center = [
+        this.merchant.location.coordinates[1],
+        this.merchant.location.coordinates[0]
+      ];
+
+      this.marker = [
+        this.merchant.location.coordinates[1],
+        this.merchant.location.coordinates[0]
+      ];
 
       this.oldProfileImage = this.merchant.profileImage;
       this.oldMenu = this.merchant.menu;
@@ -519,6 +537,15 @@ export default {
           //   }
           // }
 
+          this.merchant.location = {
+            type: 'Point',
+            coordinates: [
+              this.marker.lng ? this.marker.lng : this.center[1],
+              this.marker.lat ? this.marker.lat : this.center[0]
+            ]
+          };
+
+          console.log(this.merchant);
           this.merchantsService.update(this.merchant);
           return true;
         } catch (e) {
@@ -601,7 +628,13 @@ export default {
             this.merchant.status = 'PENDING';
           }
 
-          this.merchant.location.coordinates = this.center;
+          this.merchant.location = {
+            type: 'Point',
+            coordinates: [
+              this.marker.lng ? this.marker.lng : this.center[1],
+              this.marker.lat ? this.marker.lat : this.center[0]
+            ]
+          };
 
           await this.merchantsService.create(this.merchant);
           return true;

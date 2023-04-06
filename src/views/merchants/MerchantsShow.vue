@@ -12,6 +12,12 @@
       </v-overlay>
 
       <div v-else>
+        <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
+          <v-btn color="primary" @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
+            Back</v-btn
+          >
+        </v-row>
         <v-card-title class="p10" style="color: #020819"
           >Merchant Details</v-card-title
         >

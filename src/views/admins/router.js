@@ -13,7 +13,7 @@ export const adminsRoutes = [
         path: '/admins',
         redirect: '/no-permission'
       },
-  getUserScopes()?.includes('admins:new', 'admins:edit')
+  getUserScopes()?.includes('admins:edit')
     ? {
         name: 'NewAdmin',
         path: '/admin',
