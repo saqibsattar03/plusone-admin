@@ -124,18 +124,23 @@
       outlined
     />
 
-    <l-map
-      style="height: 250px; margin-bottom: 40px; z-index: 1"
+    <gmap-map
+      style="height: 250px; margin-bottom: 50px"
       class="span-2"
-      ref="map"
-      :zoom="zoom"
       :center="center"
-      @update:center="centerUpdate"
-      @update:zoom="zoomUpdate"
+      :zoom="zoom"
     >
-      <l-tile-layer :url="url"></l-tile-layer>
-      <l-marker :lat-lng="marker"></l-marker>
-    </l-map>
+      <gmap-marker
+        :position="center"
+        :clickable="true"
+        :draggable="true"
+        @dragend="updateLocation"
+        ref="marker"
+      >
+      </gmap-marker>
+    </gmap-map>
+
+    {{ center }}
 
     <v-combobox
       v-model="merchant.tags"
@@ -259,12 +264,9 @@ import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email } from '@/utils/validators';
 
-import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
-import 'leaflet/dist/leaflet.css';
-
 export default {
   name: 'Form',
-  components: { LoadingDialog, SimpleForm, LMap, LTileLayer, LMarker },
+  components: { LoadingDialog, SimpleForm },
 
   data: () => ({
     isEdit: false,
@@ -272,10 +274,8 @@ export default {
     merchantsService: new MerchantsService(),
     upload_image_service: new UploadImageService(),
 
-    zoom: 13,
-    center: [51.505, -0.09],
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    marker: [51.505, -0.09],
+    center: { lat: 37.7749, lng: -122.4194 },
+    zoom: 15,
 
     // only for edit
     disabled: false,
@@ -338,7 +338,8 @@ export default {
       location: {
         type: 'Point',
         coordinates: []
-      }
+      },
+      locationName: ''
     }
   }),
 
@@ -362,24 +363,23 @@ export default {
     required,
     email,
 
-    async getUserLocation() {
-      try {
-        const position = await new Promise((resolve, reject) =>
-          navigator.geolocation.getCurrentPosition(resolve, reject)
-        );
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        this.center = [lat, lng];
-        this.marker = [lat, lng];
-      } catch (error) {
-        console.error('Error getting user location:', error);
-      }
+    getUserLocation() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        this.center = userLocation;
+      });
     },
-    centerUpdate(newCenter) {
-      this.marker = newCenter;
-    },
-    zoomUpdate(newZoom) {
-      this.zoom = newZoom;
+
+    updateLocation() {
+      const marker = this.$refs.marker;
+      this.center = {
+        lat: marker.position.lat,
+        lng: marker.position.lng
+      };
     },
 
     async loadMerchant() {
@@ -455,6 +455,8 @@ export default {
             });
 
             this.merchant.profileImage = response.data;
+          } else {
+            this.merchant.profileImage = this.oldProfileImage;
           }
 
           if (this.menu.length > 0) {
@@ -478,6 +480,8 @@ export default {
                 this.merchant.menu.push(response.data);
               })
             );
+          } else {
+            this.merchant.menu = this.oldMenu;
           }
 
           if (this.media.length > 0) {
@@ -501,6 +505,8 @@ export default {
                 this.merchant.media.push(response.data);
               })
             );
+          } else {
+            this.merchant.media = this.oldMedia;
           }
 
           // if (this.oldProfileImage) {
@@ -545,8 +551,35 @@ export default {
             ]
           };
 
-          console.log(this.merchant);
-          this.merchantsService.update(this.merchant);
+          const axiosWithoutToken = this.$axios.create({
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          await axiosWithoutToken
+            .get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
+                this.marker.lat ? this.marker.lat : this.center[0]
+              },${
+                this.marker.lng ? this.marker.lng : this.center[1]
+              }&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
+            )
+            .then((response) => {
+              if (response.data.results.length > 0) {
+                const locationName = response.data.results[0].formatted_address;
+                this.merchant.locationName = locationName;
+                console.log(locationName, 'locationName');
+              } else {
+                return 'Location not found';
+              }
+            })
+            .catch((error) => {
+              console.log(error, 'error');
+            });
+
+          console.log(this.merchant, 'merchant');
+
+          await this.merchantsService.update(this.merchant);
           return true;
         } catch (e) {
           context.reportError({
@@ -635,6 +668,27 @@ export default {
               this.marker.lat ? this.marker.lat : this.center[0]
             ]
           };
+
+          const axiosWithoutToken = this.$axios.create({
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          await axiosWithoutToken
+            .get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.marker.lat},${this.marker.lng}&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
+            )
+            .then((response) => {
+              if (response.data.results.length > 0) {
+                const locationName = response.data.results[0].formatted_address;
+                this.merchant.locationName = locationName;
+              } else {
+                return 'Location not found';
+              }
+            })
+            .catch((error) => {
+              console.log(error, 'error');
+            });
 
           await this.merchantsService.create(this.merchant);
           return true;

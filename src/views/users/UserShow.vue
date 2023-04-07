@@ -71,7 +71,7 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Links : </b
+              <b>Social Links : </b
               >{{ user.socialLinks.length > 0 ? user.socialLinks : 'Null' }}
             </v-card-text>
           </v-col>

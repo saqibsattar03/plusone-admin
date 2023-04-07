@@ -17,10 +17,10 @@
 
     <template #locationName="{ item }">
       {{
-        item.locationName
-          ? item.locationName.length > 30
-            ? `${item.locationName.substr(0, 30)}...`
-            : `${item.locationName.substr(0, 30)}`
+        item.restaurantData[0] && item.restaurantData[0].locationName
+          ? item.restaurantData[0].locationName > 30
+            ? `${item.restaurantData[0].locationName.substr(0, 30)}...`
+            : `${item.restaurantData[0].locationName.substr(0, 30)}`
           : ''
       }}
     </template>
@@ -43,7 +43,7 @@
 import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
-import Vue from 'vue';
+// import Vue from 'vue';
 
 export default {
   components: { DataTable },
@@ -113,39 +113,42 @@ export default {
         (merchant) => merchant.restaurantData.length > 0
       );
 
-      await Promise.all(
-        this.merchants.map(async (merchant) => {
-          if (
-            merchant.restaurantData[0] &&
-            merchant.restaurantData[0].location.coordinates[1] &&
-            merchant.restaurantData[0].location.coordinates[0]
-          ) {
-            const axiosWithoutToken = this.$axios.create({
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-            await axiosWithoutToken
-              .get(
-                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${merchant.restaurantData[0].location.coordinates[1]},${merchant.restaurantData[0].location.coordinates[0]}&key=${this.apiKey}`
-              )
-              .then((response) => {
-                if (response.data.results.length > 0) {
-                  const locationName =
-                    response.data.results[0].formatted_address;
-                  Vue.set(merchant, 'locationName', locationName);
-                } else {
-                  return 'Location not found';
-                }
-              })
-              .catch((error) => {
-                console.log(error, 'error');
-              });
-          }
-        })
-      );
+      console.log(this.merchants);
 
       return this.merchants;
+      // await Promise.all(
+      //   this.merchants.map(async (merchant) => {
+      //     if (
+      //       merchant.restaurantData[0] &&
+      //       merchant.restaurantData[0].location.coordinates[1] &&
+      //       merchant.restaurantData[0].location.coordinates[0]
+      //     ) {
+      //       const axiosWithoutToken = this.$axios.create({
+      //         headers: {
+      //           'Content-Type': 'application/json'
+      //         }
+      //       });
+      //       await axiosWithoutToken
+      //         .get(
+      //           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${merchant.restaurantData[0].location.coordinates[1]},${merchant.restaurantData[0].location.coordinates[0]}&key=${this.apiKey}`
+      //         )
+      //         .then((response) => {
+      //           if (response.data.results.length > 0) {
+      //             const locationName =
+      //               response.data.results[0].formatted_address;
+      //             Vue.set(merchant, 'locationName', locationName);
+      //           } else {
+      //             return 'Location not found';
+      //           }
+      //         })
+      //         .catch((error) => {
+      //           console.log(error, 'error');
+      //         });
+      //     }
+      //   })
+      // );
+
+      // return this.merchants;
     }
   }
 };

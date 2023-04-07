@@ -12,12 +12,13 @@
       :view-handler="view"
       :disable-handler="disable"
       :allow-back="true"
+      :key="dataTableKey"
     >
-      <template #description="{ item }">
+      <template #title="{ item }">
         {{
-          item.description.length > 30
-            ? `${item.description.substr(0, 30)}...`
-            : `${item.description.substr(0, 30)}`
+          item.title.length > 30
+            ? `${item.title.substr(0, 30)}...`
+            : `${item.title.substr(0, 30)}`
         }}
       </template>
       <template #discount="{ item }">
@@ -52,6 +53,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <loading-dialog v-model="dataLoading" message="Please wait..." />
   </div>
 </template>
 
@@ -60,9 +63,10 @@ import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 import { required } from '../../utils/validators';
+import LoadingDialog from '../../components/LoadingDialog';
 
 export default {
-  components: { DataTable },
+  components: { DataTable, LoadingDialog },
 
   mounted() {
     this.loadData;
@@ -72,8 +76,15 @@ export default {
     items: [],
     merchants_service: new MerchantsService(),
     userScopes: getUserScopes(),
+    dataLoading: false,
+    dataTableKey: 0,
 
     headers: [
+      {
+        text: 'Voucher Title',
+        value: 'title',
+        sortable: true
+      },
       {
         text: 'Voucher Type',
         value: 'voucherType',
@@ -88,17 +99,12 @@ export default {
         text: 'Voucher Preference',
         value: 'voucherPreference',
         sortable: true
-      },
-      {
-        text: 'Description',
-        value: 'description',
-        sortable: true
       }
     ],
     voucher: {},
     disableDialog: false,
 
-    dateRange: null,
+    dateRange: [],
     voucherId: null
   }),
 
@@ -121,26 +127,30 @@ export default {
       );
     },
 
-    disable(item) {
+    async disable(item) {
       this.voucherId = item._id;
+      this.dateRange = item.voucherDisableDates
+        ? item.voucherDisableDates.map((date) => {
+            return new Date(date).toISOString().substring(0, 10);
+          })
+        : [];
       this.disableDialog = true;
     },
 
     async disableVoucher() {
-      if (this.dateRange.length > 0) {
-        alert('Please select a date');
-      } else {
-        console.log(this.dateRange);
-        await this.merchants_service.disableVoucher({
-          voucherId: this.voucherId,
-          startDate: this.dateRange[0],
-          endDate: this.dateRange[1]
-        });
+      this.dataLoading = true;
 
-        this.voucherId = null;
-        this.dateRange = null;
-        this.disableDialog = false;
-      }
+      let ISOStringDate = this.dateRange.map((date) => {
+        return new Date(date).toISOString();
+      });
+      await this.merchants_service.disableVoucher({
+        voucherId: this.voucherId,
+        voucherDisableDates: ISOStringDate
+      });
+
+      this.dataTableKey = this.dataTableKey + 1;
+      this.dataLoading = false;
+      this.disableDialog = false;
     },
 
     async deleteUser(item) {

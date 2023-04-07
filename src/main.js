@@ -6,6 +6,14 @@ import axios from 'axios';
 import './assets/style.sass';
 import './assets/style.css';
 import 'leaflet/dist/leaflet.css';
+import * as VueGoogleMaps from 'vue2-google-maps';
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA',
+    libraries: 'places'
+  }
+});
 
 Vue.config.productionTip = false;
 

@@ -37,9 +37,15 @@
         </v-row>
 
         <v-row class="pa-0" no-gutters>
-          <v-col cols="12">
+          <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Description : </b>{{ merchant.description }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Location Name : </b>{{ merchant.locationName }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -47,7 +53,7 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Voucher Count : </b>{{ merchant.voucherCount }}
+              <b>Voucher Count : </b>{{ merchant.totalVoucherCount }}
             </v-card-text>
           </v-col>
 
@@ -113,6 +119,20 @@
           <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Sponsored : </b>{{ merchant.isSponsored }}
+            </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row class="pa-0" no-gutters>
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Created At : </b>{{ formatDate(merchant.createdAt) }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Updated At : </b>{{ formatDate(merchant.updatedAt) }}
             </v-card-text>
           </v-col>
         </v-row>
