@@ -7,7 +7,7 @@
     @add-new="addNew"
     @done="$router.back()"
     :delete-handler="null"
-    :edit-handler="edit"
+    :edit-handler="userScopes.includes('admins:edit') ? edit : null"
   >
   </data-table>
 </template>

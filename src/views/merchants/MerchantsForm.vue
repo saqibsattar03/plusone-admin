@@ -130,17 +130,13 @@
       :center="center"
       :zoom="zoom"
     >
-      <gmap-marker
+      <GmapMarker
         :position="center"
         :clickable="true"
         :draggable="true"
         @dragend="updateLocation"
-        ref="marker"
-      >
-      </gmap-marker>
+      />
     </gmap-map>
-
-    {{ center }}
 
     <v-combobox
       v-model="merchant.tags"
@@ -274,7 +270,7 @@ export default {
     merchantsService: new MerchantsService(),
     upload_image_service: new UploadImageService(),
 
-    center: { lat: 37.7749, lng: -122.4194 },
+    center: { lat: 0, lng: 0 },
     zoom: 15,
 
     // only for edit
@@ -364,21 +360,20 @@ export default {
     email,
 
     getUserLocation() {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const userLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        this.center = userLocation;
-      });
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.center = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+        });
+      }
     },
 
-    updateLocation() {
-      const marker = this.$refs.marker;
+    updateLocation(event) {
       this.center = {
-        lat: marker.position.lat,
-        lng: marker.position.lng
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng()
       };
     },
 
@@ -393,15 +388,10 @@ export default {
         this.$route.query.id
       );
 
-      this.center = [
-        this.merchant.location.coordinates[1],
-        this.merchant.location.coordinates[0]
-      ];
-
-      this.marker = [
-        this.merchant.location.coordinates[1],
-        this.merchant.location.coordinates[0]
-      ];
+      this.center = {
+        lat: this.merchant.location.coordinates[1],
+        lng: this.merchant.location.coordinates[0]
+      };
 
       this.oldProfileImage = this.merchant.profileImage;
       this.oldMenu = this.merchant.menu;
@@ -545,10 +535,7 @@ export default {
 
           this.merchant.location = {
             type: 'Point',
-            coordinates: [
-              this.marker.lng ? this.marker.lng : this.center[1],
-              this.marker.lat ? this.marker.lat : this.center[0]
-            ]
+            coordinates: [this.center.lng, this.center.lat]
           };
 
           const axiosWithoutToken = this.$axios.create({
@@ -558,17 +545,12 @@ export default {
           });
           await axiosWithoutToken
             .get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
-                this.marker.lat ? this.marker.lat : this.center[0]
-              },${
-                this.marker.lng ? this.marker.lng : this.center[1]
-              }&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.center.lat},${this.center.lng}&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
             )
             .then((response) => {
               if (response.data.results.length > 0) {
                 const locationName = response.data.results[0].formatted_address;
                 this.merchant.locationName = locationName;
-                console.log(locationName, 'locationName');
               } else {
                 return 'Location not found';
               }
@@ -576,8 +558,6 @@ export default {
             .catch((error) => {
               console.log(error, 'error');
             });
-
-          console.log(this.merchant, 'merchant');
 
           await this.merchantsService.update(this.merchant);
           return true;
@@ -663,10 +643,7 @@ export default {
 
           this.merchant.location = {
             type: 'Point',
-            coordinates: [
-              this.marker.lng ? this.marker.lng : this.center[1],
-              this.marker.lat ? this.marker.lat : this.center[0]
-            ]
+            coordinates: [this.center.lng, this.center.lat]
           };
 
           const axiosWithoutToken = this.$axios.create({
@@ -676,7 +653,7 @@ export default {
           });
           await axiosWithoutToken
             .get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.marker.lat},${this.marker.lng}&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.center.lat},${this.center.lng}&key=AIzaSyCqP_po3VVErDM_bd9sGVUmMNDJwEhHyUA`
             )
             .then((response) => {
               if (response.data.results.length > 0) {

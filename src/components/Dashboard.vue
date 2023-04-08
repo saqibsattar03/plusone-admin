@@ -173,6 +173,12 @@ export default {
           title: 'Merchants',
           icon: 'mdi-store',
           isVisible: this.userScopes?.includes('merchants:view')
+        },
+        {
+          to: '/redeem-vouchers',
+          title: 'Redeem Vouchers',
+          icon: 'mdi-ticket',
+          isVisible: this.userScopes?.includes('redeem-vouchers:view')
         }
       ];
     }

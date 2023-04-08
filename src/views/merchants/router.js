@@ -7,11 +7,41 @@ import VoucherForm from './VouchersForm.vue';
 import { getUserScopes } from '../../utils/local';
 
 export const merchantsRoutes = [
-  {
-    name: 'Vouchers',
-    path: '/vouchers',
-    component: VouchersView
-  },
+  //-------- Voucher Routes --------------//
+  getUserScopes()?.includes('vouchers:view')
+    ? {
+        name: 'Vouchers',
+        path: '/vouchers',
+        component: VouchersView
+      }
+    : {
+        path: '/vouchers',
+        redirect: '/no-permission'
+      },
+
+  getUserScopes()?.includes('vouchers:new')
+    ? {
+        name: 'AddVoucher',
+        path: '/voucher',
+        component: VoucherForm
+      }
+    : {
+        path: '/voucher',
+        redirect: '/no-permission'
+      },
+
+  getUserScopes()?.includes('vouchers:view')
+    ? {
+        name: 'VoucherDetails',
+        path: '/voucher-details',
+        component: VoucherShow
+      }
+    : {
+        path: '/voucher-details',
+        redirect: '/no-permission'
+      },
+
+  //--------- Merchant Routes ------------//
   getUserScopes()?.includes('merchants:view')
     ? {
         name: 'Merchants',
@@ -22,11 +52,7 @@ export const merchantsRoutes = [
         path: '/merchants',
         redirect: '/no-permission'
       },
-  {
-    name: 'AddVoucher',
-    path: '/voucher',
-    component: VoucherForm
-  },
+
   getUserScopes()?.includes('merchants:new')
     ? {
         name: 'NewMerchant',
@@ -37,11 +63,7 @@ export const merchantsRoutes = [
         path: '/merchant',
         redirect: '/no-permission'
       },
-  {
-    name: 'VoucherDetails',
-    path: '/voucher-details',
-    component: VoucherShow
-  },
+
   getUserScopes()?.includes('merchants:view')
     ? {
         name: 'MerchantsDetails',

@@ -8,6 +8,7 @@ import { adminsRouter } from './views/admins/router';
 import { noPermissionRouter } from './views/permission/router';
 
 import { merchantsRouter } from './views/merchants/router';
+import { redeemVouchersRouter } from './views/redeemVouchers/router';
 
 Vue.use(VueRouter);
 
@@ -19,7 +20,8 @@ const routes = [
       ...usersRouter,
       ...adminsRouter,
       ...noPermissionRouter,
-      ...merchantsRouter
+      ...merchantsRouter,
+      ...redeemVouchersRouter
     ]
   },
   {

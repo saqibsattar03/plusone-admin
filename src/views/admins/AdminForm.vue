@@ -146,136 +146,21 @@ export default {
           { id: 'merchants:view', name: 'View Merchants' },
           { id: 'merchants:delete', name: 'Delete Merchants' }
         ]
+      },
+      {
+        id: 'vouchers',
+        name: 'Vouchers',
+        children: [
+          { id: 'vouchers:new', name: 'Create Vouchers' },
+          { id: 'vouchers:edit', name: 'Edit Vouchers' },
+          { id: 'vouchers:view', name: 'View Vouchers' },
+          { id: 'vouchers:delete', name: 'Delete Vouchers' }
+        ]
       }
-
       // {
-      //   id: 'events',
-      //   name: 'Events',
-      //   children: [
-      //     { id: 'events:new', name: 'Create Events' },
-      //     { id: 'events:view', name: 'View Events' },
-      //     { id: 'events:edit', name: 'Edit Events' },
-      //     { id: 'events:delete', name: 'Delete Events' }
-      //   ]
-      // }
-      // {
-      //   id: 'frequencies',
-      //   name: 'Frequency',
-      //   children: [
-      //     { id: 'frequency:new', name: 'Create Frequency' },
-      //     { id: 'frequency:view', name: 'View Frequency' },
-      //     { id: 'frequency:edit', name: 'Edit Frequency' },
-      //     { id: 'frequency:delete', name: 'Delete Frequency' }
-      //   ]
-      // },
-      // {
-      //   id: 'affirmations',
-      //   name: 'Affirmations',
-      //   children: [
-      //     { id: 'affirmations:new', name: 'Create Affirmations' },
-      //     { id: 'affirmations:view', name: 'View Affirmations' },
-      //     { id: 'affirmations:edit', name: 'Edit Affirmations' },
-      //     { id: 'affirmations:delete', name: 'Delete Affirmations' }
-      //   ]
-      // },
-      // {
-      //   id: 'meditations',
-      //   name: 'Meditations',
-      //   children: [
-      //     { id: 'meditations:new', name: 'Create Meditations' },
-      //     { id: 'meditations:view', name: 'View Meditations' },
-      //     { id: 'meditations:edit', name: 'Edit Meditations' },
-      //     { id: 'meditations:delete', name: 'Delete Meditations' }
-      //   ]
-      // },
-
-      // {
-      //   id: 'resources',
-      //   name: 'Video Resources',
-      //   children: [
-      //     { id: 'resources:new', name: 'Create Video Resources' },
-      //     { id: 'resources:view', name: 'View Video Resources' },
-      //     { id: 'resources:edit', name: 'Edit Video Resources' },
-      //     { id: 'resources:delete', name: 'Delete Video Resources' }
-      //   ]
-      // },
-      // {
-      //   id: 'courses',
-      //   name: 'Courses',
-      //   children: [
-      //     { id: 'courses:new', name: 'Create Courses' },
-      //     { id: 'courses:view', name: 'View Courses' },
-      //     { id: 'courses:edit', name: 'Edit Courses' },
-      //     { id: 'courses:delete', name: 'Delete Courses' }
-      //   ]
-      // },
-      // {
-      //   id: 'modules',
-      //   name: 'Modules',
-      //   children: [
-      //     { id: 'modules:new', name: 'Create Modules' },
-      //     { id: 'modules:view', name: 'View Modules' },
-      //     { id: 'modules:edit', name: 'Edit Modules' },
-      //     { id: 'modules:delete', name: 'Delete Modules' }
-      //   ]
-      // },
-      // {
-      //   id: 'chapters',
-      //   name: 'Chapters',
-      //   children: [
-      //     { id: 'chapters:new', name: 'Create Chapters' },
-      //     { id: 'chapters:view', name: 'View Chapters' },
-      //     { id: 'chapters:edit', name: 'Edit Chapters' },
-      //     { id: 'chapters:delete', name: 'Delete Chapters' }
-      //   ]
-      // },
-      // {
-      //   id: 'lectures',
-      //   name: 'Lectures',
-      //   children: [
-      //     { id: 'lectures:new', name: 'Create Lectures' },
-      //     { id: 'lectures:view', name: 'View Lectures' },
-      //     { id: 'lectures:edit', name: 'Edit Lectures' },
-      //     { id: 'lectures:delete', name: 'Delete Lectures' }
-      //   ]
-      // },
-      // {
-      //   id: 'testimonials',
-      //   name: 'Testimonials',
-      //   children: [
-      //     { id: 'testimonial:add', name: 'Add Testimonial' },
-      //     { id: 'testimonial:view', name: 'View Testimonial' },
-      //     { id: 'testimonial:edit', name: 'Edit Testimonial' },
-      //     { id: 'testimonial:delete', name: 'Delete Testimonial' }
-      //   ]
-      // },
-      // {
-      //   id: 'faq',
-      //   name: 'FAQs',
-      //   children: [
-      //     { id: 'faq:add', name: 'Add FAQ' },
-      //     { id: 'faq:view', name: 'View FAQ' },
-      //     { id: 'faq:edit', name: 'Edit FAQ' },
-      //     { id: 'faq:delete', name: 'Delete FAQ' }
-      //   ]
-      // },
-      // {
-      //   id: 'terms&conditions',
-      //   name: 'Terms & Conditions',
-      //   children: [
-      //     { id: 'term:add', name: 'Add Terms & Condition' },
-      //     { id: 'term:view', name: 'View Terms & Condition' },
-      //     { id: 'term:edit', name: 'Edit Terms & Condition' },
-      //     { id: 'term:delete', name: 'Delete Terms & Condition' }
-      //   ]
-      // },
-      // {
-      //   id: 'settings',
-      //   name: 'Settings',
-      //   children: [
-      //     { id: 'settings:view', name: 'View Setting' },
-      //     { id: 'settings:edit', name: 'Edit Setting' }
-      //   ]
+      //   id: 'redeemVouchers',
+      //   name: 'Redeem Vouchers',
+      //   children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
       // }
     ],
     // only for edit

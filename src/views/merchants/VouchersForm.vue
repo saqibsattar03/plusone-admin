@@ -62,7 +62,7 @@
 
     <v-text-field
       v-if="voucher.voucherObject.voucherType === 'DISCOUNTED'"
-      v-model="voucher.voucherObject.discount"
+      v-model.number="voucher.voucherObject.discount"
       :rules="[required('Discount must be provided')]"
       class="span-2"
       label="Discount"
