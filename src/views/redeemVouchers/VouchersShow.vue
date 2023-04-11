@@ -17,7 +17,7 @@
           no-gutters
         >
           <v-card-title class="p10" style="color: #020819"
-            >User Details</v-card-title
+            >Redeem Voucher Details</v-card-title
           >
 
           <v-btn color="primary" @click="$router.go(-1)">
@@ -26,92 +26,69 @@
           >
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
+        <v-row no-gutters>
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>First Name : </b>{{ user.firstname }}
+            <v-card-text>
+              <b>Title : </b>{{ voucher[0].voucherObject.title }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Sur Name : </b>{{ user.surname }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Email : </b>{{ user.email }}
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Status : </b>{{ user.status }}
+            <v-card-text>
+              <b>Voucher Type : </b>{{ voucher[0].voucherObject.voucherType }}
             </v-card-text>
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
+        <v-row no-gutters>
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Account Type : </b>{{ user.accountType }}
+            <v-card-text>
+              <b>Description : </b>{{ voucher[0].voucherObject.description }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Account Holder Type : </b>{{ user.accountHolderType }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Social Links : </b
-              >{{ user.socialLinks.length > 0 ? user.socialLinks : 'Null' }}
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Dietary Requirements : </b
-              >{{
-                user.dietRequirements.length > 0
-                  ? user.dietRequirements
-                  : 'Null'
-              }}
+            <v-card-text>
+              <b>Discount : </b>{{ voucher[0].voucherObject.discount + '%' }}
             </v-card-text>
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
+        <v-row no-gutters>
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Favorite Restaurants : </b
-              >{{
-                user.favoriteRestaurants.length > 0
-                  ? user.favoriteRestaurants
-                  : 'Null'
-              }}
+            <v-card-text>
+              <b>Estimated Cost : </b
+              >{{ voucher[0].voucherObject.estimatedCost }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Favorite Chefs : </b
-              >{{ user.favoriteChefs.length > 0 ? user.favoriteChefs : 'Null' }}
+            <v-card-text>
+              <b>Estimated Savings : </b
+              >{{ voucher[0].voucherObject.estimatedSavings }}
             </v-card-text>
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12">
-            <v-card-text class="p10">
-              <b>Bio : </b>{{ user.bio ? user.bio : 'Null' }}
+        <v-row no-gutters>
+          <v-col cols="12" md="6">
+            <v-card-text>
+              <b>Prefrence : </b
+              >{{ voucher[0].voucherObject.voucherPreference }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text>
+              <b>Disabled dates : </b>
+              <ul>
+                <li
+                  v-for="date in voucher[0].voucherObject.voucherDisableDates"
+                  :key="date"
+                >
+                  {{ formatDate(date) }}
+                </li>
+              </ul>
             </v-card-text>
           </v-col>
         </v-row>
@@ -121,15 +98,15 @@
 </template>
 <script>
 import dayjs from 'dayjs';
-import { UsersService } from '../../services/user-service';
+import { RedeemVouchersService } from '../../services/redeem-vouchers-service';
 import { getFullPath } from '../../utils/local';
 
 export default {
   data() {
     return {
       dataLoading: true,
-      user: {},
-      users_service: new UsersService(),
+      voucher: {},
+      redeem_vouchers_service: new RedeemVouchersService(),
 
       headers: [
         {
@@ -158,14 +135,15 @@ export default {
   methods: {
     getFullPath,
     formatDate(date) {
-      return dayjs(date).format('D MMM YYYY - hh:mm A');
+      return dayjs(date).format('D MMM YYYY');
     },
 
-    async loadUser() {
+    async loadVoucher() {
       try {
         this.dataLoading = true;
-        this.user = await this.users_service.fetchOne(this.$route.query.id);
-        console.log(this.user);
+        this.voucher = await this.redeem_vouchers_service.fetchOne(
+          this.$route.query.id
+        );
       } catch (e) {
         console.log(e);
       }
@@ -173,7 +151,7 @@ export default {
     }
   },
   async mounted() {
-    await this.loadUser();
+    await this.loadVoucher();
   }
 };
 </script>

@@ -2,21 +2,30 @@
   <data-table
     :loader="loadData"
     :headers="headers"
-    title="Users"
-    :allow-add="false"
+    title="Redeem Vouchers"
     @done="$router.back()"
-    :delete-handler="null"
-    :edit-handler="null"
-    :view-handler="userScopes.includes('users:view') ? view : null"
+    :view-handler="userScopes.includes('redeem-vouchers:view') ? view : null"
   >
-    <template #firstname="{ item }">
-      {{ item.firstname }} {{ item.surname }}
+    <template #title="{ item }">
+      {{ item.vouc.title }}
+    </template>
+
+    <template #voucherType="{ item }">
+      {{ item.vouc.voucherType }}
+    </template>
+
+    <template #voucherPreference="{ item }">
+      {{ item.vouc.voucherPreference }}
+    </template>
+
+    <template #discount="{ item }">
+      {{ item.vouc.discount + '%' }}
     </template>
   </data-table>
 </template>
 
 <script>
-import { UsersService } from '@/services/user-service';
+import { RedeemVouchersService } from '@/services/redeem-vouchers-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 
@@ -29,62 +38,40 @@ export default {
 
   data: () => ({
     items: [],
-    users_service: new UsersService(),
+    redeem_vouchers_service: new RedeemVouchersService(),
     userScopes: getUserScopes(),
 
     headers: [
       {
-        text: 'First Name',
-        value: 'firstname',
+        text: 'Title',
+        value: 'title',
         sortable: true
       },
       {
-        text: 'Surname',
-        value: 'surname',
+        text: 'Voucher Type',
+        value: 'voucherType',
         sortable: true
       },
       {
-        text: 'Email',
-        value: 'email',
+        text: 'Voucher Preference',
+        value: 'voucherPreference',
         sortable: true
       },
       {
-        text: 'Status',
-        value: 'status',
-        sortable: true
-      },
-      {
-        text: 'Account Type',
-        value: 'accountType',
-        sortable: true
-      },
-      {
-        text: 'Account Holder Type',
-        value: 'accountHolderType',
+        text: 'Discount',
+        value: 'discount',
         sortable: true
       }
     ]
   }),
 
   methods: {
-    // addNew() {
-    //   this.$router.push('/user');
-    // },
-
-    // edit(item) {
-    //   this.$router.push(`/user?id=${item._id}`);
-    // },
-
     view(item) {
-      this.$router.push(`/user-details?id=${item._id}`);
-    },
-
-    async deleteUser(item) {
-      await this.users_service.delete(item);
+      this.$router.push(`/redeem-voucher-details?id=${item.vouc._id}`);
     },
 
     async loadData() {
-      return await this.users_service.fetchAll();
+      return await this.redeem_vouchers_service.fetchAll();
     }
   }
 };

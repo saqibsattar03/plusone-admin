@@ -74,9 +74,24 @@
         </v-row>
 
         <v-row class="pa-0" no-gutters>
-          <v-col cols="12">
+          <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Description : </b>{{ voucher[0].voucherObject.description }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Disable Dates : </b>
+
+              <ul>
+                <li
+                  v-for="date in voucher[0].voucherObject.voucherDisableDates"
+                  :key="date"
+                >
+                  {{ formatDate(date) }}
+                </li>
+              </ul>
             </v-card-text>
           </v-col>
         </v-row>
@@ -100,7 +115,7 @@ export default {
   methods: {
     getFullPath,
     formatDate(date) {
-      return dayjs(date).format('D MMM YYYY - hh:mm A');
+      return dayjs(date).format('D MMM YYYY');
     },
 
     async loadVoucher() {
@@ -113,8 +128,6 @@ export default {
         });
 
         this.voucher = voucher;
-
-        console.log(this.voucher, 'this.voucher');
       } catch (e) {
         console.log(e);
       }

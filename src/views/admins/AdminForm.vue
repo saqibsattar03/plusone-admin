@@ -156,12 +156,12 @@ export default {
           { id: 'vouchers:view', name: 'View Vouchers' },
           { id: 'vouchers:delete', name: 'Delete Vouchers' }
         ]
+      },
+      {
+        id: 'redeemVouchers',
+        name: 'Redeem Vouchers',
+        children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
       }
-      // {
-      //   id: 'redeemVouchers',
-      //   name: 'Redeem Vouchers',
-      //   children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
-      // }
     ],
     // only for edit
     showImageError: false,
