@@ -1,22 +1,19 @@
 <template>
-  <v-card
-      :class="[ hasElevation ? 'elevation-2' : 'elevation-0']"
-      class="form"
-  >
+  <v-card :class="[hasElevation ? 'elevation-2' : 'elevation-0']" class="form">
     <v-form ref="form" class="form__body">
-      <slot/>
+      <slot />
     </v-form>
 
     <div class="form__actions">
-      <slot :context="submitContext" name="actions"/>
+      <slot :context="submitContext" name="actions" />
 
       <v-btn :disabled="disabled" color="primary" elevation="0" @click="submit">
-        <span style="padding: 0 10px">{{isEdit?'Update':'Save'}}</span>
+        <span style="padding: 0 10px">{{ isEdit ? 'Update' : 'Save' }}</span>
       </v-btn>
     </div>
 
-    <loading-dialog v-model="loading" :message="loadingMessage"/>
-    <error-dialog v-model="error" :error="errorVal"/>
+    <loading-dialog v-model="loading" :message="loadingMessage" />
+    <error-dialog v-model="error" :error="errorVal" />
   </v-card>
 </template>
 
@@ -26,7 +23,7 @@ import ErrorDialog from './ErrorDialog';
 
 export default {
   name: 'SimpleForm',
-  components: {ErrorDialog, LoadingDialog},
+  components: { ErrorDialog, LoadingDialog },
 
   props: {
     onSubmit: {
@@ -46,9 +43,9 @@ export default {
       type: Boolean,
       default: false
     },
-    isEdit:{
+    isEdit: {
       type: Boolean,
-      default: false,
+      default: false
     }
   },
 
@@ -102,7 +99,7 @@ export default {
 
 <style lang="sass" scoped>
 .form
-  width: 600px
+  width: 800px
   padding: 40px
   margin: 50px auto
   border-radius: 8px
@@ -130,5 +127,4 @@ export default {
     font-size: 27px
     padding-bottom: 20px
     font-family: google-sans, sans-serif
-
 </style>

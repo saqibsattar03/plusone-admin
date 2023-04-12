@@ -30,7 +30,11 @@
     </template>
 
     <template #isSponsored="{ item }">
-      {{ item.restaurantData[0] && item.restaurantData[0].isSponsored }}
+      {{
+        item.restaurantData[0] && item.restaurantData[0].isSponsored
+          ? 'Yes'
+          : 'No'
+      }}
     </template>
 
     <template #phoneNumber="{ item }">

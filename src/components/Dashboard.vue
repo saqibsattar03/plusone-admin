@@ -34,7 +34,7 @@
           :to="route.to"
         >
           <v-list-item-icon v-if="!route.icon.includes('svg')">
-            <v-icon v-text="route.icon" color="primary" />
+            <v-icon v-text="route.icon" />
           </v-list-item-icon>
           <v-list-item-icon v-if="route.icon.includes('svg')">
             <img :src="require(`../assets/${route.icon}`)" alt="" width="20" />
@@ -153,12 +153,12 @@ export default {
           icon: 'mdi-account-group',
           isVisible: this.userScopes?.includes('users:view')
         },
-        {
-          to: '/admins',
-          title: 'Admins',
-          icon: 'mdi-account-group',
-          isVisible: this.userScopes?.includes('admins:view')
-        },
+        // {
+        //   to: '/admins',
+        //   title: 'Admins',
+        //   icon: 'mdi-account-group',
+        //   isVisible: this.userScopes?.includes('admins:view')
+        // },
         {
           to: '/no-permission',
           title: 'No Permission',
@@ -187,6 +187,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
 .logo
   display: block
   margin: 5px auto

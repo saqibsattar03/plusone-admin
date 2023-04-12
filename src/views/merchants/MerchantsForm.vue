@@ -51,39 +51,12 @@
 
     <v-text-field
       v-if="!isEdit"
-      v-model="merchant.firstname"
-      :rules="[required('First Name must be provided')]"
-      class="span-2"
-      label="First Name"
-      outlined
-    />
-
-    <v-text-field
-      v-if="!isEdit"
-      v-model="merchant.surname"
-      :rules="[required('Surname must be provided')]"
-      class="span-2"
-      label="Surname"
-      outlined
-    />
-
-    <v-text-field
-      v-if="!isEdit"
-      v-model="merchant.username"
-      :rules="[required('Username must be provided')]"
-      class="span-2"
-      label="Username"
-      outlined
-    />
-
-    <v-text-field
-      v-if="!isEdit"
       v-model="merchant.email"
       :rules="[
         required('Email must be provided'),
         email('Email must be valid')
       ]"
-      class="span-2"
+      class="span-1"
       label="Email"
       type="email"
       outlined
@@ -93,7 +66,7 @@
       v-if="!isEdit"
       v-model="merchant.password"
       :rules="[required('Password must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Password"
       type="password"
       outlined
@@ -102,7 +75,7 @@
     <v-text-field
       v-model="merchant.restaurantName"
       :rules="[required('Restaurant name must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Restaurant Name"
       outlined
     />
@@ -111,7 +84,7 @@
       v-model="merchant.phoneNumber"
       :rules="[required('Contact Number must be provided')]"
       type="number"
-      class="span-2"
+      class="span-1"
       label="Contact Number"
       outlined
     />
@@ -123,20 +96,6 @@
       label="Description"
       outlined
     />
-
-    <gmap-map
-      style="height: 250px; margin-bottom: 50px"
-      class="span-2"
-      :center="center"
-      :zoom="zoom"
-    >
-      <GmapMarker
-        :position="center"
-        :clickable="true"
-        :draggable="true"
-        @dragend="updateLocation"
-      />
-    </gmap-map>
 
     <v-combobox
       v-model="merchant.tags"
@@ -220,9 +179,11 @@
     <v-file-input
       v-model="media"
       accept="image/*"
-      :rules="!isEdit ? [required(`Images must be provided`)] : []"
+      :rules="
+        !isEdit ? [required(`Restaurant gallery images must be provided`)] : []
+      "
       class="span-2"
-      label="Images"
+      label="Restaurant Gallery"
       outlined
       multiple
     >
@@ -235,9 +196,11 @@
 
     <v-file-input
       v-model="menu"
-      :rules="!isEdit ? [required(`Menu File must be provided`)] : []"
+      :rules="
+        !isEdit ? [required(`Restaurant Menu file must be provided`)] : []
+      "
       class="span-2"
-      label="Menu File"
+      label="Restaurant Menu"
       outlined
       multiple
       accept=".jpg,.jpeg,.png"
@@ -248,6 +211,20 @@
         </v-chip>
       </template>
     </v-file-input>
+
+    <gmap-map
+      style="height: 300px; margin-bottom: 50px"
+      class="span-2"
+      :center="center"
+      :zoom="zoom"
+    >
+      <GmapMarker
+        :position="center"
+        :clickable="true"
+        :draggable="true"
+        @dragend="updateLocation"
+      />
+    </gmap-map>
 
     <loading-dialog v-model="loading" message="Fetching Merchant Data" />
   </SimpleForm>
@@ -316,10 +293,8 @@ export default {
     merchant: {
       role: 'MERCHANT',
       username: '',
-      firstname: '',
-      surname: '',
       email: '',
-      status: '',
+      status: true,
       password: '',
       profileImage: '',
       restaurantName: '',
@@ -667,6 +642,7 @@ export default {
               console.log(error, 'error');
             });
 
+          this.merchant.username = this.merchant.email;
           await this.merchantsService.create(this.merchant);
           return true;
         } catch (e) {

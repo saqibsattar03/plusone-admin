@@ -44,7 +44,7 @@
       v-if="!isEdit"
       v-model="voucher.voucherObject.voucherPreference"
       :rules="[required('Voucher Preference must be provided')]"
-      class="span-2"
+      class="span-1"
       :items="voucherPreference"
       label="Voucher Preference"
       outlined
@@ -54,7 +54,7 @@
       v-if="!isEdit"
       v-model="voucher.voucherObject.voucherType"
       :rules="[required('Voucher Type must be provided')]"
-      class="span-2"
+      class="span-1"
       :items="voucherType"
       label="Voucher Type"
       outlined
@@ -90,7 +90,7 @@
     <v-text-field
       v-model="voucher.voucherObject.estimatedSavings"
       :rules="[required('Estimated Savings must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Estimated Savings"
       outlined
     />
@@ -98,7 +98,7 @@
     <v-text-field
       v-model="voucher.voucherObject.estimatedCost"
       :rules="[required('Estimated Cost must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Estimated Cost"
       type="number"
       outlined

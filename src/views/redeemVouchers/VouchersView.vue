@@ -17,10 +17,6 @@
     <template #voucherPreference="{ item }">
       {{ item.vouc.voucherPreference }}
     </template>
-
-    <template #discount="{ item }">
-      {{ item.vouc.discount + '%' }}
-    </template>
   </data-table>
 </template>
 
@@ -55,11 +51,6 @@ export default {
       {
         text: 'Voucher Preference',
         value: 'voucherPreference',
-        sortable: true
-      },
-      {
-        text: 'Discount',
-        value: 'discount',
         sortable: true
       }
     ]

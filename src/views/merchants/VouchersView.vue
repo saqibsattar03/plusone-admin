@@ -21,9 +21,6 @@
             : `${item.title.substr(0, 30)}`
         }}
       </template>
-      <template #discount="{ item }">
-        {{ item.discount ? item.discount + '%' : 'Null' }}
-      </template>
     </data-table>
 
     <v-dialog v-model="disableDialog" max-width="500px">
@@ -88,11 +85,6 @@ export default {
       {
         text: 'Voucher Type',
         value: 'voucherType',
-        sortable: true
-      },
-      {
-        text: 'Discount %',
-        value: 'discount',
         sortable: true
       },
       {

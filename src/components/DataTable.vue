@@ -122,52 +122,45 @@
             >
               <slot name="extra-actions" :item="item" />
 
-              <v-btn
-                dark
+              <v-icon
                 v-if="voucherHandler"
-                class="text--white"
-                small
                 @click="voucherHandler(item)"
-                color="primary"
-              >
-                Vouchers
-              </v-btn>
-              <v-btn
-                dark
+                color="#71797E	"
+                small
+                >mdi-ticket
+              </v-icon>
+
+              <v-icon
                 v-if="viewHandler"
-                class="text--white"
-                small
                 @click="viewHandler(item)"
-                color="primary"
-              >
-                View
-              </v-btn>
-              <v-btn
-                dark
-                v-if="editHandler"
+                color="blue"
                 small
+                >mdi-eye
+              </v-icon>
+
+              <v-icon
+                v-if="editHandler"
                 @click="editHandler(item)"
                 color="green"
-                >Edit</v-btn
-              >
-              <v-btn
-                dark
-                v-if="deleteHandler"
                 small
+                >mdi-pencil
+              </v-icon>
+
+              <v-icon
+                v-if="deleteHandler"
                 @click="onDelete(item)"
                 color="red"
-                >Delete</v-btn
-              >
-              <v-btn
-                dark
-                v-if="disableHandler"
-                class="text--white"
                 small
+                >mdi-delete
+              </v-icon>
+
+              <v-icon
+                v-if="disableHandler"
                 @click="disableHandler(item)"
                 color="red"
-              >
-                Disable
-              </v-btn>
+                small
+                >mdi-close
+              </v-icon>
             </div>
           </td>
         </tr>
