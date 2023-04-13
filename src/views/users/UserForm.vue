@@ -1,5 +1,10 @@
 <template>
-  <SimpleForm :is-edit="isEdit" :disabled="disabled" :onSubmit="submit" @done="$router.back()">
+  <SimpleForm
+    :is-edit="isEdit"
+    :disabled="disabled"
+    :onSubmit="submit"
+    @done="$router.back()"
+  >
     <p class="span-2 form__title">
       {{ isEdit ? 'Update User' : 'Add New User' }}
     </p>
@@ -20,22 +25,6 @@
       label="Email"
       outlined
     />
-
-    <!-- <v-text-field
-      v-if="this.isEdit == true"
-      v-model="password.old"
-      class="span-2"
-      label="Old Password(Optional)"
-      outlined
-    ></v-text-field> -->
-
-    <!-- <v-text-field
-      v-if="this.isEdit == true"
-      v-model="password.new"
-      class="span-2"
-      label="New Password(Optional)"
-      outlined
-    ></v-text-field> -->
 
     <v-text-field
       v-if="this.isEdit == false"

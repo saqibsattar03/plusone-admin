@@ -20,9 +20,8 @@
             >User Details</v-card-title
           >
 
-          <v-btn color="primary" @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-            Back</v-btn
+          <v-btn @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
 
@@ -71,19 +70,14 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Social Links : </b
-              >{{ user.socialLinks.length > 0 ? user.socialLinks : 'Null' }}
+              <b>Bio : </b>{{ user.bio ? user.bio : 'Null' }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Dietary Requirements : </b
-              >{{
-                user.dietRequirements.length > 0
-                  ? user.dietRequirements
-                  : 'Null'
-              }}
+              <b>Social Links : </b
+              >{{ user.socialLinks.length > 0 ? user.socialLinks : 'Null' }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -91,19 +85,26 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Favorite Restaurants : </b
-              >{{
-                user.favoriteRestaurants.length > 0
-                  ? user.favoriteRestaurants
-                  : 'Null'
-              }}
+              <b>Favorite Restaurants : </b>
+              <ul>
+                <li
+                  v-for="restaurant in user.favoriteRestaurants"
+                  :key="restaurant"
+                >
+                  {{ restaurant }}
+                </li>
+              </ul>
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Favorite Chefs : </b
-              >{{ user.favoriteChefs.length > 0 ? user.favoriteChefs : 'Null' }}
+              <b>Favorite Chefs : </b>
+              <ul>
+                <li v-for="chef in user.favoriteChefs" :key="chef">
+                  {{ chef }}
+                </li>
+              </ul>
             </v-card-text>
           </v-col>
         </v-row>
@@ -111,8 +112,24 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12">
             <v-card-text class="p10">
-              <b>Bio : </b>{{ user.bio ? user.bio : 'Null' }}
+              <b>Dietary Requirements : </b>
+              <ul>
+                <li v-for="dietary in user.dietRequirements" :key="dietary">
+                  {{ dietary }}
+                </li>
+              </ul>
             </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row v-if="this.user.status != 'ACTIVE'" class="pa-0 mt-8" no-gutters>
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn color="primary" @click="approveUser">Approve</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-else class="pa-0 mt-8" no-gutters>
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn color="primary" disabled>Approved</v-btn>
           </v-col>
         </v-row>
       </div>
@@ -165,11 +182,20 @@ export default {
       try {
         this.dataLoading = true;
         this.user = await this.users_service.fetchOne(this.$route.query.id);
-        console.log(this.user);
       } catch (e) {
         console.log(e);
       }
       this.dataLoading = false;
+    },
+
+    async approveUser() {
+      this.dataLoading = true;
+      await this.$axios
+        .patch('/persons/change-status?userId=' + this.$route.query.id)
+        .then(async () => {
+          this.dataLoading = false;
+          await this.loadUser();
+        });
     }
   },
   async mounted() {

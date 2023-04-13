@@ -12,10 +12,9 @@
       </v-overlay>
 
       <div v-else>
-        <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
-          <v-btn color="primary" @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-            Back</v-btn
+        <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
+          <v-btn @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
         <v-card-title class="p10" style="color: #020819"
@@ -65,6 +64,7 @@
         </v-row>
 
         <v-row class="pa-0 my-5" no-gutters>
+          <!-- <v-card-text>Merchant Media</v-card-text> -->
           <v-carousel
             v-if="media.length > 0"
             height="300"

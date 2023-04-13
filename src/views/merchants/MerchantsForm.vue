@@ -5,10 +5,9 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
-    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
-      <v-btn color="primary" @click="$router.go(-1)">
-        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-        Back</v-btn
+    <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
+      <v-btn @click="$router.go(-1)">
+        <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
       >
     </v-row>
 
@@ -16,78 +15,76 @@
       {{ isEdit ? 'Update Merchant' : 'Add New Merchant' }}
     </p>
 
-    <v-img
-      v-if="profileImageObjectURL && !isEdit"
-      contain
-      max-height="300"
-      class="span-2 mb-4"
-      :src="profileImageObjectURL"
-    ></v-img>
+    <v-card class="mx-auto span-1 mb-16" height="300" width="300">
+      <v-img
+        v-if="merchant.profileImage"
+        :src="merchant.profileImage"
+        alt="Profile Image"
+        height="300"
+        width="300"
+        class="mx-auto"
+      ></v-img>
+      <div
+        v-else
+        class="d-flex align-center justify-center"
+        style="width: 100%; height: 100%; background-color: #f5f5f5"
+      >
+        <span class="text--disabled">No image selected</span>
+      </div>
+      <v-card-text class="text-center">
+        <v-btn small color="primary" @click="onButtonClick">{{
+          merchant.profileImage ? 'Change Image' : 'Select Image'
+        }}</v-btn>
+        <input
+          type="file"
+          ref="fileInput"
+          @change="onFileSelected"
+          style="display: none"
+        />
+      </v-card-text>
+    </v-card>
 
-    <v-img
-      v-if="merchant.profileImage && isEdit"
-      contain
-      max-height="300"
-      class="span-2 mb-4"
-      :src="
-        profileImageObjectURL ? profileImageObjectURL : merchant.profileImage
-      "
-    ></v-img>
+    <v-col>
+      <v-text-field
+        v-model="merchant.restaurantName"
+        :rules="[required('Restaurant name must be provided')]"
+        label="Restaurant Name"
+        outlined
+        color="#111827"
+      />
 
-    <v-file-input
-      v-model="profileImage"
-      accept="image/*"
-      :rules="!isEdit ? [required(`Profile Image must be provided`)] : []"
-      class="span-2"
-      :placeholder="isEdit ? 'Update Profile Image' : 'Add Profile Image'"
-      outlined
-    >
-      <template v-slot:selection="{ index, text }">
-        <v-chip v-if="index < 2" color="primary" dark label small>
-          {{ text }}
-        </v-chip>
-      </template>
-    </v-file-input>
+      <v-text-field
+        v-if="!isEdit"
+        v-model="merchant.email"
+        :rules="[
+          required('Email must be provided'),
+          email('Email must be valid')
+        ]"
+        label="Email"
+        type="email"
+        outlined
+        color="#111827"
+      />
 
-    <v-text-field
-      v-if="!isEdit"
-      v-model="merchant.email"
-      :rules="[
-        required('Email must be provided'),
-        email('Email must be valid')
-      ]"
-      class="span-1"
-      label="Email"
-      type="email"
-      outlined
-    />
+      <v-text-field
+        v-if="!isEdit"
+        v-model="merchant.password"
+        :rules="[required('Password must be provided')]"
+        label="Password"
+        type="password"
+        outlined
+        color="#111827"
+      />
 
-    <v-text-field
-      v-if="!isEdit"
-      v-model="merchant.password"
-      :rules="[required('Password must be provided')]"
-      class="span-1"
-      label="Password"
-      type="password"
-      outlined
-    />
-
-    <v-text-field
-      v-model="merchant.restaurantName"
-      :rules="[required('Restaurant name must be provided')]"
-      class="span-1"
-      label="Restaurant Name"
-      outlined
-    />
-
-    <v-text-field
-      v-model="merchant.phoneNumber"
-      :rules="[required('Contact Number must be provided')]"
-      type="number"
-      class="span-1"
-      label="Contact Number"
-      outlined
-    />
+      <v-text-field
+        v-model="merchant.phoneNumber"
+        :rules="[required('Contact Number must be provided')]"
+        type="number"
+        label="Contact Number"
+        outlined
+        color="#111827"
+      />
+    </v-col>
 
     <v-textarea
       v-model="merchant.description"
@@ -95,6 +92,7 @@
       class="span-2"
       label="Description"
       outlined
+      color="#111827"
     />
 
     <v-combobox
@@ -108,6 +106,7 @@
       multiple
       small-chips
       deletable-chips
+      color="#111827"
     ></v-combobox>
 
     <v-select
@@ -118,6 +117,7 @@
       label="Dietary Restrictions"
       outlined
       multiple
+      color="#111827"
     ></v-select>
 
     <v-select
@@ -128,6 +128,7 @@
       label="Culinary Options"
       outlined
       multiple
+      color="#111827"
     ></v-select>
 
     <v-row no-gutters class="span-2 d-flex justify-space-between">
@@ -186,6 +187,7 @@
       label="Restaurant Gallery"
       outlined
       multiple
+      color="#111827"
     >
       <template v-slot:selection="{ index, text }">
         <v-chip v-if="index < 2" color="primary" dark label small>
@@ -204,6 +206,7 @@
       outlined
       multiple
       accept=".jpg,.jpeg,.png"
+      color="#111827"
     >
       <template v-slot:selection="{ index, text }">
         <v-chip v-if="index < 2" color="primary" dark label small>
@@ -319,10 +322,6 @@ export default {
   },
 
   computed: {
-    profileImageObjectURL() {
-      return this.profileImage ? URL.createObjectURL(this.profileImage) : '';
-    },
-
     mediaObjectURL() {
       return this.media.length > 0
         ? this.media.map((image) => URL.createObjectURL(image))
@@ -333,6 +332,17 @@ export default {
   methods: {
     required,
     email,
+
+    onButtonClick() {
+      this.$refs.fileInput.click();
+    },
+    onFileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.profileImage = file;
+        this.merchant.profileImage = URL.createObjectURL(file);
+      }
+    },
 
     getUserLocation() {
       if (navigator.geolocation) {
@@ -362,6 +372,16 @@ export default {
       this.merchant = await this.merchantsService.fetchOne(
         this.$route.query.id
       );
+
+      if (
+        this.merchant &&
+        this.merchant.status &&
+        this.merchant.status === 'PENDING'
+      ) {
+        this.merchant.status = false;
+      } else {
+        this.merchant.status = true;
+      }
 
       this.center = {
         lat: this.merchant.location.coordinates[1],
@@ -474,40 +494,6 @@ export default {
             this.merchant.media = this.oldMedia;
           }
 
-          // if (this.oldProfileImage) {
-          //   try {
-          //     await this.$axios.delete(
-          //       `/remove-file?media=${this.oldProfileImage}`
-          //     );
-          //   } catch (e) {
-          //     console.log(e.response);
-          //   }
-          // }
-
-          // if (this.oldMenu.length > 0) {
-          //   try {
-          //     await Promise.all(
-          //       this.oldMenu.map(async (menu) => {
-          //         await this.$axios.delete(`/remove-file?media=${menu}`);
-          //       })
-          //     );
-          //   } catch (e) {
-          //     console.log(e.response);
-          //   }
-          // }
-
-          // if (this.oldMedia.length > 0) {
-          //   try {
-          //     await Promise.all(
-          //       this.oldMedia.map(async (media) => {
-          //         await this.$axios.delete(`/remove-file?media=${media}`);
-          //       })
-          //     );
-          //   } catch (e) {
-          //     console.log(e.response);
-          //   }
-          // }
-
           this.merchant.location = {
             type: 'Point',
             coordinates: [this.center.lng, this.center.lat]
@@ -533,6 +519,16 @@ export default {
             .catch((error) => {
               console.log(error, 'error');
             });
+
+          if (
+            this.merchant &&
+            this.merchant.status &&
+            this.merchant.status === true
+          ) {
+            this.merchant.status = 'ACTIVE';
+          } else {
+            this.merchant.status = 'PENDING';
+          }
 
           await this.merchantsService.update(this.merchant);
           return true;
@@ -643,6 +639,7 @@ export default {
             });
 
           this.merchant.username = this.merchant.email;
+
           await this.merchantsService.create(this.merchant);
           return true;
         } catch (e) {
@@ -665,5 +662,22 @@ export default {
 p {
   font-weight: bold;
   text-align: left;
+}
+
+.profile-image-preview,
+.profile-image-placeholder {
+  margin: 10px auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+}
+.profile-image-placeholder {
+  color: #333;
 }
 </style>

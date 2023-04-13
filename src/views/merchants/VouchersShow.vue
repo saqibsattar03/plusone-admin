@@ -12,10 +12,9 @@
       </v-overlay>
 
       <div v-else>
-        <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
-          <v-btn color="primary" @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-            Back</v-btn
+        <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
+          <v-btn @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
 

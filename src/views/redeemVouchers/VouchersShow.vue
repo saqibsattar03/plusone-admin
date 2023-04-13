@@ -20,9 +20,8 @@
             >Redeem Voucher Details</v-card-title
           >
 
-          <v-btn color="primary" @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-            Back</v-btn
+          <v-btn @click="$router.go(-1)">
+            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
 

@@ -7,17 +7,17 @@
       } justify-start align-start`"
       :style="$vuetify.breakpoint.width > 800 ? '' : 'gap: 10px'"
     >
-      <v-btn
-        :class="[$vuetify.breakpoint.width > 800 ? 'mr-2' : '']"
-        :style="[$vuetify.breakpoint.width < 800 ? { width: 100 + '%' } : '']"
-        color="primary"
-        elevation="0"
-        v-if="allowBack"
-        @click="$router.go(-1)"
-      >
-        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp; Back
-      </v-btn>
-      <span class="data-table__header">{{ title }}</span>
+      <div class="d-flex align-center">
+        <v-btn
+          :class="[$vuetify.breakpoint.width > 800 ? 'mr-2' : '']"
+          elevation="0"
+          v-if="allowBack"
+          @click="$router.go(-1)"
+        >
+          <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon>
+        </v-btn>
+        <span class="data-table__header">{{ title }}</span>
+      </div>
       <v-spacer v-if="$vuetify.breakpoint.width > 800" />
 
       <div

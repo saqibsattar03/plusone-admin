@@ -5,10 +5,9 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
-    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
-      <v-btn color="primary" @click="$router.go(-1)">
-        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-        Back</v-btn
+    <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
+      <v-btn @click="$router.go(-1)">
+        <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
       >
     </v-row>
 
@@ -32,6 +31,7 @@
       class="span-2"
       :placeholder="isEdit ? 'Update Voucher Image' : 'Add Voucher Image'"
       outlined
+      color="#111827"
     >
       <template v-slot:selection="{ index, text }">
         <v-chip v-if="index < 2" color="primary" dark label small>
@@ -48,6 +48,7 @@
       :items="voucherPreference"
       label="Voucher Preference"
       outlined
+      color="#111827"
     />
 
     <v-select
@@ -58,6 +59,7 @@
       :items="voucherType"
       label="Voucher Type"
       outlined
+      color="#111827"
     />
 
     <v-text-field
@@ -68,6 +70,7 @@
       label="Discount"
       type="number"
       outlined
+      color="#111827"
     />
 
     <v-text-field
@@ -77,6 +80,7 @@
       class="span-2"
       label="Title"
       outlined
+      color="#111827"
     />
 
     <v-textarea
@@ -85,6 +89,7 @@
       class="span-2"
       label="Description"
       outlined
+      color="#111827"
     />
 
     <v-text-field
@@ -93,15 +98,17 @@
       class="span-1"
       label="Estimated Savings"
       outlined
+      color="#111827"
     />
 
     <v-text-field
-      v-model="voucher.voucherObject.estimatedCost"
+      v-model.number="voucher.voucherObject.estimatedCost"
       :rules="[required('Estimated Cost must be provided')]"
       class="span-1"
       label="Estimated Cost"
       type="number"
       outlined
+      color="#111827"
     />
 
     <loading-dialog v-model="loading" message="Fetching Voucher Data" />
