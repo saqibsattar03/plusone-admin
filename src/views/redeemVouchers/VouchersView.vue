@@ -62,7 +62,6 @@ export default {
     },
 
     async loadData() {
-      console.log(this.redeem_vouchers_service.fetchAll());
       return await this.redeem_vouchers_service.fetchAll();
     }
   }

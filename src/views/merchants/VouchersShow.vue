@@ -12,15 +12,19 @@
       </v-overlay>
 
       <div v-else>
-        <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
-          <v-btn @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
+        <v-row class="d-flex align-center" no-gutters>
+          <v-btn @click="$router.go(-1)" elevation="0">
+            <v-icon>mdi-arrow-left</v-icon></v-btn
           >
+
+          <v-card-title>Voucher Details</v-card-title>
         </v-row>
 
-        <v-card-title class="p10" style="color: #020819"
-          >Voucher Details</v-card-title
-        >
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-img height="250px" contain :src="voucherImg"></v-img>
+          </v-col>
+        </v-row>
 
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
@@ -79,7 +83,14 @@
             </v-card-text>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col
+            cols="12"
+            md="6"
+            v-if="
+              voucher[0].voucherObject.voucherDisableDates &&
+              voucher[0].voucherObject.voucherDisableDates.length > 0
+            "
+          >
             <v-card-text class="p10">
               <b>Disable Dates : </b>
 
@@ -108,6 +119,7 @@ export default {
     return {
       dataLoading: true,
       voucher: {},
+      voucherImg: '',
       merchants_service: new MerchantsService()
     };
   },
@@ -121,16 +133,24 @@ export default {
       try {
         this.dataLoading = true;
 
-        let voucher = await this.merchants_service.fetchOneVoucher({
+        this.voucher = await this.merchants_service.fetchOneVoucher({
           restaurantId: this.$route.query.restaurantId,
           voucherId: this.$route.query.voucherId
         });
 
-        this.voucher = voucher;
+        await this.loadVoucherImg();
       } catch (e) {
         console.log(e);
       }
       this.dataLoading = false;
+    },
+
+    async loadVoucherImg() {
+      await this.$axios
+        .get(`/singe-file?file=${this.voucher[0].voucherObject.voucherImage}`)
+        .then((response) => {
+          this.voucherImg = response.data;
+        });
     }
   },
   async mounted() {

@@ -5,62 +5,15 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
-    <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
-      <v-btn @click="$router.go(-1)">
+    <v-row class="span-2" no-gutters>
+      <v-btn @click="$router.go(-1)" elevation="0">
         <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
       >
+
+      <p class="form__title" style="width: 90%">
+        {{ isEdit ? 'Update Voucher' : 'Add New Voucher' }}
+      </p>
     </v-row>
-
-    <p class="span-2 form__title">
-      {{ isEdit ? 'Update Voucher' : 'Add New Voucher' }}
-    </p>
-
-    <v-img
-      v-if="VoucherImageObjectURL && !isEdit"
-      contain
-      max-height="300"
-      class="span-2 mb-4"
-      :src="VoucherImageObjectURL"
-    ></v-img>
-
-    <v-file-input
-      v-if="!isEdit"
-      v-model="voucherImage"
-      accept="image/*"
-      :rules="!isEdit ? [required(`Voucher Image must be provided`)] : []"
-      class="span-2"
-      :placeholder="isEdit ? 'Update Voucher Image' : 'Add Voucher Image'"
-      outlined
-      color="#111827"
-    >
-      <template v-slot:selection="{ index, text }">
-        <v-chip v-if="index < 2" color="primary" dark label small>
-          {{ text }}
-        </v-chip>
-      </template>
-    </v-file-input>
-
-    <v-select
-      v-if="!isEdit"
-      v-model="voucher.voucherObject.voucherPreference"
-      :rules="[required('Voucher Preference must be provided')]"
-      class="span-1"
-      :items="voucherPreference"
-      label="Voucher Preference"
-      outlined
-      color="#111827"
-    />
-
-    <v-select
-      v-if="!isEdit"
-      v-model="voucher.voucherObject.voucherType"
-      :rules="[required('Voucher Type must be provided')]"
-      class="span-1"
-      :items="voucherType"
-      label="Voucher Type"
-      outlined
-      color="#111827"
-    />
 
     <v-text-field
       v-if="voucher.voucherObject.voucherType === 'DISCOUNTED'"
@@ -92,6 +45,28 @@
       color="#111827"
     />
 
+    <v-select
+      v-if="!isEdit"
+      v-model="voucher.voucherObject.voucherPreference"
+      :rules="[required('Voucher Preference must be provided')]"
+      class="span-1"
+      :items="voucherPreference"
+      label="Voucher Preference"
+      outlined
+      color="#111827"
+    />
+
+    <v-select
+      v-if="!isEdit"
+      v-model="voucher.voucherObject.voucherType"
+      :rules="[required('Voucher Type must be provided')]"
+      class="span-1"
+      :items="voucherType"
+      label="Voucher Type"
+      outlined
+      color="#111827"
+    />
+
     <v-text-field
       v-model="voucher.voucherObject.estimatedSavings"
       :rules="[required('Estimated Savings must be provided')]"
@@ -111,6 +86,31 @@
       color="#111827"
     />
 
+    <v-img
+      v-if="VoucherImageObjectURL && !isEdit"
+      contain
+      max-height="300"
+      class="span-2 mb-4"
+      :src="VoucherImageObjectURL"
+    ></v-img>
+
+    <v-file-input
+      v-if="!isEdit"
+      v-model="voucherImage"
+      accept="image/*"
+      :rules="!isEdit ? [required(`Voucher Image must be provided`)] : []"
+      class="span-2"
+      :placeholder="isEdit ? 'Update Voucher Image' : 'Add Voucher Image'"
+      outlined
+      color="#111827"
+    >
+      <template v-slot:selection="{ index, text }">
+        <v-chip v-if="index < 2" color="primary" dark label small>
+          {{ text }}
+        </v-chip>
+      </template>
+    </v-file-input>
+
     <loading-dialog v-model="loading" message="Fetching Voucher Data" />
   </SimpleForm>
 </template>
@@ -118,7 +118,6 @@
 <script>
 import SimpleForm from '../../components/Form';
 import { MerchantsService } from '../../services/merchant-service';
-import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email } from '@/utils/validators';
 
@@ -130,7 +129,6 @@ export default {
     isEdit: false,
     loading: false,
     merchantsService: new MerchantsService(),
-    upload_image_service: new UploadImageService(),
 
     // only for edit
     disabled: false,

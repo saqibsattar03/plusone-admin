@@ -5,15 +5,15 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
-    <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
-      <v-btn @click="$router.go(-1)">
-        <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
+    <v-row class="span-2" no-gutters>
+      <v-btn @click="$router.go(-1)" elevation="0">
+        <v-icon>mdi-arrow-left</v-icon></v-btn
       >
-    </v-row>
 
-    <p class="span-2 form__title">
-      {{ isEdit ? 'Update Merchant' : 'Add New Merchant' }}
-    </p>
+      <p class="form__title" style="width: 90%">
+        {{ isEdit ? 'Update Merchant' : 'Add New Merchant' }}
+      </p>
+    </v-row>
 
     <v-card class="mx-auto span-1 mb-16" height="300" width="300">
       <v-img
@@ -27,7 +27,13 @@
       <div
         v-else
         class="d-flex align-center justify-center"
-        style="width: 100%; height: 100%; background-color: #f5f5f5"
+        id="profileImage"
+        style="
+          width: 100%;
+          height: 100%;
+          background-color: #f5f5f5;
+          border-radius: 4px;
+        "
       >
         <span class="text--disabled">No image selected</span>
       </div>
@@ -88,7 +94,7 @@
 
     <v-textarea
       v-model="merchant.description"
-      :rules="[required('Description Number must be provided')]"
+      :rules="[required('Description  must be provided')]"
       class="span-2"
       label="Description"
       outlined
@@ -181,7 +187,12 @@
       v-model="media"
       accept="image/*"
       :rules="
-        !isEdit ? [required(`Restaurant gallery images must be provided`)] : []
+        !isEdit
+          ? [
+              required(`Restaurant gallery images must be provided`),
+              requiredArray(`At least one image must be provided`)
+            ]
+          : []
       "
       class="span-2"
       label="Restaurant Gallery"
@@ -216,7 +227,7 @@
     </v-file-input>
 
     <gmap-map
-      style="height: 300px; margin-bottom: 50px"
+      style="height: 300px; margin-bottom: 20px"
       class="span-2"
       :center="center"
       :zoom="zoom"
@@ -236,9 +247,8 @@
 <script>
 import SimpleForm from '../../components/Form';
 import { MerchantsService } from '../../services/merchant-service';
-import { UploadImageService } from '@/services/upload-image-service';
 import LoadingDialog from '../../components/LoadingDialog';
-import { required, email } from '@/utils/validators';
+import { required, email, requiredArray } from '@/utils/validators';
 
 export default {
   name: 'Form',
@@ -248,7 +258,6 @@ export default {
     isEdit: false,
     loading: false,
     merchantsService: new MerchantsService(),
-    upload_image_service: new UploadImageService(),
 
     center: { lat: 0, lng: 0 },
     zoom: 15,
@@ -332,6 +341,7 @@ export default {
   methods: {
     required,
     email,
+    requiredArray,
 
     onButtonClick() {
       this.$refs.fileInput.click();
@@ -546,6 +556,12 @@ export default {
         try {
           // creating merchant
 
+          if (!this.merchant.profileImage) {
+            document.getElementById('profileImage').style.border =
+              '2px solid red';
+            return false;
+          }
+
           if (this.profileImage) {
             const formData = new FormData();
             formData.append('media', this.profileImage);
@@ -644,7 +660,7 @@ export default {
           return true;
         } catch (e) {
           context.reportError({
-            title: 'Error while creating Merchant',
+            title: 'Failed to create merchant',
             description: e.response
               ? e.response.data.message
               : 'Something went wrong!'

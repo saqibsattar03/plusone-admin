@@ -12,17 +12,19 @@
       </v-overlay>
 
       <div v-else>
-        <v-row
-          class="pa-0 d-flex align-center justify-space-between"
-          no-gutters
-        >
+        <v-row class="d-flex align-center" no-gutters>
+          <v-btn @click="$router.go(-1)" elevation="0">
+            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
+          >
           <v-card-title class="p10" style="color: #020819"
             >Redeem Voucher Details</v-card-title
           >
+        </v-row>
 
-          <v-btn @click="$router.go(-1)">
-            <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
-          >
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-img height="250px" contain :src="voucherImg"></v-img>
+          </v-col>
         </v-row>
 
         <v-row no-gutters>
@@ -77,7 +79,14 @@
             </v-card-text>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col
+            cols="12"
+            md="6"
+            v-if="
+              voucher[0].voucherObject.voucherDisableDates &&
+              voucher[0].voucherObject.voucherDisableDates.length > 0
+            "
+          >
             <v-card-text>
               <b>Disabled dates : </b>
               <ul>
@@ -98,13 +107,13 @@
 <script>
 import dayjs from 'dayjs';
 import { RedeemVouchersService } from '../../services/redeem-vouchers-service';
-import { getFullPath } from '../../utils/local';
 
 export default {
   data() {
     return {
       dataLoading: true,
       voucher: {},
+      voucherImg: '',
       redeem_vouchers_service: new RedeemVouchersService(),
 
       headers: [
@@ -132,7 +141,6 @@ export default {
     };
   },
   methods: {
-    getFullPath,
     formatDate(date) {
       return dayjs(date).format('D MMM YYYY');
     },
@@ -143,10 +151,19 @@ export default {
         this.voucher = await this.redeem_vouchers_service.fetchOne(
           this.$route.query.id
         );
+        await this.loadVoucherImg();
       } catch (e) {
         console.log(e);
       }
       this.dataLoading = false;
+    },
+
+    async loadVoucherImg() {
+      await this.$axios
+        .get(`/singe-file?file=${this.voucher[0].voucherObject.voucherImage}`)
+        .then((response) => {
+          this.voucherImg = response.data;
+        });
     }
   },
   async mounted() {
