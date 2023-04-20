@@ -64,7 +64,7 @@
         </v-row>
 
         <v-row class="pa-0 my-5" no-gutters>
-          <!-- <v-card-text>Merchant Media</v-card-text> -->
+          <v-card-title>Merchant Media:</v-card-title>
           <v-carousel
             v-if="media.length > 0"
             height="300"
@@ -152,7 +152,8 @@ export default {
       merchant: {},
       merchants_service: new MerchantsService(),
 
-      media: []
+      media: [],
+      menu: ''
     };
   },
   methods: {

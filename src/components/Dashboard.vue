@@ -17,10 +17,10 @@
       <img
         src="../assets/plus-one-logo.svg"
         alt="logo"
-        class="logo"
+        class="logo mb-10"
         height="70"
       />
-      <v-card-title>PlusOne</v-card-title>
+      <!-- <v-card-title>PlusOne</v-card-title> -->
       <v-divider />
       <template v-for="(route, key) in routes">
         <v-list-item
@@ -117,7 +117,7 @@
 <script>
 import ProfilePopup from './ProfilePopup';
 import { required } from '@/utils/validators';
-import { getUserScopes } from '../utils/local';
+import { getUserScopes, getUser } from '../utils/local';
 
 export default {
   name: 'Dashboard',
@@ -126,7 +126,7 @@ export default {
   },
   data: () => ({
     drawer: true,
-    user: {},
+    user: getUser(),
     userScopes: getUserScopes(),
     developMode: false,
     developModeDialog: false,
@@ -153,12 +153,14 @@ export default {
           icon: 'mdi-account-group',
           isVisible: this.userScopes?.includes('users:view')
         },
-        // {
-        //   to: '/admins',
-        //   title: 'Admins',
-        //   icon: 'mdi-account-group',
-        //   isVisible: this.userScopes?.includes('admins:view')
-        // },
+        {
+          to: '/admins',
+          title: 'Admins',
+          icon: 'mdi-account-group',
+          isVisible:
+            this.userScopes?.includes('admins:view') &&
+            this.user.role === 'ADMIN'
+        },
         {
           to: '/no-permission',
           title: 'No Permission',
@@ -179,6 +181,14 @@ export default {
           title: 'Redeem Vouchers',
           icon: 'mdi-ticket',
           isVisible: this.userScopes?.includes('redeem-vouchers:view')
+        },
+        {
+          to: '/quotes',
+          title: 'Quotes',
+          icon: 'mdi-format-quote-close',
+          isVisible:
+            this.userScopes?.includes('quotes:view') &&
+            this.user.role === 'ADMIN'
         }
       ];
     }

@@ -14,7 +14,7 @@ export class AdminsService {
   }
 
   async update(admin) {
-    return (await axios.patch('/persons/update/' + admin._id, admin)).data;
+    return (await axios.patch('/persons/update', admin)).data;
   }
 
   async delete(admin) {

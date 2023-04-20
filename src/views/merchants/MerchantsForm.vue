@@ -216,7 +216,7 @@
       label="Restaurant Menu"
       outlined
       multiple
-      accept=".jpg,.jpeg,.png"
+      accept=".pdf"
       color="#111827"
     >
       <template v-slot:selection="{ index, text }">

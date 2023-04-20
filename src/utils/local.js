@@ -1,5 +1,10 @@
 import axios from 'axios';
 
+export function getUser() {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+}
+
 export function getUserScopes() {
   const user = localStorage.getItem('user');
   const scopes = JSON.parse(user)?.scopes;

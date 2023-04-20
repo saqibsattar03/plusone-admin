@@ -161,6 +161,16 @@ export default {
         id: 'redeemVouchers',
         name: 'Redeem Vouchers',
         children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
+      },
+      {
+        id: 'quotes',
+        name: 'Quotes',
+        children: [
+          { id: 'quotes:new', name: 'Create Quotes' },
+          { id: 'quotes:edit', name: 'Edit Quotes' },
+          { id: 'quotes:view', name: 'View Quotes' },
+          { id: 'quotes:delete', name: 'Delete Quotes' }
+        ]
       }
     ],
     // only for edit
