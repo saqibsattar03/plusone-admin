@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "rrestapp"
-  }
+    "default": "rrestapp",
+    "dist": "plusone-ad9ba"
+  },
+  "targets": {},
+  "etags": {}
 }

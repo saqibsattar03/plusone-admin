@@ -46,8 +46,7 @@
 <script>
 import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
-import { getUserScopes } from '../../utils/local';
-// import Vue from 'vue';
+import { getUserScopes, getUser } from '../../utils/local';
 
 export default {
   components: { DataTable },
@@ -57,6 +56,7 @@ export default {
   },
 
   data: () => ({
+    user: getUser(),
     items: [],
     merchants_service: new MerchantsService(),
     userScopes: getUserScopes(),
@@ -111,13 +111,25 @@ export default {
     },
 
     async loadData() {
-      const merchants = await this.merchants_service.fetchAll();
-      this.merchants = merchants;
-      this.merchants = this.merchants.filter(
-        (merchant) => merchant.restaurantData.length > 0
-      );
+      if (this.user.role === 'ADMIN') {
+        const merchants = await this.merchants_service.fetchAll();
+        this.merchants = merchants;
+        this.merchants = this.merchants.filter(
+          (merchant) => merchant.restaurantData.length > 0
+        );
 
-      return this.merchants;
+        return this.merchants;
+      } else {
+        const merchants = await this.merchants_service.fetchAll();
+        this.merchants = merchants;
+        this.merchants = this.merchants.filter(
+          (merchant) =>
+            merchant.restaurantData.length > 0 &&
+            merchant.restaurantData[0].userId === this.user._id
+        );
+
+        return this.merchants;
+      }
     }
   }
 };

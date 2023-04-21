@@ -10,7 +10,7 @@
     :view-handler="userScopes.includes('users:view') ? view : null"
   >
     <template #firstname="{ item }">
-      {{ item.firstname }} {{ item.surname }}
+      {{ item.firstname }}
     </template>
   </data-table>
 </template>

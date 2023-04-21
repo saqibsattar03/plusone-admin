@@ -46,7 +46,11 @@ export default {
     resolveLetter() {
       let i = '';
       if (this.user) {
-        if (this.user.firstname) i += this.user.firstname[0];
+        if (this.user.firstname) {
+          i += this.user.firstname[0];
+        } else {
+          i += this.user.username[0];
+        }
       } else {
         i = '-';
       }
@@ -55,6 +59,7 @@ export default {
     getUsername() {
       if (this.user) {
         let name = this.user.firstname;
+
         return name;
       } else {
         return '_';

@@ -5,21 +5,20 @@
     :onSubmit="submit"
     @done="$router.back()"
   >
-    <v-row class="pa-0 d-flex justify-end span-2" no-gutters>
-      <v-btn color="primary" @click="$router.go(-1)">
-        <v-icon class="v-btn__pre-icon" small>mdi-arrow-left</v-icon>&nbsp;
-        Back</v-btn
+    <v-row class="span-2" no-gutters>
+      <v-btn @click="$router.back()" elevation="0">
+        <v-icon>mdi-arrow-left</v-icon></v-btn
       >
-    </v-row>
 
-    <p class="span-2 form__title">
-      {{ isEdit ? 'Update Admin' : 'Add New Admin' }}
-    </p>
+      <p class="form__title" style="width: 90%">
+        {{ isEdit ? 'Update Admin' : 'Add New Admin' }}
+      </p>
+    </v-row>
 
     <v-text-field
       v-model="admin.firstname"
       :rules="[required('First name must be provided')]"
-      class="span-2"
+      class="span-1"
       label="First Name"
       outlined
     />
@@ -27,7 +26,7 @@
     <v-text-field
       v-model="admin.surname"
       :rules="[required('Surname name must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Surname"
       outlined
     />
@@ -35,7 +34,7 @@
     <v-text-field
       v-model="admin.email"
       :rules="[required('Email must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Email"
       outlined
     />
@@ -44,7 +43,7 @@
       v-if="!isEdit"
       v-model="admin.username"
       :rules="[required('Username must be provided')]"
-      class="span-2"
+      class="span-1"
       label="Username"
       outlined
     />

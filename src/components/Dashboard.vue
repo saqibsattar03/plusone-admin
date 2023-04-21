@@ -153,14 +153,12 @@ export default {
           icon: 'mdi-account-group',
           isVisible: this.userScopes?.includes('users:view')
         },
-        {
-          to: '/admins',
-          title: 'Admins',
-          icon: 'mdi-account-group',
-          isVisible:
-            this.userScopes?.includes('admins:view') &&
-            this.user.role === 'ADMIN'
-        },
+        // {
+        //   to: '/admins',
+        //   title: 'Admins',
+        //   icon: 'mdi-account-group',
+        //   isVisible: this.userScopes?.includes('admins:view')
+        // },
         {
           to: '/no-permission',
           title: 'No Permission',
@@ -168,13 +166,15 @@ export default {
           isVisible: false
         },
 
-        { isDivider: true },
+        // { isDivider: true },
 
         {
           to: '/merchants',
           title: 'Merchants',
           icon: 'mdi-store',
-          isVisible: this.userScopes?.includes('merchants:view')
+          isVisible:
+            this.userScopes?.includes('merchants:view') ||
+            this.user.role === 'MERCHANT'
         },
         {
           to: '/redeem-vouchers',
@@ -186,9 +186,7 @@ export default {
           to: '/quotes',
           title: 'Quotes',
           icon: 'mdi-format-quote-close',
-          isVisible:
-            this.userScopes?.includes('quotes:view') &&
-            this.user.role === 'ADMIN'
+          isVisible: this.userScopes?.includes('quotes:view')
         }
       ];
     }
