@@ -16,17 +16,6 @@
     </v-row>
 
     <v-text-field
-      v-if="voucher.voucherObject.voucherType === 'DISCOUNTED'"
-      v-model.number="voucher.voucherObject.discount"
-      :rules="[required('Discount must be provided')]"
-      class="span-2"
-      label="Discount"
-      type="number"
-      outlined
-      color="#111827"
-    />
-
-    <v-text-field
       v-if="!isEdit"
       v-model="voucher.voucherObject.title"
       :rules="[required('Title must be provided')]"
@@ -63,6 +52,17 @@
       class="span-1"
       :items="voucherType"
       label="Voucher Type"
+      outlined
+      color="#111827"
+    />
+
+    <v-text-field
+      v-if="voucher.voucherObject.voucherType === 'DISCOUNTED'"
+      v-model.number="voucher.voucherObject.discount"
+      :rules="[required('Discount must be provided')]"
+      class="span-1"
+      label="Discount"
+      type="number"
       outlined
       color="#111827"
     />
