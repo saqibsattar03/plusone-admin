@@ -402,33 +402,13 @@ export default {
       this.oldMenu = this.merchant.menu;
       this.oldMedia = this.merchant.media;
 
-      this.merchant.media = [];
-      this.merchant.menu = [];
-
-      await this.$axios
-        .get(`/singe-file?file=${this.merchant.profileImage}`)
-        .then((response) => {
-          this.merchant.profileImage = response.data;
-        });
-
-      await Promise.all(
-        this.oldMenu.map(async (menu) => {
-          await this.$axios.get(`/singe-file?file=${menu}`).then((response) => {
-            menu = response.data;
-            this.merchant.menu.push(menu);
-          });
-        })
+      this.merchant.profileImage =
+        this.$axios.defaults.baseURL + 'uploads/' + this.merchant.profileImage;
+      this.merchant.menu = this.merchant.menu.map(
+        (menu) => this.$axios.defaults.baseURL + 'uploads/' + menu
       );
-
-      await Promise.all(
-        this.oldMedia.map(async (media) => {
-          await this.$axios
-            .get(`/singe-file?file=${media}`)
-            .then((response) => {
-              media = response.data;
-              this.merchant.media.push(media);
-            });
-        })
+      this.merchant.media = this.merchant.media.map(
+        (media) => this.$axios.defaults.baseURL + 'uploads/' + media
       );
 
       this.loading = false;

@@ -7,8 +7,16 @@
     @done="$router.back()"
     @add-new="addNew"
     :delete-handler="null"
-    :edit-handler="userScopes.includes('merchants:edit') ? edit : null"
-    :view-handler="userScopes.includes('merchants:view') ? view : null"
+    :edit-handler="
+      userScopes.includes('merchants:edit') || user.role === 'MERCHANT'
+        ? edit
+        : null
+    "
+    :view-handler="
+      userScopes.includes('merchants:view') || user.role === 'MERCHANT'
+        ? view
+        : null
+    "
     :voucher-handler="voucherView"
   >
     <template #restaurantName="{ item }">

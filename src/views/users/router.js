@@ -11,8 +11,8 @@ export const usersRoutes = [
         component: UsersView
       }
     : {
-        path: '/users',
-        redirect: '/no-permission'
+        path: '/',
+        redirect: '/merchants'
       },
   getUserScopes()?.includes('users:new')
     ? {
