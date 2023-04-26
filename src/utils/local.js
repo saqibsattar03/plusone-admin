@@ -12,5 +12,5 @@ export function getUserScopes() {
 }
 
 export function getFullPath(_file) {
-  return axios.defaults.baseURL + '/uploads/' + _file;
+  return axios.defaults.baseURL + 'uploads/' + _file;
 }

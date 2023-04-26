@@ -169,16 +169,9 @@ export default {
           this.$route.query.id
         );
 
-        await Promise.all(
-          this.merchant.media.map(async (media) => {
-            await this.$axios
-              .get(`/singe-file?file=${media}`)
-              .then((response) => {
-                media = response.data;
-                this.media.push(media);
-              });
-          })
-        );
+        this.merchant.media.forEach((media) => {
+          this.media.push(this.getFullPath(media));
+        });
       } catch (e) {
         console.log(e);
       }

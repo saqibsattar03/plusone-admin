@@ -3,7 +3,7 @@
     :is-edit="isEdit"
     :disabled="disabled"
     :onSubmit="submit"
-    @done="$router.back()"
+    @done="$router.push('/merchants')"
   >
     <v-row class="span-2" no-gutters>
       <v-btn @click="$router.go(-1)" elevation="0">
@@ -44,6 +44,7 @@
         <input
           type="file"
           ref="fileInput"
+          accept="image/*"
           @change="onFileSelected"
           style="display: none"
         />
@@ -152,23 +153,7 @@
     </v-row>
 
     <v-carousel
-      v-if="media.length > 0 && !isEdit"
-      height="300"
-      class="span-2 mb-4"
-      hide-delimiters
-      show-arrows-on-hover
-    >
-      <v-carousel-item
-        contain
-        v-for="(image, index) in mediaObjectURL"
-        :key="index"
-        :src="image"
-        style="object-fit: cover"
-      ></v-carousel-item>
-    </v-carousel>
-
-    <v-carousel
-      v-if="merchant.media.length > 0 && isEdit"
+      v-if="merchant.media.length > 0"
       height="300"
       class="span-2 mb-4"
       hide-delimiters
@@ -184,6 +169,11 @@
     </v-carousel>
 
     <v-file-input
+      label="Restaurant Gallery"
+      multiple
+      small-chips
+      outlined
+      class="span-2"
       v-model="media"
       accept="image/*"
       :rules="
@@ -194,38 +184,45 @@
             ]
           : []
       "
-      class="span-2"
-      label="Restaurant Gallery"
-      outlined
-      multiple
-      color="#111827"
+      @change="onMediaSelected"
     >
-      <template v-slot:selection="{ index, text }">
-        <v-chip v-if="index < 2" color="primary" dark label small>
+      <template v-slot:selection="{ index, text, on, attrs }">
+        <v-chip
+          v-bind="attrs"
+          :index="index"
+          :input-value="on"
+          color="primary"
+          text-color="white"
+          close
+          small
+          @click:close="removeMediaFile(index)"
+        >
           {{ text }}
         </v-chip>
       </template>
     </v-file-input>
+
+    <iframe
+      v-if="merchant.menu"
+      :src="merchant.menu"
+      frameborder="0"
+      class="span-2 mb-10"
+      width="100%"
+      height="350"
+    ></iframe>
 
     <v-file-input
-      v-model="menu"
-      :rules="
-        !isEdit ? [required(`Restaurant Menu file must be provided`)] : []
-      "
-      class="span-2"
       label="Restaurant Menu"
       outlined
-      multiple
+      class="span-2"
+      v-model="menu"
       accept=".pdf"
-      color="#111827"
+      :rules="!isEdit ? [required(`Restaurant menu must be provided`)] : []"
+      @change="onMenuSelected"
     >
-      <template v-slot:selection="{ index, text }">
-        <v-chip v-if="index < 2" color="primary" dark label small>
-          {{ text }}
-        </v-chip>
-      </template>
     </v-file-input>
 
+    <v-card-title>Restaurant location:</v-card-title>
     <gmap-map
       style="height: 300px; margin-bottom: 20px"
       class="span-2"
@@ -249,6 +246,7 @@ import SimpleForm from '../../components/Form';
 import { MerchantsService } from '../../services/merchant-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email, requiredArray } from '@/utils/validators';
+import { getFullPath } from '../../utils/local';
 
 export default {
   name: 'Form',
@@ -266,11 +264,11 @@ export default {
     disabled: false,
 
     oldProfileImage: null,
-    oldMenu: [],
+    oldMenu: null,
     oldMedia: [],
 
     profileImage: null,
-    menu: [],
+    menu: null,
     media: [],
     tags: ['Halal', 'Late Night'],
     dietaryRestrictions: [
@@ -316,7 +314,7 @@ export default {
       dietaryRestrictions: [],
       culinaryOptions: [],
       isSponsored: false,
-      menu: [],
+      menu: '',
       media: [],
       location: {
         type: 'Point',
@@ -328,14 +326,6 @@ export default {
 
   mounted() {
     this.loadMerchant();
-  },
-
-  computed: {
-    mediaObjectURL() {
-      return this.media.length > 0
-        ? this.media.map((image) => URL.createObjectURL(image))
-        : [];
-    }
   },
 
   methods: {
@@ -351,6 +341,27 @@ export default {
       if (file) {
         this.profileImage = file;
         this.merchant.profileImage = URL.createObjectURL(file);
+      }
+    },
+    onMediaSelected() {
+      this.merchant.media = this.media.map((file) => URL.createObjectURL(file));
+    },
+
+    onMenuSelected(file) {
+      if (file) {
+        this.menu = file;
+        this.merchant.menu = URL.createObjectURL(file);
+      } else {
+        this.menu = null;
+        this.merchant.menu = '';
+      }
+    },
+    removeMediaFile(index) {
+      if (this.isEdit) {
+        this.merchant.media.splice(index, 1);
+        this.media.splice(index, 1);
+      } else {
+        this.media.splice(index, 1);
       }
     },
 
@@ -398,17 +409,20 @@ export default {
         lng: this.merchant.location.coordinates[0]
       };
 
+      this.media = this.merchant.media.map((media) => {
+        return {
+          name: media
+        };
+      });
+
       this.oldProfileImage = this.merchant.profileImage;
       this.oldMenu = this.merchant.menu;
       this.oldMedia = this.merchant.media;
 
-      this.merchant.profileImage =
-        this.$axios.defaults.baseURL + 'uploads/' + this.merchant.profileImage;
-      this.merchant.menu = this.merchant.menu.map(
-        (menu) => this.$axios.defaults.baseURL + 'uploads/' + menu
-      );
-      this.merchant.media = this.merchant.media.map(
-        (media) => this.$axios.defaults.baseURL + 'uploads/' + media
+      this.merchant.profileImage = getFullPath(this.merchant.profileImage);
+      this.merchant.menu = getFullPath(this.merchant.menu);
+      this.merchant.media = this.merchant.media.map((media) =>
+        getFullPath(media)
       );
 
       this.loading = false;
@@ -434,32 +448,7 @@ export default {
             this.merchant.profileImage = this.oldProfileImage;
           }
 
-          if (this.menu.length > 0) {
-            this.merchant.menu = [];
-
-            await Promise.all(
-              this.menu.map(async (menu) => {
-                const formData = new FormData();
-                formData.append('media', menu);
-
-                const response = await this.$axios.post(
-                  '/single-file',
-                  formData,
-                  {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                  }
-                );
-
-                this.merchant.menu.push(response.data);
-              })
-            );
-          } else {
-            this.merchant.menu = this.oldMenu;
-          }
-
-          if (this.media.length > 0) {
+          if (this.media.length > 0 && this.media[0].type) {
             this.merchant.media = [];
 
             await Promise.all(
@@ -482,6 +471,21 @@ export default {
             );
           } else {
             this.merchant.media = this.oldMedia;
+          }
+
+          if (this.menu) {
+            const formData = new FormData();
+            formData.append('media', this.menu);
+
+            const response = await this.$axios.post('/single-file', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+
+            this.merchant.menu = response.data;
+          } else {
+            this.merchant.menu = this.oldMenu;
           }
 
           this.merchant.location = {
@@ -556,11 +560,12 @@ export default {
           }
 
           if (this.media.length > 0) {
+            this.merchant.media = [];
+
             await Promise.all(
-              this.media.map(async (image, i) => {
-                console.log(i, 'index');
+              this.media.map(async (media) => {
                 const formData = new FormData();
-                formData.append('media', image);
+                formData.append('media', media);
 
                 const response = await this.$axios.post(
                   '/single-file',
@@ -577,25 +582,19 @@ export default {
             );
           }
 
-          if (this.menu.length > 0) {
-            await Promise.all(
-              this.menu.map(async (image) => {
-                const formData = new FormData();
-                formData.append('media', image);
+          if (this.menu) {
+            this.merchant.menu = [];
 
-                const response = await this.$axios.post(
-                  '/single-file',
-                  formData,
-                  {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                  }
-                );
+            const formData = new FormData();
+            formData.append('media', this.menu);
 
-                this.merchant.menu.push(response.data);
-              })
-            );
+            const response = await this.$axios.post('/single-file', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+
+            this.merchant.menu = response.data;
           }
 
           if (
