@@ -138,19 +138,13 @@ export default {
           voucherId: this.$route.query.voucherId
         });
 
-        await this.loadVoucherImg();
+        this.voucherImg = this.getFullPath(
+          this.voucher[0].voucherObject.voucherImage
+        );
       } catch (e) {
         console.log(e);
       }
       this.dataLoading = false;
-    },
-
-    async loadVoucherImg() {
-      await this.$axios
-        .get(`/singe-file?file=${this.voucher[0].voucherObject.voucherImage}`)
-        .then((response) => {
-          this.voucherImg = response.data;
-        });
     }
   },
   async mounted() {

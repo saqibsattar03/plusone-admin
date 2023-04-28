@@ -28,6 +28,14 @@
         </v-row>
 
         <v-row no-gutters>
+          <v-col cols="12">
+            <v-card-text>
+              <b>Merchant Name : </b>{{ merchant.restaurantName }}
+            </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters>
           <v-col cols="12" md="6">
             <v-card-text>
               <b>Title : </b>{{ voucher[0].voucherObject.title }}
@@ -107,6 +115,8 @@
 <script>
 import dayjs from 'dayjs';
 import { RedeemVouchersService } from '../../services/redeem-vouchers-service';
+import { MerchantsService } from '../../services/merchant-service';
+import { getFullPath } from '../../utils/local';
 
 export default {
   data() {
@@ -115,6 +125,7 @@ export default {
       voucher: {},
       voucherImg: '',
       redeem_vouchers_service: new RedeemVouchersService(),
+      merchants_service: new MerchantsService(),
 
       headers: [
         {
@@ -152,6 +163,7 @@ export default {
           this.$route.query.id
         );
         await this.loadVoucherImg();
+        await this.loadMerchant();
       } catch (e) {
         console.log(e);
       }
@@ -159,11 +171,19 @@ export default {
     },
 
     async loadVoucherImg() {
-      await this.$axios
-        .get(`/singe-file?file=${this.voucher[0].voucherObject.voucherImage}`)
-        .then((response) => {
-          this.voucherImg = response.data;
-        });
+      this.voucherImg = getFullPath(this.voucher[0].voucherObject.voucherImage);
+    },
+
+    async loadMerchant() {
+      try {
+        this.dataLoading = true;
+        this.merchant = await this.merchants_service.fetchOne(
+          this.voucher[0].restaurantId
+        );
+      } catch (e) {
+        console.log(e);
+      }
+      this.dataLoading = false;
     }
   },
   async mounted() {

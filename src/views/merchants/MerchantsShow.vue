@@ -13,7 +13,7 @@
 
       <div v-else>
         <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
-          <v-btn @click="$router.go(-1)">
+          <v-btn @click="$router.go(-1)" elevation="0">
             <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
@@ -169,16 +169,9 @@ export default {
           this.$route.query.id
         );
 
-        await Promise.all(
-          this.merchant.media.map(async (media) => {
-            await this.$axios
-              .get(`/singe-file?file=${media}`)
-              .then((response) => {
-                media = response.data;
-                this.media.push(media);
-              });
-          })
-        );
+        this.merchant.media.forEach((media) => {
+          this.media.push(this.getFullPath(media));
+        });
       } catch (e) {
         console.log(e);
       }

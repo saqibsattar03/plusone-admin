@@ -20,9 +20,9 @@ Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 
 // BaseUrl
-// axios.defaults.baseURL = 'http://192.168.18.56:3000/';
+axios.defaults.baseURL = 'http://192.168.18.56:3000/';
 // axios.defaults.baseURL = 'http://192.168.18.70:3000/';
-axios.defaults.baseURL = 'https://api.plusoneworldwide.com/';
+// axios.defaults.baseURL = 'https://api.plusoneworldwide.com/';
 
 axios.interceptors.request.use(
   (config) => {
