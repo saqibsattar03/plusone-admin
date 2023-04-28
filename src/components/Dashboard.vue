@@ -178,7 +178,7 @@ export default {
         },
         {
           to: '/redeem-vouchers',
-          title: 'Redeem Vouchers',
+          title: 'Redeemed Vouchers',
           icon: 'mdi-ticket',
           isVisible: this.userScopes?.includes('redeem-vouchers:view')
         },

@@ -2,7 +2,7 @@
   <data-table
     :loader="loadData"
     :headers="headers"
-    title="Redeem Vouchers"
+    title="Redeemed Vouchers"
     @done="$router.back()"
     :view-handler="userScopes.includes('redeem-vouchers:view') ? view : null"
   >

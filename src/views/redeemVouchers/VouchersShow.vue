@@ -17,7 +17,7 @@
             <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
           <v-card-title class="p10" style="color: #020819"
-            >Redeem Voucher Details</v-card-title
+            >Redeemed Voucher Details</v-card-title
           >
         </v-row>
 
