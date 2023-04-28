@@ -465,15 +465,17 @@ export default {
             this.merchant.profileImage = this.oldProfileImage;
           }
 
-          if (this.media.length > 0) {
+          if (this.merchant.media.length > 0) {
+            this.merchant.media = [];
+
             let media = this.media.filter((media) => {
               if (media.type) {
                 return media;
+              } else {
+                this.merchant.media.push(media.name);
               }
             });
 
-            this.merchant.media = [];
-            this.merchant.media.push(...this.oldMedia);
             await Promise.all(
               media.map(async (media) => {
                 const formData = new FormData();
@@ -492,8 +494,6 @@ export default {
                 this.merchant.media.push(response.data);
               })
             );
-          } else {
-            this.merchant.media = this.oldMedia;
           }
 
           if (this.menu) {
