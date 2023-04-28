@@ -157,15 +157,22 @@
       height="300"
       class="span-2 mb-4"
       hide-delimiters
-      show-arrows-on-hover
     >
       <v-carousel-item
         contain
         v-for="(image, index) in merchant.media"
         :key="index"
         :src="image"
-        style="object-fit: cover"
-      ></v-carousel-item>
+        style="object-fit: cover; position: relative"
+      >
+        <v-icon
+          color="red"
+          @click="removeMediaFile(index)"
+          style="position: absolute; top: 10px; right: 10px; cursor: pointer"
+        >
+          mdi-delete
+        </v-icon>
+      </v-carousel-item>
     </v-carousel>
 
     <v-file-input
@@ -185,21 +192,8 @@
           : []
       "
       @change="onMediaSelected"
+      :clearable="false"
     >
-      <template v-slot:selection="{ index, text, on, attrs }">
-        <v-chip
-          v-bind="attrs"
-          :index="index"
-          :input-value="on"
-          color="primary"
-          text-color="white"
-          close
-          small
-          @click:close="removeMediaFile(index)"
-        >
-          {{ text }}
-        </v-chip>
-      </template>
     </v-file-input>
 
     <iframe
@@ -222,7 +216,7 @@
     >
     </v-file-input>
 
-    <v-card-title>Restaurant location:</v-card-title>
+    <v-card-title>Location</v-card-title>
     <gmap-map
       style="height: 300px; margin-bottom: 20px"
       class="span-2"
@@ -266,6 +260,8 @@ export default {
     oldProfileImage: null,
     oldMenu: null,
     oldMedia: [],
+    oldMediaFiles: [],
+    oldMediaNames: [],
 
     profileImage: null,
     menu: null,
@@ -343,8 +339,30 @@ export default {
         this.merchant.profileImage = URL.createObjectURL(file);
       }
     },
-    onMediaSelected() {
-      this.merchant.media = this.media.map((file) => URL.createObjectURL(file));
+    onMediaSelected(file) {
+      if (this.isEdit && this.oldMediaFiles !== file) {
+        if (this.oldMedia.length > 0) {
+          this.oldMediaFiles = [...this.oldMediaFiles, ...this.oldMedia];
+        }
+        this.oldMediaFiles = [...this.oldMediaFiles, ...file];
+
+        let media = this.media.map((file) => URL.createObjectURL(file));
+
+        this.merchant.media.push(...media);
+
+        this.media.push(...this.oldMediaNames);
+
+        return;
+      }
+
+      if (this.oldMediaFiles !== file) {
+        this.oldMediaFiles = [...this.oldMediaFiles, ...file];
+        this.media = this.oldMediaFiles;
+
+        this.merchant.media = this.media.map((file) =>
+          URL.createObjectURL(file)
+        );
+      }
     },
 
     onMenuSelected(file) {
@@ -356,13 +374,11 @@ export default {
         this.merchant.menu = '';
       }
     },
+
     removeMediaFile(index) {
-      if (this.isEdit) {
-        this.merchant.media.splice(index, 1);
-        this.media.splice(index, 1);
-      } else {
-        this.media.splice(index, 1);
-      }
+      this.merchant.media.splice(index, 1);
+      this.media.splice(index, 1);
+      this.oldMediaNames.splice(index, 1);
     },
 
     getUserLocation() {
@@ -394,6 +410,13 @@ export default {
         this.$route.query.id
       );
 
+      this.oldMediaNames = this.merchant.media.map((media) => {
+        return {
+          name: media
+        };
+      });
+      this.media.push(...this.oldMediaNames);
+
       if (
         this.merchant &&
         this.merchant.status &&
@@ -408,12 +431,6 @@ export default {
         lat: this.merchant.location.coordinates[1],
         lng: this.merchant.location.coordinates[0]
       };
-
-      this.media = this.merchant.media.map((media) => {
-        return {
-          name: media
-        };
-      });
 
       this.oldProfileImage = this.merchant.profileImage;
       this.oldMenu = this.merchant.menu;
@@ -448,11 +465,17 @@ export default {
             this.merchant.profileImage = this.oldProfileImage;
           }
 
-          if (this.media.length > 0 && this.media[0].type) {
-            this.merchant.media = [];
+          if (this.media.length > 0) {
+            let media = this.media.filter((media) => {
+              if (media.type) {
+                return media;
+              }
+            });
 
+            this.merchant.media = [];
+            this.merchant.media.push(...this.oldMedia);
             await Promise.all(
-              this.media.map(async (media) => {
+              media.map(async (media) => {
                 const formData = new FormData();
                 formData.append('media', media);
 
@@ -533,6 +556,7 @@ export default {
               ? e.response.data.message
               : 'Something went wrong!'
           });
+
           return false;
         }
       } else {
@@ -644,6 +668,22 @@ export default {
               ? e.response.data.message
               : 'Something went wrong!'
           });
+
+          if (this.profileImage) {
+            this.merchant.profileImage = URL.createObjectURL(this.profileImage);
+          }
+
+          if (this.media.length > 0) {
+            this.merchant.media = [];
+
+            this.media.map((media) => {
+              this.merchant.media.push(URL.createObjectURL(media));
+            });
+          }
+
+          if (this.menu) {
+            this.merchant.menu = URL.createObjectURL(this.menu);
+          }
 
           return false;
         }

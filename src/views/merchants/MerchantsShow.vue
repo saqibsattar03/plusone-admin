@@ -13,7 +13,7 @@
 
       <div v-else>
         <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
-          <v-btn @click="$router.go(-1)">
+          <v-btn @click="$router.go(-1)" elevation="0">
             <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
