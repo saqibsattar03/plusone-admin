@@ -18,6 +18,7 @@
         : null
     "
     :voucher-handler="voucherView"
+    :account-handler="accountHandler"
   >
     <template #restaurantName="{ item }">
       {{ item.restaurantData[0] && item.restaurantData[0].restaurantName }}
@@ -112,6 +113,12 @@ export default {
 
     voucherView(item) {
       this.$router.push(`/vouchers?restaurantId=${item.restaurantData[0]._id}`);
+    },
+
+    accountHandler(item) {
+      this.$router.push(
+        `/account-details?restaurantId=${item.restaurantData[0]._id}`
+      );
     },
 
     async deleteUser(item) {

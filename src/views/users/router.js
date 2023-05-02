@@ -1,10 +1,12 @@
 import UsersView from './UsersView';
 import UserShow from './UserShow';
 import UserForm from './UserForm.vue';
-import { getUserScopes } from '../../utils/local';
+import { getUserScopes, getUser } from '../../utils/local';
 
 export const usersRoutes = [
-  getUserScopes()?.includes('users:view')
+  // getUserScopes()?.includes('users:view')
+  //   ?
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'Users',
         path: '/',

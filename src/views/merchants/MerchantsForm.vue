@@ -105,7 +105,10 @@
     <v-combobox
       v-model="merchant.tags"
       :items="tags"
-      :rules="[required('Tags must be provided')]"
+      :rules="[
+        required('Tags must be provided')
+        // (v) => v.length <= 5 || 'Maximum of 5 tags only'
+      ]"
       class="span-2"
       label="Tags"
       outlined
@@ -251,7 +254,7 @@ export default {
     loading: false,
     merchantsService: new MerchantsService(),
 
-    center: { lat: 0, lng: 0 },
+    center: { lat: 52.132633, lng: 5.2912659999999505 },
     zoom: 15,
 
     // only for edit

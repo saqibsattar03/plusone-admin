@@ -111,7 +111,8 @@
               editHandler ||
               deleteHandler ||
               disableHandler ||
-              voucherHandler
+              voucherHandler ||
+              accountHandler
             "
             :style="`max-width: calc(100% / ${headersValue.length})`"
             class="py-2"
@@ -123,9 +124,18 @@
               <slot name="extra-actions" :item="item" />
 
               <v-icon
+                v-if="accountHandler"
+                @click="accountHandler(item)"
+                color="#71797E"
+                small
+              >
+                mdi-account
+              </v-icon>
+
+              <v-icon
                 v-if="voucherHandler"
                 @click="voucherHandler(item)"
-                color="#71797E	"
+                color="#71797E"
                 small
                 >mdi-ticket
               </v-icon>
@@ -185,7 +195,8 @@
               editHandler ||
               deleteHandler ||
               disableHandler ||
-              voucherHandler
+              voucherHandler ||
+              accountHandler
             "
             class="v-data-table__mobile-row text-end"
             style="text-align: right"
@@ -193,6 +204,15 @@
             <div class="v-data-table__mobile-row__header">Action</div>
             <div class="v-data-table__mobile-row__cell d-flex flex-column">
               <slot name="extra-actions" :item="item" />
+
+              <v-btn
+                class="my-1"
+                dark
+                v-if="accountHandler"
+                small
+                @click="accountHandler(item)"
+                color="primary"
+              ></v-btn>
 
               <v-btn
                 class="my-1"
@@ -329,6 +349,11 @@ export default {
       default: null
     },
 
+    accountHandler: {
+      type: Function,
+      default: null
+    },
+
     hasElevation: {
       type: Boolean,
       default: true
@@ -348,7 +373,8 @@ export default {
       this.deleteHandler ||
       this.viewHandler ||
       this.disableHandler ||
-      this.voucherHandler
+      this.voucherHandler ||
+      this.accountHandler
     ) {
       this.headersValue.push({
         text: 'Actions',
