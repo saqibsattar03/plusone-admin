@@ -17,6 +17,10 @@ export class MerchantsService {
     ).data;
   }
 
+  async fetchOneDepositHistory(id) {
+    return (await axios.get('/deposit-money/history?restaurantId=' + id)).data;
+  }
+
   async fetchAllVoucher(id) {
     return (await axios.get('/voucher/all-by-restaurant?restaurantId=' + id))
       .data;

@@ -37,17 +37,27 @@
       >
         <span class="text--disabled">No image selected</span>
       </div>
-      <v-card-text class="text-center">
-        <v-btn small color="primary" @click="onButtonClick">{{
-          merchant.profileImage ? 'Change Image' : 'Select Image'
-        }}</v-btn>
-        <input
-          type="file"
-          ref="fileInput"
-          accept="image/*"
-          @change="onFileSelected"
-          style="display: none"
-        />
+      <v-card-text
+        class="text-center"
+        :style="imageError ? 'display: flex' : ''"
+      >
+        <p v-if="imageError" style="color: red; margin-top: -6px">
+          Image dimensions must be equal to 1024px.
+        </p>
+
+        <div>
+          <v-btn small color="primary" @click="onButtonClick">{{
+            merchant.profileImage ? 'Change Image' : 'Select Image'
+          }}</v-btn>
+          <input
+            type="file"
+            ref="fileInput"
+            accept="image/*"
+            @change="onFileSelected"
+            hint="Max size: 2mb"
+            style="display: none"
+          />
+        </div>
       </v-card-text>
     </v-card>
 
@@ -252,6 +262,7 @@ export default {
   data: () => ({
     isEdit: false,
     loading: false,
+    imageError: false,
     merchantsService: new MerchantsService(),
 
     center: { lat: 52.132633, lng: 5.2912659999999505 },
@@ -340,6 +351,18 @@ export default {
       if (file) {
         this.profileImage = file;
         this.merchant.profileImage = URL.createObjectURL(file);
+
+        let img = new Image();
+        img.onload = () => {
+          if (img.width != 1024 && img.height != 1024) {
+            this.imageError = true;
+            this.profileImage = null;
+            this.merchant.profileImage = '';
+          } else {
+            this.imageError = false;
+          }
+        };
+        img.src = URL.createObjectURL(file);
       }
     },
     onMediaSelected(file) {
