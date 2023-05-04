@@ -1,6 +1,6 @@
 import MerchantsView from './MerchantsView';
 import VouchersView from './VouchersView';
-import AccountsView from './AccountsView';
+// import AccountsView from './AccountsView';
 import MerchantShow from './MerchantsShow';
 import VoucherShow from './VouchersShow';
 import MerchantForm from './MerchantsForm.vue';
@@ -75,14 +75,14 @@ export const merchantsRoutes = [
     : {
         path: '/merchant-details',
         redirect: '/no-permission'
-      },
+      }
 
   //--------- Account Routes ------------//
-  {
-    name: 'AccountsDetails',
-    path: '/account-details',
-    component: AccountsView
-  }
+  // {
+  //   name: 'AccountsDetails',
+  //   path: '/account-details',
+  //   component: AccountsView
+  // }
 ];
 
 export const merchantsRouter = merchantsRoutes.filter(function (x) {

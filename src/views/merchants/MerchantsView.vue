@@ -18,7 +18,7 @@
         : null
     "
     :voucher-handler="voucherView"
-    :account-handler="accountHandler"
+    :account-handler="null"
   >
     <template #restaurantName="{ item }">
       {{ item.restaurantData[0] && item.restaurantData[0].restaurantName }}
@@ -39,11 +39,16 @@
     </template>
 
     <template #isSponsored="{ item }">
-      {{
-        item.restaurantData[0] && item.restaurantData[0].isSponsored
-          ? 'Yes'
-          : 'No'
-      }}
+      <v-btn
+        elevation="0"
+        small
+        color="primary"
+        v-if="item.restaurantData[0] && item.restaurantData[0].isSponsored"
+        rounded
+      >
+        Yes
+      </v-btn>
+      <v-card-text v-else>&mdash;</v-card-text>
     </template>
 
     <template #phoneNumber="{ item }">

@@ -5,6 +5,10 @@ export class MerchantsService {
     return (await axios.get('/persons/all?role=MERCHANT')).data;
   }
 
+  async fetchAllTags() {
+    return (await axios.get('/restaurant/all-tags')).data;
+  }
+
   async fetchOne(id) {
     return (await axios.get('/restaurant/profile?restaurantId=' + id)).data;
   }

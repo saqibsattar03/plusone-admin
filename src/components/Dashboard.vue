@@ -182,12 +182,12 @@ export default {
           icon: 'mdi-ticket',
           isVisible: this.userScopes?.includes('redeem-vouchers:view')
         },
-        {
-          to: '/accounts-history',
-          title: 'Accounts History',
-          icon: 'mdi-history',
-          isVisible: this.user.role === 'ADMIN'
-        },
+        // {
+        //   to: '/accounts-history',
+        //   title: 'Accounts History',
+        //   icon: 'mdi-history',
+        //   isVisible: this.user.role === 'ADMIN'
+        // },
         {
           to: '/quotes',
           title: 'Quotes',
