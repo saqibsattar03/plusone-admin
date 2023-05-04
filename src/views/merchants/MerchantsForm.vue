@@ -37,17 +37,36 @@
       >
         <span class="text--disabled">No image selected</span>
       </div>
-      <v-card-text class="text-center">
-        <v-btn small color="primary" @click="onButtonClick">{{
-          merchant.profileImage ? 'Change Image' : 'Select Image'
-        }}</v-btn>
-        <input
-          type="file"
-          ref="fileInput"
-          accept="image/*"
-          @change="onFileSelected"
-          style="display: none"
-        />
+      <v-card-text
+        class="text-center"
+        :style="imageError ? 'display: flex' : ''"
+      >
+        <p
+          v-if="imageError"
+          style="
+            color: #ff5252;
+            margin-top: -8px;
+            font-size: 12px;
+            line-height: 15px;
+          "
+        >
+          For correct display, use a square image (1024x1024 pixels
+          recommended).
+        </p>
+
+        <div>
+          <v-btn small color="primary" @click="onButtonClick">{{
+            merchant.profileImage ? 'Change Image' : 'Select Image'
+          }}</v-btn>
+          <input
+            type="file"
+            ref="fileInput"
+            accept="image/*"
+            @change="onFileSelected"
+            hint="Max size: 2mb"
+            style="display: none"
+          />
+        </div>
       </v-card-text>
     </v-card>
 
@@ -78,9 +97,11 @@
         v-model="merchant.password"
         :rules="[required('Password must be provided')]"
         label="Password"
-        type="password"
+        :type="passwordFieldType"
         outlined
         color="#111827"
+        :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="passwordVisible = !passwordVisible"
       />
 
       <v-text-field
@@ -105,7 +126,10 @@
     <v-combobox
       v-model="merchant.tags"
       :items="tags"
-      :rules="[required('Tags must be provided')]"
+      :rules="[
+        required('Tags must be provided')
+        // (v) => v.length <= 5 || 'Maximum of 5 tags only'
+      ]"
       class="span-2"
       label="Tags"
       outlined
@@ -187,9 +211,16 @@
         !isEdit
           ? [
               required(`Restaurant gallery images must be provided`),
-              requiredArray(`At least one image must be provided`)
+              requiredArray(`At least one image must be provided`),
+              mediaImageError
+                ? 'Height must be half of width (Suggested pixels 1400 * 700)'
+                : true
             ]
-          : []
+          : [
+              mediaImageError
+                ? 'Height must be half of width (Suggested pixels 1400 * 700)'
+                : true
+            ]
       "
       @change="onMediaSelected"
       :clearable="false"
@@ -249,9 +280,12 @@ export default {
   data: () => ({
     isEdit: false,
     loading: false,
+    imageError: false,
+    mediaImageError: false,
+    passwordVisible: false,
     merchantsService: new MerchantsService(),
 
-    center: { lat: 0, lng: 0 },
+    center: { lat: 52.132633, lng: 5.2912659999999505 },
     zoom: 15,
 
     // only for edit
@@ -266,7 +300,7 @@ export default {
     profileImage: null,
     menu: null,
     media: [],
-    tags: ['Halal', 'Late Night'],
+    tags: [],
     dietaryRestrictions: [
       'Vegan',
       'Vegetarian',
@@ -324,6 +358,12 @@ export default {
     this.loadMerchant();
   },
 
+  computed: {
+    passwordFieldType() {
+      return this.passwordVisible ? 'text' : 'password';
+    }
+  },
+
   methods: {
     required,
     email,
@@ -337,9 +377,44 @@ export default {
       if (file) {
         this.profileImage = file;
         this.merchant.profileImage = URL.createObjectURL(file);
+
+        let img = new Image();
+        img.onload = () => {
+          if (img.width != img.height) {
+            this.imageError = true;
+            this.profileImage = null;
+            this.merchant.profileImage = '';
+          } else {
+            this.imageError = false;
+          }
+        };
+        img.src = URL.createObjectURL(file);
       }
     },
     onMediaSelected(file) {
+      const validateImageDimensions = (file) => {
+        console.log('start validation');
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.src = URL.createObjectURL(file[0]);
+          image.onload = () => {
+            if (image.height === image.width / 2) {
+              resolve(true);
+              this.mediaImageError = false;
+            } else {
+              reject(
+                new Error(
+                  'Invalid image dimensions: height must be half of the width.'
+                )
+              );
+              this.mediaImageError = true;
+            }
+          };
+        });
+      };
+
+      validateImageDimensions(file);
+
       if (this.isEdit && this.oldMediaFiles !== file) {
         if (this.oldMedia.length > 0) {
           this.oldMediaFiles = [...this.oldMediaFiles, ...this.oldMedia];
@@ -400,6 +475,9 @@ export default {
     },
 
     async loadMerchant() {
+      this.tags = await this.merchantsService.fetchAllTags();
+      this.tags = this.tags.map((tag) => tag.tag);
+
       if (!this.$route.query.id) {
         this.getUserLocation();
         return;

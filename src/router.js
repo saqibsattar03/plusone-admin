@@ -10,6 +10,7 @@ import { noPermissionRouter } from './views/permission/router';
 import { merchantsRouter } from './views/merchants/router';
 import { redeemVouchersRouter } from './views/redeemVouchers/router';
 import { quotesRouter } from './views/quotes/router';
+// import { accountsHistoyRouter } from './views/accountsHistory/router';
 
 Vue.use(VueRouter);
 
@@ -24,6 +25,7 @@ const routes = [
       ...merchantsRouter,
       ...redeemVouchersRouter,
       ...quotesRouter
+      // ...accountsHistoyRouter
     ]
   },
   {
@@ -44,7 +46,7 @@ const router = new VueRouter({
   routes
 });
 
-// eslint-disable-next-line no-unused-vars
+// Check if user is logged in or not before each route change and redirect accordingly
 router.beforeEach((to, __, next) => {
   if (!localStorage.getItem('auth_token')) {
     if (to.path !== '/auth/sign-in') {

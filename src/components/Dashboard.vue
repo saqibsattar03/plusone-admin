@@ -182,6 +182,12 @@ export default {
           icon: 'mdi-ticket',
           isVisible: this.userScopes?.includes('redeem-vouchers:view')
         },
+        // {
+        //   to: '/accounts-history',
+        //   title: 'Accounts History',
+        //   icon: 'mdi-history',
+        //   isVisible: this.user.role === 'ADMIN'
+        // },
         {
           to: '/quotes',
           title: 'Quotes',
@@ -220,8 +226,8 @@ export default {
     color: #FF6E01
 
 .main-bg
-  background: linear-gradient(to bottom, #FF6E01 300px, white 300px)
-  height: 200px
+  background: linear-gradient(to bottom, #FF6E01 400px, white 400px)
+  height: 320px
 </style>
 
 <style lang="sass">

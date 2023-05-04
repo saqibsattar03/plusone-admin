@@ -170,6 +170,11 @@ export default {
           { id: 'quotes:view', name: 'View Quotes' },
           { id: 'quotes:delete', name: 'Delete Quotes' }
         ]
+      },
+      {
+        id: 'account',
+        name: 'Account',
+        children: [{ id: 'accounts:view', name: 'View Accounts' }]
       }
     ],
     // only for edit
