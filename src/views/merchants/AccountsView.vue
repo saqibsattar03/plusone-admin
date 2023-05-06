@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title>Total Deposit:</v-card-title>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.totalDeposit }}</h1>
+            <h1>{{ restaurantProfile.totalDeposit || 0 }}</h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -14,7 +14,7 @@
         <v-card>
           <v-card-title>Current Balance:</v-card-title>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit }}</h1>
+            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -24,7 +24,7 @@
           <v-card-title>Total Sales:</v-card-title>
           <v-card-text class="text-center">
             <h1>
-              {{ restaurantProfile.totalSales }}
+              {{ restaurantProfile.totalSales || 0 }}
             </h1>
           </v-card-text>
         </v-card>
@@ -34,7 +34,7 @@
         <v-card>
           <v-card-title>Total Deduction:</v-card-title>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.totalDeductions }}</h1>
+            <h1>{{ restaurantProfile.totalDeductions || 0 }}</h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -43,7 +43,7 @@
         <v-card>
           <v-card-title>Pending Payments:</v-card-title>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit }}</h1>
+            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
           </v-card-text>
         </v-card>
       </v-col>

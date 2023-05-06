@@ -18,7 +18,7 @@
         : null
     "
     :voucher-handler="voucherView"
-    :account-handler="null"
+    :account-handler="accountHandler"
   >
     <template #restaurantName="{ item }">
       {{ item.restaurantData[0] && item.restaurantData[0].restaurantName }}
