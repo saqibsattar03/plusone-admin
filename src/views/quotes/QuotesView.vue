@@ -3,11 +3,13 @@
     :loader="loadData"
     :headers="headers"
     title="Quotes"
-    :allow-add="userScopes.includes('quotes:new')"
+    :allow-add="getUser() && getUser().role === 'ADMIN'"
     @add-new="addNew"
     @done="$router.back()"
-    :delete-handler="userScopes.includes('quotes:delete') ? deleteQuote : null"
-    :edit-handler="userScopes.includes('quotes:edit') ? edit : null"
+    :delete-handler="
+      getUser() && getUser().role === 'ADMIN' ? deleteQuote : null
+    "
+    :edit-handler="getUser() && getUser().role === 'ADMIN' ? edit : null"
   >
     <template #createdAt="{ item }">
       {{ formatDate(item.createdAt) }}
@@ -18,7 +20,7 @@
 <script>
 import { QuotesService } from '../../services/quote-service';
 import DataTable from '../../components/DataTable';
-import { getUserScopes } from '@/utils/local';
+import { getUser } from '@/utils/local';
 import dayjs from 'dayjs';
 
 export default {
@@ -27,7 +29,6 @@ export default {
   data: () => ({
     items: [],
     quote_service: new QuotesService(),
-    userScopes: getUserScopes(),
     headers: [
       {
         text: 'Quote',
@@ -42,6 +43,8 @@ export default {
     ]
   }),
   methods: {
+    getUser,
+
     formatDate(date) {
       return dayjs(date).format('D MMM YYYY');
     },

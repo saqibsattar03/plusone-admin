@@ -4,7 +4,7 @@
     :headers="headers"
     title="Redeemed Vouchers"
     @done="$router.back()"
-    :view-handler="userScopes.includes('redeem-vouchers:view') ? view : null"
+    :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
   >
     <template #title="{ item }">
       {{ item.vouc.title }}
@@ -23,7 +23,7 @@
 <script>
 import { RedeemVouchersService } from '@/services/redeem-vouchers-service';
 import DataTable from '../../components/DataTable';
-import { getUserScopes } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export default {
   components: { DataTable },
@@ -35,7 +35,6 @@ export default {
   data: () => ({
     items: [],
     redeem_vouchers_service: new RedeemVouchersService(),
-    userScopes: getUserScopes(),
 
     headers: [
       {
@@ -57,6 +56,8 @@ export default {
   }),
 
   methods: {
+    getUser,
+
     view(item) {
       this.$router.push(`/redeem-voucher-details?id=${item.vouc._id}`);
     },

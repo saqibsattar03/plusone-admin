@@ -6,11 +6,11 @@ import VoucherShow from './VouchersShow';
 import MerchantForm from './MerchantsForm.vue';
 import VoucherForm from './VouchersForm.vue';
 
-import { getUserScopes, getUser } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export const merchantsRoutes = [
   //-------- Voucher Routes --------------//
-  getUserScopes()?.includes('vouchers:view') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'Vouchers',
         path: '/vouchers',
@@ -21,7 +21,7 @@ export const merchantsRoutes = [
         redirect: '/no-permission'
       },
 
-  getUserScopes()?.includes('vouchers:new') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'AddVoucher',
         path: '/voucher',
@@ -32,7 +32,7 @@ export const merchantsRoutes = [
         redirect: '/no-permission'
       },
 
-  getUserScopes()?.includes('vouchers:view') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'VoucherDetails',
         path: '/voucher-details',
@@ -44,7 +44,7 @@ export const merchantsRoutes = [
       },
 
   //--------- Merchant Routes ------------//
-  getUserScopes()?.includes('merchants:view') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'Merchants',
         path: '/merchants',
@@ -55,7 +55,7 @@ export const merchantsRoutes = [
         redirect: '/no-permission'
       },
 
-  getUserScopes()?.includes('merchants:new') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'NewMerchant',
         path: '/merchant',
@@ -66,7 +66,7 @@ export const merchantsRoutes = [
         redirect: '/no-permission'
       },
 
-  getUserScopes()?.includes('merchants:view') || getUser()?.role === 'MERCHANT'
+  getUser()?.role === 'ADMIN' || getUser()?.role === 'MERCHANT'
     ? {
         name: 'MerchantsDetails',
         path: '/merchant-details',
