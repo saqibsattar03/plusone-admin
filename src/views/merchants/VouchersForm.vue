@@ -182,15 +182,17 @@ export default {
         voucherId: this.$route.query.voucherId
       });
 
+      console.log(voucher.voucherObject[0]);
+
       this.voucher = {
         restaurantId: this.$route.query.restaurantId,
         voucherId: this.$route.query.voucherId,
         voucherObject: {
-          voucherType: voucher[0].voucherObject.voucherType,
-          discount: voucher[0].voucherObject.discount,
-          description: voucher[0].voucherObject.description,
-          estimatedSavings: voucher[0].voucherObject.estimatedSavings,
-          estimatedCost: voucher[0].voucherObject.estimatedCost
+          voucherType: voucher.voucherObject[0].voucherType,
+          discount: voucher.voucherObject[0].discount,
+          description: voucher.voucherObject[0].description,
+          estimatedSavings: voucher.voucherObject[0].estimatedSavings,
+          estimatedCost: voucher.voucherObject[0].estimatedCost
         }
       };
 

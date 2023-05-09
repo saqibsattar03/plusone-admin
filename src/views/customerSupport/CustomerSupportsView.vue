@@ -78,6 +78,8 @@ export default {
     },
 
     async loadData() {
+      console.log('loadData');
+      console.log(this.customer_support_service.fetchAll());
       return await this.customer_support_service.fetchAll();
     }
   }

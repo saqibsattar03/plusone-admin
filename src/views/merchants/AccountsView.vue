@@ -3,7 +3,9 @@
     <v-row class="mb-4" v-if="tab === 0">
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deposit:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deposit:</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.totalDeposit || 0 }}</h1>
           </v-card-text>
@@ -12,7 +14,9 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Current Balance:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Current Balance:</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
           </v-card-text>
@@ -21,7 +25,9 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Sales:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Sales:</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
               {{ restaurantProfile.totalSales || 0 }}
@@ -32,7 +38,9 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deduction:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deduction:</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.totalDeductions || 0 }}</h1>
           </v-card-text>
@@ -41,7 +49,9 @@
 
       <v-col v-if="restaurantProfile.availableDeposit < 0" cols="12" md="3">
         <v-card>
-          <v-card-title>Pending Payments:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Pending Payments:</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
           </v-card-text>
@@ -72,7 +82,9 @@
 
             <template #currentBalance="{ item }">
               <span>{{
-                restaurantProfile.totalDeposit - item.estimatedCost
+                item + ' ' + restaurantProfile &&
+                restaurantProfile.totalDeposit -
+                  restaurantProfile.totalDeductions
               }}</span>
             </template>
 
@@ -206,7 +218,9 @@ export default {
           this.restaurantProfile = restaurantProfile;
           console.log(restaurantProfile, 'restaurantProfile');
 
-          const filterData = Object.values(voucher.voucherObject);
+          console.log(this.voucher, 'voucher');
+          let filterData = voucher.voucherObject;
+
           return filterData;
         } else {
           const depositHistory =

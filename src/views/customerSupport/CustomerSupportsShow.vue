@@ -35,17 +35,6 @@
               </a>
             </v-card-text>
           </v-col>
-
-          <v-col v-else cols="12">
-            <v-card-text>
-              <v-img
-                src="https://archive.org/download/no-photo-available/no-photo-available.png"
-                width="100%"
-                height="300px"
-                contain
-              ></v-img>
-            </v-card-text>
-          </v-col>
         </v-row>
 
         <v-row class="pa-0" no-gutters>

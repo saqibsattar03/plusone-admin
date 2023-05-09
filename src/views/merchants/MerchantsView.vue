@@ -68,21 +68,19 @@ export default {
     },
 
     edit(item) {
-      this.$router.push(`/merchant?id=${item.restaurantData[0]._id}`);
+      this.$router.push(`/merchant?id=${item._id}`);
     },
 
     view(item) {
-      this.$router.push(`/merchant-details?id=${item.restaurantData[0]._id}`);
+      this.$router.push(`/merchant-details?id=${item._id}`);
     },
 
     voucherView(item) {
-      this.$router.push(`/vouchers?restaurantId=${item.restaurantData[0]._id}`);
+      this.$router.push(`/vouchers?restaurantId=${item._id}`);
     },
 
     accountHandler(item) {
-      this.$router.push(
-        `/account-details?restaurantId=${item.restaurantData[0]._id}`
-      );
+      this.$router.push(`/account-details?restaurantId=${item._id}`);
     },
 
     async deleteUser(item) {
