@@ -78,9 +78,9 @@ export default {
     },
 
     async loadData() {
-      console.log('loadData');
-      console.log(this.customer_support_service.fetchAll());
-      return await this.customer_support_service.fetchAll();
+      let data = await this.customer_support_service.fetchAll();
+      data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      return data;
     }
   }
 };

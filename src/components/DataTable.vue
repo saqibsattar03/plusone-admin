@@ -53,6 +53,18 @@
         Update Event Benefits
       </v-btn>
 
+      <!-- deposit money -->
+      <v-btn
+        :class="[$vuetify.breakpoint.width > 800 ? 'mr-2' : '']"
+        :style="[$vuetify.breakpoint.width < 800 ? { width: 100 + '%' } : '']"
+        v-if="allowDeposit"
+        color="primary"
+        elevation="0"
+        @click="$emit('add-deposit')"
+      >
+        Deposit Money
+      </v-btn>
+
       <v-btn
         :style="[$vuetify.breakpoint.width < 800 ? { width: 100 + '%' } : '']"
         v-if="allowAdd"
@@ -291,6 +303,10 @@ export default {
       default: true
     },
     allowAdd: {
+      type: Boolean,
+      default: false
+    },
+    allowDeposit: {
       type: Boolean,
       default: false
     },
