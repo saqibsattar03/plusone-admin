@@ -40,6 +40,25 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
+              <b>Name : </b
+              >{{
+                customerSupport.userId.firstname +
+                ' ' +
+                customerSupport.userId.surname
+              }}
+            </v-card-text>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
+              <b>Email : </b>{{ customerSupport.userId.email }}
+            </v-card-text>
+          </v-col>
+        </v-row>
+
+        <v-row class="pa-0" no-gutters>
+          <v-col cols="12" md="6">
+            <v-card-text class="p10">
               <b>Subject : </b>{{ customerSupport.subject }}
             </v-card-text>
           </v-col>

@@ -10,20 +10,14 @@
     :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
     @done="$router.back()"
   >
-    <template #subject="{ item }">
+    <template #name="{ item }">
       {{
-        item && item.subject && item.subject.length > 30
-          ? item.subject.substring(0, 30) + '...'
-          : item.subject
+        item && item.userId && item.userId.firstname + ' ' + item.userId.surname
       }}
     </template>
 
-    <template #message="{ item }">
-      {{
-        item && item.message && item.message.length > 50
-          ? item.message.substring(0, 50) + '...'
-          : item.message
-      }}
+    <template #email="{ item }">
+      {{ item && item.userId && item.userId.email }}
     </template>
 
     <template #createdAt="{ item }">
@@ -46,13 +40,13 @@ export default {
     customer_support_service: new CustomerSupportService(),
     headers: [
       {
-        text: 'Subject',
-        value: 'subject',
+        text: 'Name',
+        value: 'name',
         sortable: true
       },
       {
-        text: 'Message',
-        value: 'message',
+        text: 'Email',
+        value: 'email',
         sortable: true
       },
       {

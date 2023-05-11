@@ -4,7 +4,7 @@
       <v-col cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Total Deposit:</v-card-title>
+            <v-card-title class="text-center">Total Deposit</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.totalDeposit || 0 }}</h1>
@@ -15,7 +15,7 @@
       <v-col cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Current Balance:</v-card-title>
+            <v-card-title class="text-center">Current Balance</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
@@ -26,7 +26,7 @@
       <v-col cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Total Sales:</v-card-title>
+            <v-card-title class="text-center">Total Sales</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>
@@ -39,7 +39,7 @@
       <v-col cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Total Deduction:</v-card-title>
+            <v-card-title class="text-center">Total Deduction</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.totalDeductions || 0 }}</h1>
@@ -50,7 +50,7 @@
       <v-col v-if="restaurantProfile.availableDeposit < 0" cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Pending Payments:</v-card-title>
+            <v-card-title class="text-center">Pending Payments</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
@@ -81,18 +81,6 @@
           >
             <template #deduction="{ item }">
               <span>{{ item.estimatedCost * 0.1 }}</span>
-            </template>
-
-            <template #debitedAmount="{ item }">
-              <span>{{ item.amount }}</span>
-            </template>
-
-            <template #date="{ item }">
-              <span>{{ formatDate(item.createdAt) }}</span>
-            </template>
-
-            <template #time="{ item }">
-              <span>{{ formatTime(item.createdAt) }}</span>
             </template>
           </DataTable>
         </v-tab-item>
@@ -137,7 +125,6 @@ import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 import { required } from '../../utils/validators';
 import LoadingDialog from '../../components/LoadingDialog';
-import dayjs from 'dayjs';
 
 export default {
   components: { DataTable, LoadingDialog },
@@ -195,17 +182,13 @@ export default {
     depositHeaders: [
       {
         text: 'Debited Amount',
-        value: 'debitedAmount',
+        value: 'amount',
         sortable: true
       },
+
       {
         text: 'Date',
-        value: 'date',
-        sortable: true
-      },
-      {
-        text: 'Time',
-        value: 'time',
+        value: 'createdAt',
         sortable: true
       },
       {
@@ -240,7 +223,7 @@ export default {
         await this.merchants_service
           .depositMoney(this.depositMoney)
           .then(() => {
-            this.dataTableKey++;
+            // this.dataTableKey++;
             this.dataLoading = false;
             this.depositDialog = false;
           })
@@ -248,14 +231,6 @@ export default {
             console.log(err);
           });
       }
-    },
-
-    formatDate(date) {
-      return dayjs(date).format('DD/MMM/YYYY');
-    },
-
-    formatTime(date) {
-      return dayjs(date).format('hh:mm A ');
     },
 
     async loadData() {
@@ -276,6 +251,11 @@ export default {
           const depositHistory =
             await this.merchants_service.fetchOneDepositHistory(id);
           const filterData = Object.values(depositHistory.depositObject);
+          filterData.sort((a, b) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return dateB - dateA;
+          });
           return filterData;
         }
       }
