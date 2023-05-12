@@ -1,11 +1,9 @@
 import UsersView from './UsersView';
 import UserShow from './UserShow';
 import UserForm from './UserForm.vue';
-import { getUserScopes, getUser } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export const usersRoutes = [
-  // getUserScopes()?.includes('users:view')
-  //   ?
   getUser()?.role === 'ADMIN'
     ? {
         name: 'Users',
@@ -16,7 +14,7 @@ export const usersRoutes = [
         path: '/',
         redirect: '/merchants'
       },
-  getUserScopes()?.includes('users:new')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'NewUser',
         path: '/user',
@@ -26,7 +24,7 @@ export const usersRoutes = [
         path: '/user',
         redirect: '/no-permission'
       },
-  getUserScopes()?.includes('users:view')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'UsersDetails',
         path: '/user-details',

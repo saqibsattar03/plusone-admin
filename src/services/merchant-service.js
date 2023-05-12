@@ -53,6 +53,15 @@ export class MerchantsService {
     return (await axios.patch('/voucher/disable', voucher)).data;
   }
 
+  async depositMoney(deposit) {
+    return (
+      await axios.post(
+        '/deposit-money?restaurantId=' + deposit.restaurantId,
+        deposit
+      )
+    ).data;
+  }
+
   async delete(user) {
     return (await axios.delete('/persons/' + user._id)).data;
   }

@@ -58,7 +58,6 @@
 <script>
 import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
-import { getUserScopes } from '../../utils/local';
 import { required } from '../../utils/validators';
 import LoadingDialog from '../../components/LoadingDialog';
 
@@ -72,7 +71,6 @@ export default {
   data: () => ({
     items: [],
     merchants_service: new MerchantsService(),
-    userScopes: getUserScopes(),
     dataLoading: false,
     dataTableKey: 0,
 
