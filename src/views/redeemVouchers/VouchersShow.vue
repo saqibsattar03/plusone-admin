@@ -38,13 +38,13 @@
         <v-row no-gutters>
           <v-col cols="12" md="6">
             <v-card-text>
-              <b>Title : </b>{{ voucher[0].voucherObject.title }}
+              <b>Title : </b>{{ voucher.voucherObject[0].title }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text>
-              <b>Voucher Type : </b>{{ voucher[0].voucherObject.voucherType }}
+              <b>Voucher Type : </b>{{ voucher.voucherObject[0].voucherType }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -52,13 +52,13 @@
         <v-row no-gutters>
           <v-col cols="12" md="6">
             <v-card-text>
-              <b>Description : </b>{{ voucher[0].voucherObject.description }}
+              <b>Description : </b>{{ voucher.voucherObject[0].description }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text>
-              <b>Discount : </b>{{ voucher[0].voucherObject.discount + '%' }}
+              <b>Discount : </b>{{ voucher.voucherObject[0].discount + '%' }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -67,14 +67,14 @@
           <v-col cols="12" md="6">
             <v-card-text>
               <b>Estimated Cost : </b
-              >{{ voucher[0].voucherObject.estimatedCost }}
+              >{{ voucher.voucherObject[0].estimatedCost }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text>
               <b>Estimated Savings : </b
-              >{{ voucher[0].voucherObject.estimatedSavings }}
+              >{{ voucher.voucherObject[0].estimatedSavings }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -83,7 +83,7 @@
           <v-col cols="12" md="6">
             <v-card-text>
               <b>Prefrence : </b
-              >{{ voucher[0].voucherObject.voucherPreference }}
+              >{{ voucher.voucherObject[0].voucherPreference }}
             </v-card-text>
           </v-col>
 
@@ -91,15 +91,15 @@
             cols="12"
             md="6"
             v-if="
-              voucher[0].voucherObject.voucherDisableDates &&
-              voucher[0].voucherObject.voucherDisableDates.length > 0
+              voucher.voucherObject[0].voucherDisableDates &&
+              voucher.voucherObject[0].voucherDisableDates.length > 0
             "
           >
             <v-card-text>
               <b>Disabled dates : </b>
               <ul>
                 <li
-                  v-for="date in voucher[0].voucherObject.voucherDisableDates"
+                  v-for="date in voucher.voucherObject[0].voucherDisableDates"
                   :key="date"
                 >
                   {{ formatDate(date) }}
@@ -125,30 +125,7 @@ export default {
       voucher: {},
       voucherImg: '',
       redeem_vouchers_service: new RedeemVouchersService(),
-      merchants_service: new MerchantsService(),
-
-      headers: [
-        {
-          text: 'Mind Feels',
-          value: 'my_mind_feels',
-          sortable: true
-        },
-        {
-          text: 'Body Feels',
-          value: 'my_body_feels',
-          sortable: true
-        },
-        {
-          text: 'Spirit Feels',
-          value: 'my_spirit_feels',
-          sortable: true
-        },
-        {
-          text: 'Date',
-          value: 'date',
-          sortable: true
-        }
-      ]
+      merchants_service: new MerchantsService()
     };
   },
   methods: {
@@ -171,14 +148,14 @@ export default {
     },
 
     async loadVoucherImg() {
-      this.voucherImg = getFullPath(this.voucher[0].voucherObject.voucherImage);
+      this.voucherImg = getFullPath(this.voucher.voucherObject[0].voucherImage);
     },
 
     async loadMerchant() {
       try {
         this.dataLoading = true;
         this.merchant = await this.merchants_service.fetchOne(
-          this.voucher[0].restaurantId
+          this.voucher.restaurantId
         );
       } catch (e) {
         console.log(e);

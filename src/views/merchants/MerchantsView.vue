@@ -10,7 +10,7 @@
     :edit-handler="getUser() && getUser().role === 'ADMIN' ? edit : null"
     :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
     :voucher-handler="voucherView"
-    :account-handler="accountHandler"
+    :account-handler="null"
   >
   </data-table>
 </template>
