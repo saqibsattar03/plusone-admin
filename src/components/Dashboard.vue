@@ -191,13 +191,13 @@ export default {
           title: 'Quotes',
           icon: 'mdi-format-quote-close',
           isVisible: this.user?.role === 'ADMIN'
+        },
+        {
+          to: '/customer-supports',
+          title: 'Customer Supports',
+          icon: 'mdi-account-question',
+          isVisible: this.user?.role === 'ADMIN'
         }
-        // {
-        //   to: '/customer-supports',
-        //   title: 'Customer Supports',
-        //   icon: 'mdi-account-question',
-        //   isVisible: this.user?.role === 'ADMIN'
-        // }
       ];
     }
   }
