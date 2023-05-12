@@ -61,7 +61,7 @@
 
     <v-container>
       <v-tabs v-model="tab">
-        <v-tab v-for="item in tabItems" :key="item.id">
+        <v-tab v-for="item in tabItems" :key="item.id" @change="updatingTab()">
           {{ item.tab }}
         </v-tab>
       </v-tabs>
@@ -81,6 +81,14 @@
           >
             <template #deduction="{ item }">
               <span>{{ item.estimatedCost * 0.1 }}</span>
+            </template>
+
+            <template #date="{ item }">
+              <span>{{ item.createdAt.split(' ')[0] }}</span>
+            </template>
+
+            <template #time="{ item }">
+              <span>{{ item.createdAt.split(' ')[1] }}</span>
             </template>
           </DataTable>
         </v-tab-item>
@@ -188,7 +196,12 @@ export default {
 
       {
         text: 'Date',
-        value: 'createdAt',
+        value: 'date',
+        sortable: true
+      },
+      {
+        text: 'Time',
+        value: 'time',
         sortable: true
       },
       {
@@ -212,6 +225,10 @@ export default {
   methods: {
     required,
 
+    updatingTab() {
+      this.dataTableKey++;
+    },
+
     async depositMoneyFn() {
       if (
         this.$refs.depositForm.validate() &&
@@ -223,7 +240,7 @@ export default {
         await this.merchants_service
           .depositMoney(this.depositMoney)
           .then(() => {
-            // this.dataTableKey++;
+            this.dataTableKey++;
             this.dataLoading = false;
             this.depositDialog = false;
           })
@@ -256,6 +273,7 @@ export default {
             const dateB = new Date(b.createdAt);
             return dateB - dateA;
           });
+
           return filterData;
         }
       }
