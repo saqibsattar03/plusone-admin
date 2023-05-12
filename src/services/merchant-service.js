@@ -21,8 +21,22 @@ export class MerchantsService {
     ).data;
   }
 
+  async fetchOneTransactionHistory(id) {
+    return (await axios.get('/transaction-history/' + id)).data;
+  }
+
+  async fetchAllTransactionHistory() {
+    return (await axios.get('/transaction-history'))
+      .data;
+  }
+
   async fetchOneDepositHistory(id) {
-    return (await axios.get('/deposit-money/history?restaurantId=' + id)).data;
+    return (await axios.get('/transaction-history/' + id + '?type=CREDIT')).data;
+  }
+
+  async fetchAllDepositHistory() {
+    return (await axios.get('/transaction-history?type=CREDIT'))
+      .data;
   }
 
   async fetchAllVoucher(id) {

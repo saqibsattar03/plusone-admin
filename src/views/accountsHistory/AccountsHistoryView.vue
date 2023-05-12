@@ -58,12 +58,16 @@
       <template #transactionId="{ item }">
         {{ item.index }}
       </template>
+
+      <template #date="{ item }">
+        {{ item }}
+      </template>
     </data-table>
   </div>
 </template>
 
 <script>
-import { RedeemVouchersService } from '@/services/redeem-vouchers-service';
+import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 
@@ -76,7 +80,7 @@ export default {
 
   data: () => ({
     items: [],
-    redeem_vouchers_service: new RedeemVouchersService(),
+    merchantService: new MerchantsService(),
     userScopes: getUserScopes(),
 
     headers: [
@@ -107,17 +111,13 @@ export default {
       },
       {
         text: 'Credit/Debit',
-        value: 'creditDebit',
+        value: 'transactionType',
         sortable: true
       },
-      {
-        text: 'Detail',
-        value: 'detail',
-        sortable: true
-      },
+
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ]
@@ -125,13 +125,11 @@ export default {
 
   methods: {
     async loadData() {
-      let vouchers = await this.redeem_vouchers_service.fetchAll();
-      vouchers = vouchers.map((voucher, index) => {
-        voucher.vouc.index = index + 1;
-        return voucher.vouc;
-      });
-      console.log(vouchers);
-      return vouchers;
+      let accountHistory =
+        await this.merchantService.fetchAllTransactionHistory();
+
+      console.log(accountHistory);
+      return accountHistory;
     }
   }
 };

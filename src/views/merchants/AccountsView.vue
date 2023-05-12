@@ -79,16 +79,12 @@
             :loader="loadData"
             :key="dataTableKey"
           >
-            <template #deduction="{ item }">
-              <span>{{ item.estimatedCost * 0.1 }}</span>
-            </template>
-
             <template #date="{ item }">
-              <span>{{ item.createdAt.split(' ')[0] }}</span>
+              <span>{{ formatDate(item.createdAt) }}</span>
             </template>
 
             <template #time="{ item }">
-              <span>{{ item.createdAt.split(' ')[1] }}</span>
+              <span>{{ formatTime(item.createdAt) }}</span>
             </template>
           </DataTable>
         </v-tab-item>
@@ -133,6 +129,7 @@ import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 import { required } from '../../utils/validators';
 import LoadingDialog from '../../components/LoadingDialog';
+import dayjs from 'dayjs';
 
 export default {
   components: { DataTable, LoadingDialog },
@@ -172,18 +169,22 @@ export default {
       },
       {
         text: 'Sale Price',
-        value: 'estimatedCost',
+        value: 'amount',
         sortable: true
       },
       {
         text: 'Deduction',
-        value: 'deduction',
+        value: 'deductedAmount',
         sortable: true
       },
-
+      {
+        text: 'Transaction Type',
+        value: 'transactionType',
+        sortable: true
+      },
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ],
@@ -206,7 +207,7 @@ export default {
       },
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ],
@@ -224,6 +225,12 @@ export default {
 
   methods: {
     required,
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD');
+    },
+    formatTime(date) {
+      return dayjs(date).format('HH:mm:ss');
+    },
 
     updatingTab() {
       this.dataTableKey++;
@@ -253,28 +260,26 @@ export default {
     async loadData() {
       const id = this.$route.query.restaurantId;
 
-      const voucher = await this.merchants_service.fetchAllVoucher(id);
-      this.voucher = voucher;
-
       if (this.voucher) {
         if (this.tab == 0) {
           const restaurantProfile = await this.merchants_service.fetchOne(id);
           this.restaurantProfile = restaurantProfile;
 
-          let filterData = voucher.voucherObject;
+          const transactionHistory =
+            await this.merchants_service.fetchOneTransactionHistory(id);
 
-          return filterData;
+          return transactionHistory;
         } else {
           const depositHistory =
             await this.merchants_service.fetchOneDepositHistory(id);
-          const filterData = Object.values(depositHistory.depositObject);
-          filterData.sort((a, b) => {
+
+          depositHistory.sort((a, b) => {
             const dateA = new Date(a.createdAt);
             const dateB = new Date(b.createdAt);
             return dateB - dateA;
           });
 
-          return filterData;
+          return depositHistory;
         }
       }
     }
