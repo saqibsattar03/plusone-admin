@@ -5,7 +5,9 @@
         <v-card>
           <v-card-title>Total Deposit:</v-card-title>
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.totalDeposit }}</h1> -->
+            <h1>
+              {{ adminStats && adminStats[0] && adminStats[0].totalDeposit }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -14,17 +16,27 @@
         <v-card>
           <v-card-title>Avalable Deposit:</v-card-title>
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.availableDeposit }}</h1> -->
+            <h1>
+              {{
+                adminStats && adminStats[0] && adminStats[0].availableDeposit
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3">
+      <v-col
+        cols="12"
+        md="3"
+        v-if="adminStats && adminStats[0] && adminStats[0].availableDeposit < 0"
+      >
         <v-card>
           <v-card-title>Remaining Payments:</v-card-title>
           <v-card-text class="text-center">
             <h1>
-              <!-- {{ restaurantProfile.totalSales }} -->
+              {{
+                adminStats && adminStats[0] && adminStats[0].availableDeposit
+              }}
             </h1>
           </v-card-text>
         </v-card>
@@ -34,7 +46,9 @@
         <v-card>
           <v-card-title>Total Sales:</v-card-title>
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.totalDeductions }}</h1> -->
+            <h1>
+              {{ adminStats && adminStats[0] && adminStats[0].totalSales }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -43,7 +57,9 @@
         <v-card>
           <v-card-title>Total Deduction:</v-card-title>
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.availableDeposit }}</h1> -->
+            <h1>
+              {{ adminStats && adminStats[0] && adminStats[0].totalDeductions }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -55,12 +71,12 @@
       title="Accounts History"
       @done="$router.back()"
     >
-      <template #transactionId="{ item }">
-        {{ item.index }}
+      <template #date="{ item }">
+        {{ formatDate(item.createdAt) }}
       </template>
 
-      <template #date="{ item }">
-        {{ item }}
+      <template #time="{ item }">
+        {{ formatTime(item.createdAt) }}
       </template>
     </data-table>
   </div>
@@ -70,6 +86,7 @@
 import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
+import dayjs from 'dayjs';
 
 export default {
   components: { DataTable },
@@ -80,15 +97,11 @@ export default {
 
   data: () => ({
     items: [],
+    adminStats: [],
     merchantService: new MerchantsService(),
     userScopes: getUserScopes(),
 
     headers: [
-      {
-        text: 'Transaction Id',
-        value: 'transactionId',
-        sortable: true
-      },
       {
         text: 'Restaurant Name',
         value: 'restaurantName',
@@ -124,11 +137,21 @@ export default {
   }),
 
   methods: {
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD');
+    },
+
+    formatTime(date) {
+      return dayjs(date).format('HH:mm:ss');
+    },
+
     async loadData() {
+      let adminStats = await this.merchantService.accountsAdminStats();
+      this.adminStats = adminStats;
+
       let accountHistory =
         await this.merchantService.fetchAllTransactionHistory();
 
-      console.log(accountHistory);
       return accountHistory;
     }
   }

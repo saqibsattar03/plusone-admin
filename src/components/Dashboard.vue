@@ -135,6 +135,7 @@ export default {
   }),
   methods: {
     required,
+
     getActiveList() {
       const links = document.querySelectorAll('nav a');
       links.forEach((el) => {
@@ -180,12 +181,12 @@ export default {
           icon: 'mdi-ticket',
           isVisible: this.user?.role === 'ADMIN'
         },
-        // {
-        //   to: '/accounts-history',
-        //   title: 'Accounts History',
-        //   icon: 'mdi-history',
-        //   isVisible: this.user?.role === 'ADMIN'
-        // },
+        {
+          to: '/accounts-history',
+          title: 'Accounts History',
+          icon: 'mdi-history',
+          isVisible: this.user?.role === 'ADMIN'
+        },
         {
           to: '/quotes',
           title: 'Quotes',

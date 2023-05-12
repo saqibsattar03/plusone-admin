@@ -39,6 +39,11 @@ export class MerchantsService {
       .data;
   }
 
+  async accountsAdminStats() {
+    return (await axios.get('/restaurant/admin-stats'))
+      .data;
+  }
+
   async fetchAllVoucher(id) {
     return (await axios.get('/voucher/all-by-restaurant?restaurantId=' + id))
       .data;
