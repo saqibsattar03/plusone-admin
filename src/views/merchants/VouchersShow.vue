@@ -29,13 +29,13 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Title : </b>{{ voucher[0].voucherObject.title }}
+              <b>Title : </b>{{ voucher.voucherObject[0].title }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Type : </b>{{ voucher[0].voucherObject.voucherType }}
+              <b>Type : </b>{{ voucher.voucherObject[0].voucherType }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -44,7 +44,7 @@
           <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Voucher Preference : </b
-              >{{ voucher[0].voucherObject.voucherPreference }}
+              >{{ voucher.voucherObject[0].voucherPreference }}
             </v-card-text>
           </v-col>
 
@@ -52,8 +52,8 @@
             <v-card-text class="p10">
               <b>Discount : </b
               >{{
-                voucher[0].voucherObject.discount
-                  ? voucher[0].voucherObject.discount
+                voucher.voucherObject[0].discount
+                  ? voucher.voucherObject[0].discount
                   : 'N/A'
               }}
             </v-card-text>
@@ -64,14 +64,14 @@
           <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Estimated Cost: </b
-              >{{ voucher[0].voucherObject.estimatedCost }}
+              >{{ voucher.voucherObject[0].estimatedCost }}
             </v-card-text>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card-text class="p10">
               <b>Estimated Savings : </b
-              >{{ voucher[0].voucherObject.estimatedSavings }}
+              >{{ voucher.voucherObject[0].estimatedSavings }}
             </v-card-text>
           </v-col>
         </v-row>
@@ -79,7 +79,7 @@
         <v-row class="pa-0" no-gutters>
           <v-col cols="12" md="6">
             <v-card-text class="p10">
-              <b>Description : </b>{{ voucher[0].voucherObject.description }}
+              <b>Description : </b>{{ voucher.voucherObject[0].description }}
             </v-card-text>
           </v-col>
 
@@ -87,8 +87,8 @@
             cols="12"
             md="6"
             v-if="
-              voucher[0].voucherObject.voucherDisableDates &&
-              voucher[0].voucherObject.voucherDisableDates.length > 0
+              voucher.voucherObject[0].voucherDisableDates &&
+              voucher.voucherObject[0].voucherDisableDates.length > 0
             "
           >
             <v-card-text class="p10">
@@ -96,7 +96,7 @@
 
               <ul>
                 <li
-                  v-for="date in voucher[0].voucherObject.voucherDisableDates"
+                  v-for="date in voucher.voucherObject[0].voucherDisableDates"
                   :key="date"
                 >
                   {{ formatDate(date) }}
@@ -139,7 +139,7 @@ export default {
         });
 
         this.voucherImg = this.getFullPath(
-          this.voucher[0].voucherObject.voucherImage
+          this.voucher.voucherObject[0].voucherImage
         );
       } catch (e) {
         console.log(e);
