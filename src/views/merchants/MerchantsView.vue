@@ -3,64 +3,22 @@
     :loader="loadData"
     :headers="headers"
     title="Merchants"
-    :allow-add="userScopes.includes('merchants:new') && true"
+    :allow-add="getUser() && getUser().role === 'ADMIN'"
     @done="$router.back()"
     @add-new="addNew"
     :delete-handler="null"
-    :edit-handler="
-      userScopes.includes('merchants:edit') || user.role === 'MERCHANT'
-        ? edit
-        : null
-    "
-    :view-handler="
-      userScopes.includes('merchants:view') || user.role === 'MERCHANT'
-        ? view
-        : null
-    "
+    :edit-handler="getUser() && getUser().role === 'ADMIN' ? edit : null"
+    :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
     :voucher-handler="voucherView"
-    :account-handler="null"
+    :account-handler="accountHandler"
   >
-    <template #restaurantName="{ item }">
-      {{ item.restaurantData[0] && item.restaurantData[0].restaurantName }}
-    </template>
-
-    <template #locationName="{ item }">
-      {{
-        item.restaurantData[0] && item.restaurantData[0].locationName
-          ? item.restaurantData[0].locationName > 30
-            ? `${item.restaurantData[0].locationName.substr(0, 30)}...`
-            : `${item.restaurantData[0].locationName.substr(0, 30)}`
-          : ''
-      }}
-    </template>
-
-    <template #restaurantCode="{ item }">
-      {{ item.restaurantData[0] && item.restaurantData[0].uniqueCode }}
-    </template>
-
-    <template #isSponsored="{ item }">
-      <v-btn
-        elevation="0"
-        small
-        color="primary"
-        v-if="item.restaurantData[0] && item.restaurantData[0].isSponsored"
-        rounded
-      >
-        Yes
-      </v-btn>
-      <v-card-text v-else>&mdash;</v-card-text>
-    </template>
-
-    <template #phoneNumber="{ item }">
-      {{ item.restaurantData[0] && item.restaurantData[0].phoneNumber }}
-    </template>
   </data-table>
 </template>
 
 <script>
 import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
-import { getUserScopes, getUser } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export default {
   components: { DataTable },
@@ -73,7 +31,6 @@ export default {
     user: getUser(),
     items: [],
     merchants_service: new MerchantsService(),
-    userScopes: getUserScopes(),
 
     headers: [
       {
@@ -87,7 +44,7 @@ export default {
       },
       {
         text: 'Restaurant Code',
-        value: 'restaurantCode'
+        value: 'uniqueCode'
       },
       {
         text: 'Sponsored',
@@ -104,26 +61,26 @@ export default {
   }),
 
   methods: {
+    getUser,
+
     addNew() {
       this.$router.push('/merchant');
     },
 
     edit(item) {
-      this.$router.push(`/merchant?id=${item.restaurantData[0]._id}`);
+      this.$router.push(`/merchant?id=${item._id}`);
     },
 
     view(item) {
-      this.$router.push(`/merchant-details?id=${item.restaurantData[0]._id}`);
+      this.$router.push(`/merchant-details?id=${item._id}`);
     },
 
     voucherView(item) {
-      this.$router.push(`/vouchers?restaurantId=${item.restaurantData[0]._id}`);
+      this.$router.push(`/vouchers?restaurantId=${item._id}`);
     },
 
     accountHandler(item) {
-      this.$router.push(
-        `/account-details?restaurantId=${item.restaurantData[0]._id}`
-      );
+      this.$router.push(`/account-details?restaurantId=${item._id}`);
     },
 
     async deleteUser(item) {
@@ -134,9 +91,6 @@ export default {
       if (this.user.role === 'ADMIN') {
         const merchants = await this.merchants_service.fetchAll();
         this.merchants = merchants;
-        this.merchants = this.merchants.filter(
-          (merchant) => merchant.restaurantData.length > 0
-        );
 
         return this.merchants;
       } else {

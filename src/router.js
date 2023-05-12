@@ -11,6 +11,7 @@ import { merchantsRouter } from './views/merchants/router';
 import { redeemVouchersRouter } from './views/redeemVouchers/router';
 import { quotesRouter } from './views/quotes/router';
 // import { accountsHistoyRouter } from './views/accountsHistory/router';
+import { customerSupportsRouter } from './views/customerSupport/router';
 
 Vue.use(VueRouter);
 
@@ -24,8 +25,9 @@ const routes = [
       ...noPermissionRouter,
       ...merchantsRouter,
       ...redeemVouchersRouter,
-      ...quotesRouter
-      // ...accountsHistoyRouter
+      ...quotesRouter,
+      // ...accountsHistoyRouter,
+      ...customerSupportsRouter
     ]
   },
   {

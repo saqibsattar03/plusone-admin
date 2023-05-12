@@ -90,13 +90,13 @@
 
     <p class="span-2">Select Admin Scopes</p>
 
-    <v-treeview
+    <!-- <v-treeview
       v-model="admin.scopes"
       :items="adminScopes"
       selectable
       style="text-align: left; margin-top: -15px"
       class="span-2"
-    />
+    /> -->
 
     <loading-dialog v-model="loading" message="Fetching Admin Data" />
   </SimpleForm>
@@ -117,66 +117,66 @@ export default {
     loading: false,
     admin_service: new AdminsService(),
     showPassword: '',
-    adminScopes: [
-      {
-        id: 'admins',
-        name: 'Admins',
-        children: [
-          { id: 'admins:new', name: 'Create Admins' },
-          { id: 'admins:view', name: 'View Admins' },
-          { id: 'admins:edit', name: 'Edit Admins' },
-          { id: 'admins:delete', name: 'Delete Admins' }
-        ]
-      },
-      {
-        id: 'users',
-        name: 'Users',
-        children: [
-          { id: 'users:view', name: 'View Users' },
-          { id: 'users:delete', name: 'Delete Users' }
-        ]
-      },
-      {
-        id: 'merchants',
-        name: 'Merchants',
-        children: [
-          { id: 'merchants:new', name: 'Create Merchants' },
-          { id: 'merchants:edit', name: 'Edit Merchants' },
-          { id: 'merchants:view', name: 'View Merchants' },
-          { id: 'merchants:delete', name: 'Delete Merchants' }
-        ]
-      },
-      {
-        id: 'vouchers',
-        name: 'Vouchers',
-        children: [
-          { id: 'vouchers:new', name: 'Create Vouchers' },
-          { id: 'vouchers:edit', name: 'Edit Vouchers' },
-          { id: 'vouchers:view', name: 'View Vouchers' },
-          { id: 'vouchers:delete', name: 'Delete Vouchers' }
-        ]
-      },
-      {
-        id: 'redeemVouchers',
-        name: 'Redeem Vouchers',
-        children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
-      },
-      {
-        id: 'quotes',
-        name: 'Quotes',
-        children: [
-          { id: 'quotes:new', name: 'Create Quotes' },
-          { id: 'quotes:edit', name: 'Edit Quotes' },
-          { id: 'quotes:view', name: 'View Quotes' },
-          { id: 'quotes:delete', name: 'Delete Quotes' }
-        ]
-      },
-      {
-        id: 'account',
-        name: 'Account',
-        children: [{ id: 'accounts:view', name: 'View Accounts' }]
-      }
-    ],
+    // adminScopes: [
+    //   {
+    //     id: 'admins',
+    //     name: 'Admins',
+    //     children: [
+    //       { id: 'admins:new', name: 'Create Admins' },
+    //       { id: 'admins:view', name: 'View Admins' },
+    //       { id: 'admins:edit', name: 'Edit Admins' },
+    //       { id: 'admins:delete', name: 'Delete Admins' }
+    //     ]
+    //   },
+    //   {
+    //     id: 'users',
+    //     name: 'Users',
+    //     children: [
+    //       { id: 'users:view', name: 'View Users' },
+    //       { id: 'users:delete', name: 'Delete Users' }
+    //     ]
+    //   },
+    //   {
+    //     id: 'merchants',
+    //     name: 'Merchants',
+    //     children: [
+    //       { id: 'merchants:new', name: 'Create Merchants' },
+    //       { id: 'merchants:edit', name: 'Edit Merchants' },
+    //       { id: 'merchants:view', name: 'View Merchants' },
+    //       { id: 'merchants:delete', name: 'Delete Merchants' }
+    //     ]
+    //   },
+    //   {
+    //     id: 'vouchers',
+    //     name: 'Vouchers',
+    //     children: [
+    //       { id: 'vouchers:new', name: 'Create Vouchers' },
+    //       { id: 'vouchers:edit', name: 'Edit Vouchers' },
+    //       { id: 'vouchers:view', name: 'View Vouchers' },
+    //       { id: 'vouchers:delete', name: 'Delete Vouchers' }
+    //     ]
+    //   },
+    //   {
+    //     id: 'redeemVouchers',
+    //     name: 'Redeem Vouchers',
+    //     children: [{ id: 'redeem-vouchers:view', name: 'View Redeem Vouchers' }]
+    //   },
+    //   {
+    //     id: 'quotes',
+    //     name: 'Quotes',
+    //     children: [
+    //       { id: 'quotes:new', name: 'Create Quotes' },
+    //       { id: 'quotes:edit', name: 'Edit Quotes' },
+    //       { id: 'quotes:view', name: 'View Quotes' },
+    //       { id: 'quotes:delete', name: 'Delete Quotes' }
+    //     ]
+    //   },
+    //   {
+    //     id: 'account',
+    //     name: 'Account',
+    //     children: [{ id: 'accounts:view', name: 'View Accounts' }]
+    //   }
+    // ],
     // only for edit
     showImageError: false,
     disabled: false,

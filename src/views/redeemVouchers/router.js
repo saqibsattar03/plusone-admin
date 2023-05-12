@@ -1,9 +1,9 @@
 import VouchersView from './VouchersView';
 import VouchersShow from './VouchersShow';
-import { getUserScopes } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export const redeemVouchersRoutes = [
-  getUserScopes()?.includes('redeem-vouchers:view')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'Redeem Vouchers',
         path: '/redeem-vouchers',
@@ -13,7 +13,7 @@ export const redeemVouchersRoutes = [
         path: '/redeem-vouchers',
         redirect: '/no-permission'
       },
-  getUserScopes()?.includes('redeem-vouchers:view')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'Redeem VoucherDetails',
         path: '/redeem-voucher-details',

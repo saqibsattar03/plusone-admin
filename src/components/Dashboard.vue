@@ -117,7 +117,7 @@
 <script>
 import ProfilePopup from './ProfilePopup';
 import { required } from '@/utils/validators';
-import { getUserScopes, getUser } from '../utils/local';
+import { getUser } from '../utils/local';
 
 export default {
   name: 'Dashboard',
@@ -127,7 +127,6 @@ export default {
   data: () => ({
     drawer: true,
     user: getUser(),
-    userScopes: getUserScopes(),
     developMode: false,
     developModeDialog: false,
     message: null,
@@ -151,13 +150,13 @@ export default {
           to: '/',
           title: 'Users',
           icon: 'mdi-account-group',
-          isVisible: this.userScopes?.includes('users:view')
+          isVisible: this.user?.role === 'ADMIN'
         },
         // {
         //   to: '/admins',
         //   title: 'Admins',
         //   icon: 'mdi-account-group',
-        //   isVisible: this.userScopes?.includes('admins:view')
+        //   isVisible: this.user?.role === 'ADMIN'
         // },
         {
           to: '/no-permission',
@@ -173,26 +172,31 @@ export default {
           title: 'Merchants',
           icon: 'mdi-store',
           isVisible:
-            this.userScopes?.includes('merchants:view') ||
-            this.user.role === 'MERCHANT'
+            this.user?.role === 'ADMIN' || this.user?.role === 'MERCHANT'
         },
         {
           to: '/redeem-vouchers',
           title: 'Redeemed Vouchers',
           icon: 'mdi-ticket',
-          isVisible: this.userScopes?.includes('redeem-vouchers:view')
+          isVisible: this.user?.role === 'ADMIN'
         },
         // {
         //   to: '/accounts-history',
         //   title: 'Accounts History',
         //   icon: 'mdi-history',
-        //   isVisible: this.user.role === 'ADMIN'
+        //   isVisible: this.user?.role === 'ADMIN'
         // },
         {
           to: '/quotes',
           title: 'Quotes',
           icon: 'mdi-format-quote-close',
-          isVisible: this.userScopes?.includes('quotes:view')
+          isVisible: this.user?.role === 'ADMIN'
+        },
+        {
+          to: '/customer-supports',
+          title: 'Customer Supports',
+          icon: 'mdi-account-question',
+          isVisible: this.user?.role === 'ADMIN'
         }
       ];
     }

@@ -1,9 +1,9 @@
 import QuotesView from './QuotesView';
 import QuoteForm from './QuoteForm.vue';
-import { getUserScopes } from '../../utils/local';
+import { getUser } from '../../utils/local';
 
 export const quotesRoutes = [
-  getUserScopes()?.includes('quotes:view')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'Quotes',
         path: '/quotes',
@@ -13,7 +13,7 @@ export const quotesRoutes = [
         path: '/quotes',
         redirect: '/no-permission'
       },
-  getUserScopes()?.includes('quotes:edit')
+  getUser()?.role === 'ADMIN'
     ? {
         name: 'NewQuote',
         path: '/quote',
