@@ -3,7 +3,9 @@
     <v-row class="mb-4">
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deposit:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deposit</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
               {{ adminStats && adminStats[0] && adminStats[0].totalDeposit }}
@@ -14,7 +16,9 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Avalable Deposit:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Avalable Deposit</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
               {{
@@ -31,7 +35,9 @@
         v-if="adminStats && adminStats[0] && adminStats[0].availableDeposit < 0"
       >
         <v-card>
-          <v-card-title>Remaining Payments:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Remaining Payments</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
               {{
@@ -44,7 +50,10 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Sales:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Sales</v-card-title>
+          </div>
+          <!-- <v-card-title>Total Sales:</v-card-title> -->
           <v-card-text class="text-center">
             <h1>
               {{ adminStats && adminStats[0] && adminStats[0].totalSales }}
@@ -55,7 +64,9 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deduction:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deduction</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
               {{ adminStats && adminStats[0] && adminStats[0].totalDeductions }}
@@ -77,6 +88,10 @@
 
       <template #time="{ item }">
         {{ formatTime(item.createdAt) }}
+      </template>
+
+      <template #restaurantName="{ item }">
+        {{ item && item.restaurantName }}
       </template>
     </data-table>
   </div>
@@ -152,7 +167,15 @@ export default {
       let accountHistory =
         await this.merchantService.fetchAllTransactionHistory();
 
-      return accountHistory;
+      let filteredAccountHistory = await Promise.all(
+        accountHistory.map(async (item) => {
+          await this.merchantService.fetchOne(item.restaurantId).then((res) => {
+            item.restaurantName = res.restaurantName;
+          });
+          return item;
+        })
+      );
+      return filteredAccountHistory;
     }
   }
 };

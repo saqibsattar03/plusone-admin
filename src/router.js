@@ -27,7 +27,7 @@ const routes = [
       ...redeemVouchersRouter,
       ...quotesRouter,
       ...accountsHistoyRouter,
-      ...customerSupportsRouter
+      ...customerSupportsRouter,
     ]
   },
   {

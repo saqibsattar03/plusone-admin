@@ -18,7 +18,14 @@
             <v-card-title class="text-center">Current Balance</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
+            <h1>
+              {{
+                restaurantProfile.availableDeposit &&
+                restaurantProfile.availableDeposit % 2 !== 0
+                  ? restaurantProfile.availableDeposit.toFixed(2)
+                  : restaurantProfile.availableDeposit || 0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -42,7 +49,13 @@
             <v-card-title class="text-center">Total Deduction</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.totalDeductions || 0 }}</h1>
+            <h1>
+              {{
+                (restaurantProfile.totalDeductions &&
+                  restaurantProfile.totalDeductions.toFixed(2)) ||
+                0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -53,7 +66,13 @@
             <v-card-title class="text-center">Pending Payments</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
+            <h1>
+              {{
+                (restaurantProfile.availableDeposit &&
+                  restaurantProfile.availableDeposit.toFixed(2)) ||
+                0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -267,6 +286,15 @@ export default {
 
           const transactionHistory =
             await this.merchants_service.fetchOneTransactionHistory(id);
+
+          transactionHistory.forEach((item) => {
+            item.voucherType = item.voucherType ? item.voucherType : 'N/A';
+            item.deductedAmount = item.deductedAmount
+              ? item.deductedAmount && item.deductedAmount.toFixed(2)
+              : 'N/A';
+            item.availableDeposit =
+              item.availableDeposit && item.availableDeposit.toFixed(2);
+          });
 
           return transactionHistory;
         } else {

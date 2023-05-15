@@ -22,7 +22,7 @@ export class MerchantsService {
   }
 
   async fetchOneTransactionHistory(id) {
-    return (await axios.get('/transaction-history/' + id)).data;
+    return (await axios.get('/transaction-history?restaurantId=' + id)).data;
   }
 
   async fetchAllTransactionHistory() {
@@ -31,7 +31,7 @@ export class MerchantsService {
   }
 
   async fetchOneDepositHistory(id) {
-    return (await axios.get('/transaction-history/' + id + '?type=CREDIT')).data;
+    return (await axios.get('/transaction-history/' + '?type=CREDIT' + '&restaurantId=' + id)).data;
   }
 
   async fetchAllDepositHistory() {
