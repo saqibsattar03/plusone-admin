@@ -51,9 +51,10 @@
           <v-card-text class="text-center">
             <h1>
               {{
-                (restaurantProfile.totalDeductions &&
-                  restaurantProfile.totalDeductions.toFixed(2)) ||
-                0
+                restaurantProfile.totalDeductions &&
+                restaurantProfile.totalDeductions % 2 !== 0
+                  ? restaurantProfile.totalDeductions.toFixed(2)
+                  : restaurantProfile.totalDeductions || 0
               }}
             </h1>
           </v-card-text>
@@ -68,9 +69,10 @@
           <v-card-text class="text-center">
             <h1>
               {{
-                (restaurantProfile.availableDeposit &&
-                  restaurantProfile.availableDeposit.toFixed(2)) ||
-                0
+                restaurantProfile.availableDeposit &&
+                restaurantProfile.availableDeposit % 2 !== 0
+                  ? restaurantProfile.availableDeposit.toFixed(2)
+                  : restaurantProfile.availableDeposit || 0
               }}
             </h1>
           </v-card-text>
