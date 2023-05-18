@@ -3,28 +3,12 @@
     <v-row class="mb-4">
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deposit:</v-card-title>
-          <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.totalDeposit }}</h1> -->
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="3">
-        <v-card>
-          <v-card-title>Avalable Deposit:</v-card-title>
-          <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.availableDeposit }}</h1> -->
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="3">
-        <v-card>
-          <v-card-title>Remaining Payments:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deposit</v-card-title>
+          </div>
           <v-card-text class="text-center">
             <h1>
-              <!-- {{ restaurantProfile.totalSales }} -->
+              {{ adminStats && adminStats[0] && adminStats[0].totalDeposit }}
             </h1>
           </v-card-text>
         </v-card>
@@ -32,18 +16,61 @@
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Sales:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Avalable Deposit</v-card-title>
+          </div>
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.totalDeductions }}</h1> -->
+            <h1>
+              {{
+                adminStats && adminStats[0] && adminStats[0].availableDeposit
+              }}
+            </h1>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        md="3"
+        v-if="adminStats && adminStats[0] && adminStats[0].availableDeposit < 0"
+      >
+        <v-card>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Remaining Payments</v-card-title>
+          </div>
+          <v-card-text class="text-center">
+            <h1>
+              {{
+                adminStats && adminStats[0] && adminStats[0].availableDeposit
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="3">
         <v-card>
-          <v-card-title>Total Deduction:</v-card-title>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Sales</v-card-title>
+          </div>
+          <!-- <v-card-title>Total Sales:</v-card-title> -->
           <v-card-text class="text-center">
-            <!-- <h1>{{ restaurantProfile.availableDeposit }}</h1> -->
+            <h1>
+              {{ adminStats && adminStats[0] && adminStats[0].totalSales }}
+            </h1>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" md="3">
+        <v-card>
+          <div style="display: flex; justify-content: center" class="mb-n4">
+            <v-card-title class="text-center">Total Deduction</v-card-title>
+          </div>
+          <v-card-text class="text-center">
+            <h1>
+              {{ adminStats && adminStats[0] && adminStats[0].totalDeductions }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -55,17 +82,26 @@
       title="Accounts History"
       @done="$router.back()"
     >
-      <template #transactionId="{ item }">
-        {{ item.index }}
+      <template #date="{ item }">
+        {{ formatDate(item.createdAt) }}
+      </template>
+
+      <template #time="{ item }">
+        {{ formatTime(item.createdAt) }}
+      </template>
+
+      <template #restaurantName="{ item }">
+        {{ item && item.restaurantName }}
       </template>
     </data-table>
   </div>
 </template>
 
 <script>
-import { RedeemVouchersService } from '@/services/redeem-vouchers-service';
+import { MerchantsService } from '../../services/merchant-service';
 import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
+import dayjs from 'dayjs';
 
 export default {
   components: { DataTable },
@@ -76,15 +112,11 @@ export default {
 
   data: () => ({
     items: [],
-    redeem_vouchers_service: new RedeemVouchersService(),
+    adminStats: [],
+    merchantService: new MerchantsService(),
     userScopes: getUserScopes(),
 
     headers: [
-      {
-        text: 'Transaction Id',
-        value: 'transactionId',
-        sortable: true
-      },
       {
         text: 'Restaurant Name',
         value: 'restaurantName',
@@ -107,31 +139,43 @@ export default {
       },
       {
         text: 'Credit/Debit',
-        value: 'creditDebit',
+        value: 'transactionType',
         sortable: true
       },
-      {
-        text: 'Detail',
-        value: 'detail',
-        sortable: true
-      },
+
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ]
   }),
 
   methods: {
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD');
+    },
+
+    formatTime(date) {
+      return dayjs(date).format('HH:mm:ss');
+    },
+
     async loadData() {
-      let vouchers = await this.redeem_vouchers_service.fetchAll();
-      vouchers = vouchers.map((voucher, index) => {
-        voucher.vouc.index = index + 1;
-        return voucher.vouc;
-      });
-      console.log(vouchers);
-      return vouchers;
+      let adminStats = await this.merchantService.accountsAdminStats();
+      this.adminStats = adminStats;
+
+      let accountHistory =
+        await this.merchantService.fetchAllTransactionHistory();
+
+      let filteredAccountHistory = await Promise.all(
+        accountHistory.map(async (item) => {
+          await this.merchantService.fetchOne(item.restaurantId).then((res) => {
+            item.restaurantName = res.restaurantName;
+          });
+          return item;
+        })
+      );
+      return filteredAccountHistory;
     }
   }
 };

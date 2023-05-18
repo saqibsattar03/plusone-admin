@@ -81,16 +81,16 @@ export default {
       if (this.$refs.form.validate()) {
         this.loading = true;
 
-        this.$axios
+        await this.$axios
           .post('/auth/sign-in', {
             email: this.username,
             password: this.password
           })
-          .then((res) => {
+          .then(async (res) => {
             localStorage.setItem('auth_token', res.data.access_token);
-            this.$axios.get('/auth/person').then((res) => {
+            await this.$axios.get('/auth/person').then(async (res) => {
               localStorage.setItem('user', JSON.stringify(res.data));
-              this.$router.push('/').then(() => {
+              await this.$router.push('/').then(() => {
                 this.$router.go();
               });
               this.loading = false;
@@ -106,7 +106,7 @@ export default {
             this.loading = false;
           });
 
-        // this.loading = false;
+        this.loading = false;
       }
     }
   }

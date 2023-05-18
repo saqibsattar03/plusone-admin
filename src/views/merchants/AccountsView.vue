@@ -18,7 +18,14 @@
             <v-card-title class="text-center">Current Balance</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
+            <h1>
+              {{
+                restaurantProfile.availableDeposit &&
+                restaurantProfile.availableDeposit % 2 !== 0
+                  ? restaurantProfile.availableDeposit.toFixed(2)
+                  : restaurantProfile.availableDeposit || 0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -42,7 +49,14 @@
             <v-card-title class="text-center">Total Deduction</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.totalDeductions || 0 }}</h1>
+            <h1>
+              {{
+                restaurantProfile.totalDeductions &&
+                restaurantProfile.totalDeductions % 2 !== 0
+                  ? restaurantProfile.totalDeductions.toFixed(2)
+                  : restaurantProfile.totalDeductions || 0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -53,7 +67,14 @@
             <v-card-title class="text-center">Pending Payments</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.availableDeposit || 0 }}</h1>
+            <h1>
+              {{
+                restaurantProfile.availableDeposit &&
+                restaurantProfile.availableDeposit % 2 !== 0
+                  ? restaurantProfile.availableDeposit.toFixed(2)
+                  : restaurantProfile.availableDeposit || 0
+              }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -79,16 +100,12 @@
             :loader="loadData"
             :key="dataTableKey"
           >
-            <template #deduction="{ item }">
-              <span>{{ item.estimatedCost * 0.1 }}</span>
-            </template>
-
             <template #date="{ item }">
-              <span>{{ item.createdAt.split(' ')[0] }}</span>
+              <span>{{ formatDate(item.createdAt) }}</span>
             </template>
 
             <template #time="{ item }">
-              <span>{{ item.createdAt.split(' ')[1] }}</span>
+              <span>{{ formatTime(item.createdAt) }}</span>
             </template>
           </DataTable>
         </v-tab-item>
@@ -133,6 +150,7 @@ import DataTable from '../../components/DataTable';
 import { getUserScopes } from '../../utils/local';
 import { required } from '../../utils/validators';
 import LoadingDialog from '../../components/LoadingDialog';
+import dayjs from 'dayjs';
 
 export default {
   components: { DataTable, LoadingDialog },
@@ -172,18 +190,22 @@ export default {
       },
       {
         text: 'Sale Price',
-        value: 'estimatedCost',
+        value: 'amount',
         sortable: true
       },
       {
         text: 'Deduction',
-        value: 'deduction',
+        value: 'deductedAmount',
         sortable: true
       },
-
+      {
+        text: 'Transaction Type',
+        value: 'transactionType',
+        sortable: true
+      },
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ],
@@ -206,7 +228,7 @@ export default {
       },
       {
         text: 'Current Balance',
-        value: 'currentBalance',
+        value: 'availableDeposit',
         sortable: true
       }
     ],
@@ -224,6 +246,12 @@ export default {
 
   methods: {
     required,
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD');
+    },
+    formatTime(date) {
+      return dayjs(date).format('HH:mm:ss');
+    },
 
     updatingTab() {
       this.dataTableKey++;
@@ -253,28 +281,35 @@ export default {
     async loadData() {
       const id = this.$route.query.restaurantId;
 
-      const voucher = await this.merchants_service.fetchAllVoucher(id);
-      this.voucher = voucher;
-
       if (this.voucher) {
         if (this.tab == 0) {
           const restaurantProfile = await this.merchants_service.fetchOne(id);
           this.restaurantProfile = restaurantProfile;
 
-          let filterData = voucher.voucherObject;
+          const transactionHistory =
+            await this.merchants_service.fetchOneTransactionHistory(id);
 
-          return filterData;
+          transactionHistory.forEach((item) => {
+            item.voucherType = item.voucherType ? item.voucherType : 'N/A';
+            item.deductedAmount = item.deductedAmount
+              ? item.deductedAmount && item.deductedAmount.toFixed(2)
+              : 'N/A';
+            item.availableDeposit =
+              item.availableDeposit && item.availableDeposit.toFixed(2);
+          });
+
+          return transactionHistory;
         } else {
           const depositHistory =
             await this.merchants_service.fetchOneDepositHistory(id);
-          const filterData = Object.values(depositHistory.depositObject);
-          filterData.sort((a, b) => {
+
+          depositHistory.sort((a, b) => {
             const dateA = new Date(a.createdAt);
             const dateB = new Date(b.createdAt);
             return dateB - dateA;
           });
 
-          return filterData;
+          return depositHistory;
         }
       }
     }

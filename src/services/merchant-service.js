@@ -21,8 +21,27 @@ export class MerchantsService {
     ).data;
   }
 
+  async fetchOneTransactionHistory(id) {
+    return (await axios.get('/transaction-history?restaurantId=' + id)).data;
+  }
+
+  async fetchAllTransactionHistory() {
+    return (await axios.get('/transaction-history'))
+      .data;
+  }
+
   async fetchOneDepositHistory(id) {
-    return (await axios.get('/deposit-money/history?restaurantId=' + id)).data;
+    return (await axios.get('/transaction-history/' + '?type=CREDIT' + '&restaurantId=' + id)).data;
+  }
+
+  async fetchAllDepositHistory() {
+    return (await axios.get('/transaction-history?type=CREDIT'))
+      .data;
+  }
+
+  async accountsAdminStats() {
+    return (await axios.get('/restaurant/admin-stats'))
+      .data;
   }
 
   async fetchAllVoucher(id) {

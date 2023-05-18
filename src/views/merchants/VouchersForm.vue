@@ -208,7 +208,7 @@ export default {
           return true;
         } catch (e) {
           context.reportError({
-            title: 'Error while updating Merchant',
+            title: 'Error while updating Voucher',
             description: e.response
               ? e.response.data.message
               : 'Something went wrong!'
@@ -237,7 +237,7 @@ export default {
           return true;
         } catch (e) {
           context.reportError({
-            title: 'Error while creating Merchant',
+            title: 'Failed to create Voucher',
             description: e.response
               ? e.response.data.message
               : 'Something went wrong!'
