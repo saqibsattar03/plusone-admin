@@ -16,8 +16,6 @@
           <v-btn @click="$router.go(-1)" elevation="0">
             <v-icon>mdi-arrow-left</v-icon></v-btn
           >
-
-          <v-card-title>Voucher Details</v-card-title>
         </v-row>
 
         <v-row no-gutters>
@@ -26,61 +24,117 @@
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Title : </b>{{ voucher.voucherObject[0].title }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Title"
+              v-model="voucher.voucherObject[0].title"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Title : </b>{{ voucher.voucherObject[0].title }}-->
+            <!--            </v-card-text>-->
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Type : </b>{{ voucher.voucherObject[0].voucherType }}
-            </v-card-text>
-          </v-col>
-        </v-row>
-
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Voucher Preference : </b
-              >{{ voucher.voucherObject[0].voucherPreference }}
-            </v-card-text>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Discount : </b
-              >{{
-                voucher.voucherObject[0].discount
-                  ? voucher.voucherObject[0].discount
-                  : 'N/A'
-              }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Voucher Type"
+              v-model="voucher.voucherObject[0].voucherType"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Type : </b>{{ voucher.voucherObject[0].voucherType }}-->
+            <!--            </v-card-text>-->
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Estimated Cost: </b
-              >{{ voucher.voucherObject[0].estimatedCost }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Voucher Preference"
+              v-model="voucher.voucherObject[0].voucherPreference"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Voucher Preference : </b-->
+            <!--              >{{ voucher.voucherObject[0].voucherPreference }}-->
+            <!--            </v-card-text>-->
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Estimated Savings : </b
-              >{{ voucher.voucherObject[0].estimatedSavings }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Discount"
+              v-model="voucher.voucherObject[0].discount"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Discount : </b-->
+            <!--              >{{-->
+            <!--                voucher.voucherObject[0].discount-->
+            <!--                  ? voucher.voucherObject[0].discount-->
+            <!--                  : 'N/A'-->
+            <!--              }}-->
+            <!--            </v-card-text>-->
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Description : </b>{{ voucher.voucherObject[0].description }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Estimated Cost"
+              v-model="voucher.voucherObject[0].estimatedCost"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Estimated Cost: </b-->
+            <!--              >{{ voucher.voucherObject[0].estimatedCost }}-->
+            <!--            </v-card-text>-->
+          </v-col>
+
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Estimated Savings"
+              v-model="voucher.voucherObject[0].estimatedSavings"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Estimated Savings : </b-->
+            <!--              >{{ voucher.voucherObject[0].estimatedSavings }}-->
+            <!--            </v-card-text>-->
+          </v-col>
+        </v-row>
+
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-textarea
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Description"
+              v-model="voucher.voucherObject[0].description"
+            />
+            <!--            <v-card-text class="p10">-->
+            <!--              <b>Description : </b>{{ voucher.voucherObject[0].description }}-->
+            <!--            </v-card-text>-->
           </v-col>
 
           <v-col
@@ -104,6 +158,7 @@
               </ul>
             </v-card-text>
           </v-col>
+          <v-col else cols="12" md="5"></v-col>
         </v-row>
       </div>
     </v-card>

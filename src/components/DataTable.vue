@@ -31,10 +31,11 @@
         <v-text-field
           v-if="allowSearch"
           v-model="search"
-          solo
-          label="Search anything..."
+          label="Search Anything"
+          append-icon="mdi-magnify"
+          outlined
+          style="font-family: sans-serif"
           dense
-          hide-details
         />
       </div>
       <slot
@@ -97,7 +98,6 @@
         <v-icon @click="$emit('filter')">mdi-filter</v-icon>
       </v-btn>
     </v-card-title>
-
     <v-data-table
       :loading="loading"
       :items="items"
@@ -108,12 +108,12 @@
       fixed-header
     >
       <template v-slot:item="{ item }">
-        <tr v-if="$vuetify.breakpoint.width > 800">
+        <tr class="table-row" v-if="$vuetify.breakpoint.width > 800">
           <td
             v-for="(elem, key) of headers"
             :key="key"
             :class="`text-${elem.align === 'right' ? 'end' : 'start'}`"
-            :style="`max-width: calc(100% / ${headersValue.length})`"
+            :style="`max-width: calc(100% / ${headersValue.length} )`"
           >
             <slot :name="elem.value" :item="item">{{ item[elem.value] }}</slot>
           </td>
@@ -135,54 +135,83 @@
             >
               <slot name="extra-actions" :item="item" />
 
-              <v-icon
-                v-if="accountHandler"
-                @click="accountHandler(item)"
-                color="#71797E"
-                small
-              >
-                mdi-account
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <i
+                    v-if="accountHandler"
+                    @click="accountHandler(item)"
+                    class="icon pi pi-euro"
+                    style="color: #ffd700"
+                    v-on="on"
+                  />
+                </template>
+                <span>Account Details</span>
+              </v-tooltip>
 
-              <v-icon
-                v-if="voucherHandler"
-                @click="voucherHandler(item)"
-                color="#71797E"
-                small
-                >mdi-ticket
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-if="voucherHandler"
+                    @click="voucherHandler(item)"
+                    color="#2596be"
+                    small
+                    v-on="on"
+                    >mdi-ticket
+                  </v-icon>
+                </template>
+                <span>Vouchers</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <i
+                    v-if="viewHandler"
+                    @click="viewHandler(item)"
+                    class="icon pi pi-eye"
+                    style="color: #42b983"
+                    v-on="on"
+                  />
+                </template>
+                <span>Details</span>
+              </v-tooltip>
 
-              <v-icon
-                v-if="viewHandler"
-                @click="viewHandler(item)"
-                color="blue"
-                small
-                >mdi-eye
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <i
+                    v-if="editHandler"
+                    @click="editHandler(item)"
+                    class="icon pi pi-pencil"
+                    style="color: orange"
+                    v-on="on"
+                  />
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <i
+                    v-if="deleteHandler"
+                    @click="showDeleteConfirmation(item)"
+                    class="icon pi pi-trash"
+                    style="color: red"
+                    v-on="on"
+                  />
+                </template>
+                <span>Delete</span>
+              </v-tooltip>
 
-              <v-icon
-                v-if="editHandler"
-                @click="editHandler(item)"
-                color="green"
-                small
-                >mdi-pencil
-              </v-icon>
-
-              <v-icon
-                v-if="deleteHandler"
-                @click="onDelete(item)"
-                color="red"
-                small
-                >mdi-delete
-              </v-icon>
-
-              <v-icon
-                v-if="disableHandler"
-                @click="disableHandler(item)"
-                color="red"
-                small
-                >mdi-close
-              </v-icon>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-if="disableHandler"
+                    @click="disableHandler(item)"
+                    color="red"
+                    small
+                    v-on="on"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Disable Voucher</span>
+              </v-tooltip>
             </div>
           </td>
         </tr>
@@ -196,9 +225,9 @@
           >
             <div class="v-data-table__mobile-row__header">{{ elem.text }}</div>
             <div class="v-data-table__mobile-row__cell">
-              <slot :name="elem.value" :item="item">{{
-                item[elem.value]
-              }}</slot>
+              <slot :name="elem.value" :item="item"
+                >{{ item[elem.value] }}
+              </slot>
             </div>
           </td>
           <td
@@ -263,7 +292,7 @@
                 v-if="deleteHandler"
                 small
                 color="red"
-                @click="onDelete(item)"
+                @click="showDeleteConfirmation(item)"
               >
                 Delete
               </v-btn>
@@ -282,8 +311,41 @@
         </tr>
       </template>
     </v-data-table>
-
     <error-dialog v-if="!hideDialog" v-model="error" :error="errorValue" />
+    <div v-if="showConfirmationModal" class="confirmation-modal">
+      <div class="modal-content">
+        <h2>Confirmation !</h2>
+        <p style="margin-top: 10px">
+          Are you sure you want to delete this item? This Process can not be
+          undone.
+        </p>
+        <div class="modal-buttons">
+          <v-row justify="center" align-content="space-around">
+            <v-col cols="3">
+              <v-btn
+                color="#ff6e01"
+                class="modal-button"
+                dark
+                rounded
+                outlined
+                @click="onDelete"
+                >Yes</v-btn
+              >
+            </v-col>
+            <v-col cols="3">
+              <v-btn
+                color="#ff6e01"
+                class="modal-button"
+                rounded
+                dark
+                @click="cancelDelete"
+                >No</v-btn
+              >
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -379,7 +441,6 @@ export default {
       default: false
     }
   },
-
   emits: ['add-new'],
 
   mounted() {
@@ -409,7 +470,9 @@ export default {
     error: false,
     loading: false,
     errorValue: {},
-    headersValue: []
+    headersValue: [],
+    showConfirmationModal: false,
+    itemToDelete: null
   }),
 
   methods: {
@@ -424,7 +487,7 @@ export default {
           title: 'Error while loading data',
           description:
             e?.response?.data?.error ??
-            'Some error occured, Please try again later'
+            'Some error occurred, Please try again later'
         };
         this.error = true;
 
@@ -454,17 +517,53 @@ export default {
       }
     },
 
-    async onDelete(item) {
-      if (confirm('This Item will be delete')) {
-        try {
-          this.loading = true;
-          await this.deleteHandler(item);
-          this.loading = false;
-          this.items.splice(this.items.indexOf(item), 1);
-        } catch (e) {
-          window.console.log(e);
+    showDeleteConfirmation(item) {
+      this.itemToDelete = item;
+      console.log('item = ', item);
+      this.showConfirmationModal = true;
+    },
+
+    async onDelete() {
+      try {
+        this.showConfirmationModal = false;
+        this.loading = true;
+        await this.deleteHandler(this.itemToDelete);
+        this.loading = false;
+        const index = this.items.indexOf(this.itemToDelete);
+        if (index !== -1) {
+          this.items.splice(index, 1);
         }
+      } catch (e) {
+        console.log(e);
       }
+    },
+
+    // async onDelete(item) {
+    //     console.log(item)
+    //         try {
+    //             this.showConfirmationModal = false;
+    //             this.loading = true;
+    //             await this.deleteHandler(item);
+    //             this.loading = false;
+    //             this.items.splice(this.items.indexOf(item), 1);
+    //         } catch (e) {
+    //             window.console.log(e);
+    //         }
+    //
+    //     // else if (confirm('This Item will be deleted')) {
+    //     //     try {
+    //     //         this.loading = true;
+    //     //         await this.deleteHandler(item);
+    //     //         this.loading = false;
+    //     //         this.items.splice(this.items.indexOf(item), 1);
+    //     //     } catch (e) {
+    //     //         window.console.log(e);
+    //     //     }
+    //     // }
+    // },
+    cancelDelete() {
+      this.itemToDelete = null;
+      this.showConfirmationModal = false;
     }
   }
 };
@@ -476,4 +575,34 @@ export default {
   &__header
     font-size: 25px
     font-family: google-sans, sans-serif
+
+
+.confirmation-modal
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-color: rgba(0, 0, 0, 0.5)
+    display: flex
+    justify-content: center
+    align-items: center
+    z-index: 9999
+
+.modal-content
+    background-color: #fff
+    padding: 10px
+    height: 190px
+    width: 350px
+    border-radius: 24px
+    text-align: center
+.overlay
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-color: rgba(0, 0, 0, 0.5)
+    pointer-events: none
+    animation: blink 0.5s infinite
 </style>

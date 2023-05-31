@@ -80,7 +80,6 @@ export default {
     async signIn() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-
         await this.$axios
           .post('/auth/sign-in', {
             email: this.username,

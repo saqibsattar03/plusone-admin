@@ -8,6 +8,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{ adminStats && adminStats[0] && adminStats[0].totalDeposit }}
             </h1>
           </v-card-text>
@@ -17,12 +18,15 @@
       <v-col cols="12" md="3">
         <v-card>
           <div style="display: flex; justify-content: center" class="mb-n4">
-            <v-card-title class="text-center">Avalable Deposit</v-card-title>
+            <v-card-title class="text-center">Available Deposit</v-card-title>
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{
-                adminStats && adminStats[0] && adminStats[0].availableDeposit
+                Math.ceil(
+                  adminStats && adminStats[0] && adminStats[0].availableDeposit
+                )
               }}
             </h1>
           </v-card-text>
@@ -40,8 +44,11 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{
-                adminStats && adminStats[0] && adminStats[0].availableDeposit
+                Math.ceil(
+                  adminStats && adminStats[0] && adminStats[0].availableDeposit
+                )
               }}
             </h1>
           </v-card-text>
@@ -56,6 +63,7 @@
           <!-- <v-card-title>Total Sales:</v-card-title> -->
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{ adminStats && adminStats[0] && adminStats[0].totalSales }}
             </h1>
           </v-card-text>
@@ -69,6 +77,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{ adminStats && adminStats[0] && adminStats[0].totalDeductions }}
             </h1>
           </v-card-text>
@@ -76,12 +85,7 @@
       </v-col>
     </v-row>
 
-    <data-table
-      :loader="loadData"
-      :headers="headers"
-      title="Accounts History"
-      @done="$router.back()"
-    >
+    <data-table :loader="loadData" :headers="headers" @done="$router.back()">
       <template #date="{ item }">
         {{ formatDate(item.createdAt) }}
       </template>

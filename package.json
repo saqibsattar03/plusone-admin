@@ -4,11 +4,19 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve-": "node --openssl-legacy-provider ./node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
+    "build-": "node --openssl-legacy-provider ./node_modules/@vue/cli-service/bin/vue-cli-service.js build",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^2.0.10",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "date-fns": "^2.29.3",
@@ -20,10 +28,14 @@
     "moment": "^2.29.1",
     "node-html-parser": "^6.1.4",
     "papaparse": "^5.3.1",
+    "prettier": "^2.8.8",
+    "primeicons": "^6.0.1",
     "uuid": "^9.0.0",
+    "v-mask": "^2.3.0",
     "validator": "^13.6.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue-the-mask": "^0.11.1",
     "vue2-editor": "^2.10.3",
     "vue2-google-maps": "^0.10.7",
     "vue2-leaflet": "^2.7.1",
@@ -45,7 +57,7 @@
     "vite-plugin-vue2": "^1.7.3",
     "vue-cli-plugin-vuetify": "~2.4.2",
     "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.0"
+    "vuetify-loader": "^1.9.2"
   },
   "eslintConfig": {
     "root": true,

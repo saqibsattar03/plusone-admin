@@ -2,7 +2,6 @@
   <data-table
     :loader="loadData"
     :headers="headers"
-    title="Customer Supports"
     :allow-add="false"
     :delete-handler="
       getUser() && getUser().role === 'ADMIN' ? deleteCustomerSupport : null

@@ -1,18 +1,21 @@
 <template>
-  <data-table
-    :loader="loadData"
-    :headers="headers"
-    title="Users"
-    :allow-add="false"
-    @done="$router.back()"
-    :delete-handler="null"
-    :edit-handler="null"
-    :view-handler="userScopes.includes('users:view') ? view : null"
-  >
-    <template #firstname="{ item }">
-      {{ item.firstname }}
-    </template>
-  </data-table>
+  <div>
+    <div>
+      <data-table
+        :loader="loadData"
+        :headers="headers"
+        :allow-add="false"
+        @done="$router.back()"
+        :delete-handler="null"
+        :edit-handler="null"
+        :view-handler="userScopes.includes('users:view') ? view : null"
+      >
+        <template #firstname="{ item }">
+          {{ item.firstname }}
+        </template>
+      </data-table>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -22,10 +25,6 @@ import { getUserScopes } from '../../utils/local';
 
 export default {
   components: { DataTable },
-
-  mounted() {
-    this.loadData;
-  },
 
   data: () => ({
     items: [],

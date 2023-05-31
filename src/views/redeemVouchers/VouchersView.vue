@@ -2,7 +2,6 @@
   <data-table
     :loader="loadData"
     :headers="headers"
-    title="Redeemed Vouchers"
     @done="$router.back()"
     :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
   >

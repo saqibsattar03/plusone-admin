@@ -5,7 +5,6 @@
         <v-icon color="red" class="font-weight-bold">mdi-close</v-icon>
       </v-btn>
     </div>
-
     <div class="video-container">
       <div class="progress" v-if="!videoLoading">
         <v-progress-circular

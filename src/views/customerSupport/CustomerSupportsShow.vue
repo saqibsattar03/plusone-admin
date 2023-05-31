@@ -12,13 +12,17 @@
       </v-overlay>
 
       <div v-else>
-        <v-row class="pa-0 d-flex align-center" no-gutters>
+        <v-row
+          class="pa-0 d-flex align-center"
+          style="margin-bottom: 12px"
+          no-gutters
+        >
           <v-btn @click="$router.go(-1)" elevation="0">
             <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
-          <v-card-title class="p10" style="color: #020819"
-            >Customer Support Details</v-card-title
-          >
+          <!--          <v-card-title class="p10" style="color: #020819"-->
+          <!--            >Customer Support Details</v-card-title-->
+          <!--          >-->
         </v-row>
 
         <!-- image show -->
@@ -37,46 +41,84 @@
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Name : </b
-              >{{
-                customerSupport.userId.firstname +
-                ' ' +
-                customerSupport.userId.surname
-              }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="First Name"
+              v-model="customerSupport.userId.firstname"
+            />
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Email : </b>{{ customerSupport.userId.email }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Sur Name"
+              v-model="customerSupport.userId.surname"
+            />
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Subject : </b>{{ customerSupport.subject }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Email"
+              v-model="customerSupport.userId.email"
+            />
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Message : </b>{{ customerSupport.message }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Contact Number"
+              v-model="customerSupport.contactNumber"
+            />
+          </v-col>
+        </v-row>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Subject"
+              v-model="customerSupport.subject"
+            />
+          </v-col>
+          <v-col cols="12" md="5">
+            <v-textarea
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Complaint Message"
+              v-model="customerSupport.message"
+            />
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Created At : </b>{{ formatDate(customerSupport.createdAt) }}
-            </v-card-text>
-          </v-col>
-        </v-row>
+        <!--        <v-row class="pa-0" style="justify-content: space-around" no-gutters>-->
+        <!--          <v-col cols="12" md="5">-->
+        <!--            <v-card-text class="p10">-->
+        <!--              <b>Created At : </b>{{ formatDate(customerSupport.createdAt) }}-->
+        <!--            </v-card-text>-->
+        <!--          </v-col>-->
+        <!--          <v-col cols="12" md="5"></v-col>-->
+        <!--        </v-row>-->
       </div>
     </v-card>
   </div>

@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-if="!isEdit && !addNew" v-bind:value="value" width="80%" content-class="elevation-0">
+  <v-dialog
+    v-if="!isEdit && !addNew"
+    v-bind:value="value"
+    width="80%"
+    content-class="elevation-0"
+  >
     <template v-slot:activator="{ on, attrs }">
       <v-btn class="my-1" dark v-bind="attrs" v-on="on" small color="primary">
         View
@@ -13,11 +18,11 @@
     <v-container class="article-container">
       <div>
         <img
-            v-if="url"
-            :src="url"
-            height="400"
-            style="width: 100%; object-fit: contain"
-            :alt="url"
+          v-if="url"
+          :src="url"
+          height="400"
+          style="width: 100%; object-fit: contain"
+          :alt="url"
         />
       </div>
     </v-container>
@@ -25,23 +30,22 @@
   <v-container v-else>
     <div>
       <img
-          v-if="url"
-          :src="url"
-          height="150"
-          style="width: 100%; object-fit: contain"
-          :alt="url"
+        v-if="url"
+        :src="url"
+        height="150"
+        style="width: 100%; object-fit: contain"
+        :alt="url"
       />
     </div>
   </v-container>
 </template>
 
 <script>
-
 export default {
-  name: "ArticleViewer",
+  name: 'ArticleViewer',
   model: {
     prop: 'value',
-    event: 'value',
+    event: 'value'
   },
   props: {
     value: Boolean,
@@ -57,18 +61,18 @@ export default {
 
     addNew: {
       type: Boolean,
-      default: false,
+      default: false
     }
   },
   data() {
     return {
-      dialog: false,
+      dialog: false
     };
   },
   methods: {
     close() {
-      this.$emit('value', false)
+      this.$emit('value', false);
     }
   }
-}
+};
 </script>

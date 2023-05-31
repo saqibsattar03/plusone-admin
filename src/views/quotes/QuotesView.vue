@@ -2,7 +2,6 @@
   <data-table
     :loader="loadData"
     :headers="headers"
-    title="Quotes"
     :allow-add="getUser() && getUser().role === 'ADMIN'"
     @add-new="addNew"
     @done="$router.back()"
@@ -48,7 +47,6 @@ export default {
     formatDate(date) {
       return dayjs(date).format('D MMM YYYY');
     },
-
     addNew() {
       this.$router.push('/quote');
     },

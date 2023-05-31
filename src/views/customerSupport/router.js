@@ -1,7 +1,6 @@
 import CustomerSupportsView from './CustomerSupportsView.vue';
 import CustomerSupportsShow from './CustomerSupportsShow.vue';
 import { getUser } from '../../utils/local';
-
 export const customerSupportsRoutes = [
   getUser()?.role === 'ADMIN'
     ? {

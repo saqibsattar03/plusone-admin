@@ -7,7 +7,10 @@
             <v-card-title class="text-center">Total Deposit</v-card-title>
           </div>
           <v-card-text class="text-center">
-            <h1>{{ restaurantProfile.totalDeposit || 0 }}</h1>
+            <h1>
+              <span style="color: #ff6e01">€</span>
+              {{ restaurantProfile.totalDeposit || 0 }}
+            </h1>
           </v-card-text>
         </v-card>
       </v-col>
@@ -19,6 +22,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{
                 restaurantProfile.availableDeposit &&
                 restaurantProfile.availableDeposit % 2 !== 0
@@ -37,6 +41,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{ restaurantProfile.totalSales || 0 }}
             </h1>
           </v-card-text>
@@ -50,6 +55,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{
                 restaurantProfile.totalDeductions &&
                 restaurantProfile.totalDeductions % 2 !== 0
@@ -68,6 +74,7 @@
           </div>
           <v-card-text class="text-center">
             <h1>
+              <span style="color: #ff6e01">€</span>
               {{
                 restaurantProfile.availableDeposit &&
                 restaurantProfile.availableDeposit % 2 !== 0
@@ -79,7 +86,6 @@
         </v-card>
       </v-col>
     </v-row>
-
     <v-container>
       <v-tabs v-model="tab">
         <v-tab v-for="item in tabItems" :key="item.id" @change="updatingTab()">
@@ -90,7 +96,6 @@
         <v-tab-item v-for="item in tabItems" :key="item.id">
           <DataTable
             :headers="tab == 0 ? transactionHeaders : depositHeaders"
-            :title="item.title"
             :allow-add="false"
             :allow-deposit="tab === 0 ? false : true"
             @add-deposit="depositDialog = !depositDialog"
@@ -189,7 +194,7 @@ export default {
         sortable: true
       },
       {
-        text: 'Sale Price',
+        text: 'Amount',
         value: 'amount',
         sortable: true
       },
@@ -199,7 +204,7 @@ export default {
         sortable: true
       },
       {
-        text: 'Transaction Type',
+        text: 'Debit/Credit',
         value: 'transactionType',
         sortable: true
       },
@@ -290,10 +295,10 @@ export default {
             await this.merchants_service.fetchOneTransactionHistory(id);
 
           transactionHistory.forEach((item) => {
-            item.voucherType = item.voucherType ? item.voucherType : 'N/A';
+            item.voucherType = item.voucherType ? item.voucherType : '-';
             item.deductedAmount = item.deductedAmount
               ? item.deductedAmount && item.deductedAmount.toFixed(2)
-              : 'N/A';
+              : '-';
             item.availableDeposit =
               item.availableDeposit && item.availableDeposit.toFixed(2);
           });

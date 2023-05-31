@@ -107,7 +107,9 @@
       <v-text-field
         v-model="merchant.phoneNumber"
         :rules="[required('Contact Number must be provided')]"
-        type="number"
+        type="text"
+        v-mask="'\+## ## ### ####'"
+        mask-placeholder=" "
         label="Contact Number"
         outlined
         color="#111827"
@@ -126,10 +128,7 @@
     <v-combobox
       v-model="merchant.tags"
       :items="tags"
-      :rules="[
-        required('Tags must be provided')
-        // (v) => v.length <= 5 || 'Maximum of 5 tags only'
-      ]"
+      :rules="[validate(merchant.tags, 'Tag')]"
       class="span-2"
       label="Tags"
       outlined
@@ -143,10 +142,12 @@
     <v-select
       v-model="merchant.dietaryRestrictions"
       :items="dietaryRestrictions"
-      :rules="[required('Dietary Restrictions must be provided')]"
+      :rules="[validate(merchant.dietaryRestrictions, 'Dietary Restrictions')]"
       class="span-2"
       label="Dietary Restrictions"
       outlined
+      small-chips
+      deletable-chips
       multiple
       color="#111827"
     ></v-select>
@@ -154,14 +155,15 @@
     <v-select
       v-model="merchant.culinaryOptions"
       :items="culinaryOptions"
-      :rules="[required('Culinary Options must be provided')]"
+      :rules="[validate(merchant.culinaryOptions, 'Culinary Options')]"
       class="span-2"
       label="Culinary Options"
       outlined
+      small-chips
+      deletable-chips
       multiple
       color="#111827"
     ></v-select>
-
     <v-row no-gutters class="span-2 d-flex justify-space-between">
       <v-checkbox
         v-model="merchant.status"
@@ -272,10 +274,12 @@ import { MerchantsService } from '../../services/merchant-service';
 import LoadingDialog from '../../components/LoadingDialog';
 import { required, email, requiredArray } from '@/utils/validators';
 import { getFullPath } from '../../utils/local';
+import VueTheMask from 'vue-the-mask';
 
 export default {
   name: 'Form',
-  components: { LoadingDialog, SimpleForm },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { LoadingDialog, SimpleForm, VueTheMask },
 
   data: () => ({
     isEdit: false,
@@ -284,10 +288,8 @@ export default {
     mediaImageError: false,
     passwordVisible: false,
     merchantsService: new MerchantsService(),
-
     center: { lat: 52.132633, lng: 5.2912659999999505 },
     zoom: 15,
-
     // only for edit
     disabled: false,
 
@@ -300,7 +302,7 @@ export default {
     profileImage: null,
     menu: null,
     media: [],
-    tags: [],
+    // tags: [],
     dietaryRestrictions: [
       'Vegan',
       'Vegetarian',
@@ -328,6 +330,26 @@ export default {
       'French',
       'Caribbean',
       'Vietnamese'
+    ],
+    tags: [
+      'Date night',
+      'Girls night out',
+      'Mate date',
+      'Family fun time',
+      'Pick up',
+      'Bogo',
+      'Other discounts',
+      'Sustainable low waste dining',
+      'Healthy eating',
+      'Coffee',
+      'Breakfast & Brunch',
+      'Lunchtime',
+      'Dinner',
+      'Fine dining',
+      'Kid friendly',
+      'Group friendly',
+      'Pet friendly',
+      'Other'
     ],
 
     merchant: {
@@ -368,6 +390,14 @@ export default {
     required,
     email,
     requiredArray,
+
+    validate(value, fieldName) {
+      console.log(value);
+      if (value instanceof Array && value.length == 0) {
+        return `${fieldName} must be provided`;
+      }
+      return !!value || `${fieldName} must be provided`;
+    },
 
     onButtonClick() {
       this.$refs.fileInput.click();
@@ -475,8 +505,8 @@ export default {
     },
 
     async loadMerchant() {
-      this.tags = await this.merchantsService.fetchAllTags();
-      this.tags = this.tags.map((tag) => tag.tag);
+      // this.tags = await this.merchantsService.fetchAllTags();
+      // this.tags = this.tags.map((tag) => tag.tag);
 
       if (!this.$route.query.id) {
         this.getUserLocation();

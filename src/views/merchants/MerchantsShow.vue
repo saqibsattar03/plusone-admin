@@ -12,55 +12,130 @@
       </v-overlay>
 
       <div v-else>
-        <v-row class="pa-0 d-flex justify-start span-2" no-gutters>
+        <v-row
+          class="pa-0 d-flex justify-start span-2"
+          style="margin-bottom: 12px"
+          no-gutters
+        >
           <v-btn @click="$router.go(-1)" elevation="0">
             <v-icon class="v-btn__pre-icon">mdi-arrow-left</v-icon></v-btn
           >
         </v-row>
-        <v-card-title class="p10" style="color: #020819"
-          >Merchant Details</v-card-title
-        >
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Resturant Name : </b>{{ merchant.restaurantName }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Merchant Name"
+              v-model="merchant.restaurantName"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Resturant Name : </b>{{ merchant.restaurantName }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Contact Number : </b>{{ merchant.phoneNumber }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Contact Number"
+              v-model="merchant.phoneNumber"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Contact Number : </b>{{ merchant.phoneNumber }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Description : </b>{{ merchant.description }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-textarea
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Description"
+              v-model="merchant.description"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Description : </b>{{ merchant.description }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Location Name : </b>{{ merchant.locationName }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Location"
+              v-model="merchant.locationName"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--              -->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Location Name : </b>{{ merchant.locationName }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Voucher Count : </b>{{ merchant.totalVoucherCount }}
-            </v-card-text>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Voucher Count"
+              v-model="merchant.totalVoucherCount"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Voucher Count : </b>{{ merchant.totalVoucherCount }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Unique Code : </b>{{ merchant.uniqueCode }}
-            </v-card-text>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Unique Code"
+              v-model="merchant.uniqueCode"
+            />
           </v-col>
+          <!--          <v-col cols="12" md="6">-->
+          <!--            <v-card-text class="p10">-->
+          <!--              <b>Unique Code : </b>{{ merchant.uniqueCode }}-->
+          <!--            </v-card-text>-->
+          <!--          </v-col>-->
+        </v-row>
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
+            <v-text-field
+              disabled
+              outlined
+              class="text-color"
+              dense
+              label="Sponsored"
+              v-model="merchant.isSponsored"
+            />
+          </v-col>
+          <v-col cols="12" md="5"></v-col>
         </v-row>
 
         <v-row class="pa-0 my-5" no-gutters>
@@ -82,60 +157,79 @@
           </v-carousel>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
             <v-card-text class="p10">
-              <b>Tags : </b
-              ><span v-for="tag in merchant.tags" :key="tag">{{
-                tag + ', '
-              }}</span>
+              <b>Tags : </b>
+              <ul class="no-bullet">
+                <li class="chips-gap" v-for="tag in merchant.tags" :key="tag">
+                  <v-chip>{{ tag }}</v-chip>
+                </li>
+              </ul>
+              <!--              ><span v-for="tag in merchant.tags" :key="tag">{{-->
+              <!--                tag + ', '-->
+              <!--              }}</span>-->
             </v-card-text>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="5">
             <v-card-text class="p10">
               <b>Dietary Restrictions : </b>
-              <span
-                v-for="dietary in merchant.dietaryRestrictions"
-                :key="dietary"
-                >{{ dietary + ', ' }}</span
-              >
+              <ul class="no-bullet">
+                <li
+                  class="chips-gap"
+                  v-for="dietary in merchant.dietaryRestrictions"
+                  :key="dietary"
+                >
+                  <v-chip>{{ dietary }}</v-chip>
+                </li>
+              </ul>
+              <!--              <span-->
+              <!--                v-for="dietary in merchant.dietaryRestrictions"-->
+              <!--                :key="dietary"-->
+              <!--                >{{ dietary + ', ' }}</span-->
+              <!--              >-->
             </v-card-text>
           </v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
+        <v-row class="pa-0" style="justify-content: space-around" no-gutters>
+          <v-col cols="12" md="5">
             <v-card-text class="p10">
-              <b>Culinary Options : </b
-              ><span
-                v-for="culinary in merchant.culinaryOptions"
-                :key="culinary"
-                >{{ culinary + ', ' }}</span
-              >
-            </v-card-text>
-          </v-col>
+              <b>Culinary Options : </b>
+              <ul class="no-bullet">
+                <li
+                  class="chips-gap"
+                  v-for="culinary in merchant.culinaryOptions"
+                  :key="culinary"
+                >
+                  <v-chip>{{ culinary }}</v-chip>
+                </li>
+              </ul>
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Sponsored : </b>{{ merchant.isSponsored }}
+              <!--                <span-->
+              <!--                v-for="culinary in merchant.culinaryOptions"-->
+              <!--                :key="culinary"-->
+              <!--                >{{ culinary + ', ' }}</span-->
+              <!--              >-->
             </v-card-text>
           </v-col>
+          <v-col cols="12" md="5"></v-col>
         </v-row>
 
-        <v-row class="pa-0" no-gutters>
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Created At : </b>{{ formatDate(merchant.createdAt) }}
-            </v-card-text>
-          </v-col>
+        <!--        <v-row class="pa-0" no-gutters>-->
+        <!--          <v-col cols="12" md="6">-->
+        <!--            <v-card-text class="p10">-->
+        <!--              <b>Created At : </b>{{ formatDate(merchant.createdAt) }}-->
+        <!--            </v-card-text>-->
+        <!--          </v-col>-->
 
-          <v-col cols="12" md="6">
-            <v-card-text class="p10">
-              <b>Updated At : </b>{{ formatDate(merchant.updatedAt) }}
-            </v-card-text>
-          </v-col>
-        </v-row>
+        <!--          <v-col cols="12" md="6">-->
+        <!--            <v-card-text class="p10">-->
+        <!--              <b>Updated At : </b>{{ formatDate(merchant.updatedAt) }}-->
+        <!--            </v-card-text>-->
+        <!--          </v-col>-->
+        <!--        </v-row>-->
       </div>
     </v-card>
   </div>

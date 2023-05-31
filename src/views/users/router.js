@@ -5,36 +5,38 @@ import { getUser } from '../../utils/local';
 
 export const usersRoutes = [
   getUser()?.role === 'ADMIN'
-    ?
-    {
-      name: 'Users',
-      path: '/',
-      component: UsersView
-    }
+    ? {
+        name: 'Users',
+        path: '/',
+        title: 'Users',
+        component: UsersView
+      }
     : {
-      path: '/',
-      redirect: '/no-permission'
-    },
+        path: '/',
+        redirect: '/no-permission'
+      },
   getUser()?.role === 'ADMIN'
     ? {
-      name: 'NewUser',
-      path: '/user',
-      component: UserForm
-    }
+        name: 'NewUser',
+        path: '/user',
+        title: 'Add New User',
+        component: UserForm
+      }
     : {
-      path: '/user',
-      redirect: '/no-permission'
-    },
+        path: '/user',
+        redirect: '/no-permission'
+      },
   getUser()?.role === 'ADMIN'
     ? {
-      name: 'UsersDetails',
-      path: '/user-details',
-      component: UserShow
-    }
+        name: 'UsersDetails',
+        path: '/user-details',
+        title: 'User Details',
+        component: UserShow
+      }
     : {
-      path: '/user-details',
-      redirect: '/no-permission'
-    }
+        path: '/user-details',
+        redirect: '/no-permission'
+      }
 ];
 
 export const usersRouter = usersRoutes.filter(function (x) {

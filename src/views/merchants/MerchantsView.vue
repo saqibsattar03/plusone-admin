@@ -1,18 +1,51 @@
 <template>
-  <data-table
-    :loader="loadData"
-    :headers="headers"
-    title="Merchants"
-    :allow-add="getUser() && getUser().role === 'ADMIN'"
-    @done="$router.back()"
-    @add-new="addNew"
-    :delete-handler="null"
-    :edit-handler="getUser() && getUser().role === 'ADMIN' ? edit : null"
-    :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
-    :voucher-handler="voucherView"
-    :account-handler="accountHandler"
-  >
-  </data-table>
+  <div>
+    <div>
+      <data-table
+        :loader="loadData"
+        :headers="headers"
+        :allow-add="getUser() && getUser().role === 'ADMIN'"
+        @done="$router.back()"
+        @add-new="addNew"
+        :delete-handler="null"
+        :edit-handler="getUser() && getUser().role === 'ADMIN' ? edit : null"
+        :view-handler="getUser() && getUser().role === 'ADMIN' ? view : null"
+        :voucher-handler="voucherView"
+        :account-handler="accountHandler"
+      >
+        <template #locationName="{ item }">
+          <td>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <div v-on="on">{{ item.locationName.substr(0, 40) }} ...</div>
+              </template>
+              <span>{{ item.locationName }}</span>
+            </v-tooltip>
+          </td>
+        </template>
+        <template #isSponsored="{ item }">
+          <v-chip
+            class="ma-2"
+            color="rgba(255, 125, 0,0.08)"
+            style="
+              color: #ff6e01;
+              font-size: 14px;
+              font-weight: bold;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 60px;
+              height: 24px;
+            "
+            label
+            dense
+          >
+            {{ item.isSponsored ? 'Yes' : 'No' }}
+          </v-chip>
+        </template>
+      </data-table>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -23,8 +56,8 @@ import { getUser } from '../../utils/local';
 export default {
   components: { DataTable },
 
-  mounted() {
-    this.loadData;
+  async mounted() {
+    await this.loadData;
   },
 
   data: () => ({
@@ -108,3 +141,22 @@ export default {
   }
 };
 </script>
+<style lang="sass" scoped>
+.custom-expansion-panels .v-expansion-panel__header--active,
+.custom-panel-header.v-expansion-panel__header--active
+    background-color: transparent
+    box-shadow: none
+
+.panel-transition-enter-active,
+.panel-transition-leave-active
+    transition: height 0.3s
+
+.panel-transition-enter,
+.panel-transition-leave-to
+    height: 0
+    opacity: 0
+    overflow: hidden
+.custom-panel-header
+    background-color: #FF0000
+    color: #FFFFFF
+</style>

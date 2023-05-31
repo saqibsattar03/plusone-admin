@@ -3,7 +3,6 @@
     <data-table
       :loader="loadData"
       :headers="headers"
-      title="Vouchers"
       :allow-add="true"
       @done="$router.back()"
       @add-new="addNew"
@@ -110,7 +109,6 @@ export default {
         `/voucher?restaurantId=${this.$route.query.restaurantId}&voucherId=${item._id}`
       );
     },
-
     view(item) {
       this.$router.push(
         `/voucher-details?restaurantId=${this.$route.query.restaurantId}&voucherId=${item._id}`

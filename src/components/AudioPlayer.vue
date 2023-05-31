@@ -1,34 +1,43 @@
 <template>
   <div>
-    <v-dialog v-bind:value="value" v-if="!isEdit && !addNew" width="80%" content-class="elevation-0">
+    <v-dialog
+      v-bind:value="value"
+      v-if="!isEdit && !addNew"
+      width="80%"
+      content-class="elevation-0"
+    >
       <div class="text-center mb-5">
         <v-btn fab small @click="closeAudio">
           <v-icon color="red" class="font-weight-bold">mdi-close</v-icon>
         </v-btn>
       </div>
+
       <v-container class="audio-container">
-        <div class="player" :class="{'background': thumbnail}">
+        <div class="player" :class="{ background: thumbnail }">
           <div class="image-box">
             <v-img v-if="thumbnail" :src="thumbnail" contain />
-<!--            <v-img v-else-if="type === 'Audio'" src="../assets/default-thumbnail.png" height="200" class="mb-5" contain/>-->
-<!--            <v-img v-else-if="type === 'Podcast'" src="../assets/Podcast.png" height="200" class="mb-5" contain/>-->
+            <!--            <v-img v-else-if="type === 'Audio'" src="../assets/default-thumbnail.png" height="200" class="mb-5" contain/>-->
+            <!--            <v-img v-else-if="type === 'Podcast'" src="../assets/Podcast.png" height="200" class="mb-5" contain/>-->
           </div>
-          <audio controls ref="audio" @loadeddata="sendDuration($event)" >
+          <audio controls ref="audio" @loadeddata="sendDuration($event)">
             <source :src="url" />
           </audio>
         </div>
       </v-container>
     </v-dialog>
-    <v-container v-if="filename !== 'filename' && isEdit" class="audio-container">
+    <v-container
+      v-if="filename !== 'filename' && isEdit"
+      class="audio-container"
+    >
       <div class="player" v-if="filename">
-        <audio controls ref="audio" >
+        <audio controls ref="audio">
           <source :src="url" />
         </audio>
       </div>
     </v-container>
 
     <v-container v-if="filename === 'filename'">
-      <audio controls ref="audio" @loadeddata="sendDuration($event)" >
+      <audio controls ref="audio" @loadeddata="sendDuration($event)">
         <source :src="url" />
       </audio>
     </v-container>
@@ -36,20 +45,19 @@
 </template>
 
 <script>
-
 export default {
   name: 'AudioPlayer',
-  model:{
-    prop: "value",
-    event: "value"
+  model: {
+    prop: 'value',
+    event: 'value'
   },
   props: {
     value: {
       type: Boolean,
-      default: false,
+      default: false
     },
     filename: {
-      type: String,
+      type: String
     },
     url: {
       type: String,
@@ -64,14 +72,13 @@ export default {
     },
     addNew: {
       type: Boolean,
-      default: false,
-    },
-
+      default: false
+    }
   },
   data() {
     return {
       show: false,
-      pause: false,
+      pause: false
     };
   },
   watch: {
@@ -80,10 +87,10 @@ export default {
     },
     dialog: {
       handler(newValue) {
-        this.show = newValue
+        this.show = newValue;
       },
       deep: true,
-      immediate: true,
+      immediate: true
     }
   },
 
@@ -91,10 +98,10 @@ export default {
     closeAudio() {
       this.show = !this.dialog;
       this.pause = !this.pause;
-      this.$emit('value', false)
+      this.$emit('value', false);
     },
     sendDuration(e) {
-      this.$emit('audioDuration', e.target.duration)
+      this.$emit('audioDuration', e.target.duration);
     }
   }
 };
